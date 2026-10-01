@@ -60,7 +60,14 @@ await writeFile(
       .map(([name, path]) => `  '${name}': '${path}'\n`)
       .join(""),
 );
-await pm(["install", "--offline"], consumer);
+// A frozen workspace install does not populate registry metadata for a new
+// consumer. Resolve its own lockfile and fetch packages before testing offline.
+const storeArgs = process.env.AGENTEST_PACKED_STORE
+  ? ["--store-dir", process.env.AGENTEST_PACKED_STORE]
+  : [];
+await pm(["install", "--lockfile-only", ...storeArgs], consumer);
+await pm(["fetch", ...storeArgs], consumer);
+await pm(["install", "--offline", "--frozen-lockfile", ...storeArgs], consumer);
 const canonicalConsumer = await realpath(consumer);
 for (const name of ["protocol", "core", "sdk", "cli", "adapter-vercel"]) {
   const installed = await realpath(join(consumer, "node_modules/@agentest", name));
