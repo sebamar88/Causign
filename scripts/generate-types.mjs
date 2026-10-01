@@ -16,5 +16,7 @@ for(const family of families){
 const target=new URL('../packages/protocol/src/generated.ts',import.meta.url);
 if(process.argv.includes('--check')){
  const current=await readFile(target,'utf8');
- if(current!==output){console.error('Generated contracts are stale. Run npm run generate.');process.exitCode=1;}
+ // Git may check out text as CRLF on Windows. Compare contract content while
+ // retaining every other difference, including meaningful whitespace.
+ if(current.replaceAll('\r\n','\n')!==output.replaceAll('\r\n','\n')){console.error('Generated contracts are stale. Run pnpm generate.');process.exitCode=1;}
 }else await writeFile(target,output);
