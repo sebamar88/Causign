@@ -1,0 +1,25 @@
+{
+  "name": "@agentest/adapter-vercel",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "dependencies": {
+    "@agentest/sdk": "workspace:*",
+    "@agentest/protocol": "workspace:*"
+  },
+  "peerDependencies": {
+    "ai": "7.0.127"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

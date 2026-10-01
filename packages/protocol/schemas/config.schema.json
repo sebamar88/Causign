@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agentest.dev/schemas/config.schema.json",
+  "title": "AgentestConfig",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1"
+    },
+    "agents": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/AgentReference"
+      }
+    },
+    "evaluators": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/EvaluatorConfiguration"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "agents",
+    "evaluators"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "AgentReference": {
+      "title": "AgentReference",
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cwd": {
+          "type": "string",
+          "minLength": 1
+        },
+        "env": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+          }
+        }
+      },
+      "required": [
+        "command",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    "EvaluatorConfiguration": {
+      "title": "EvaluatorConfiguration",
+      "type": "object",
+      "properties": {
+        "module": {
+          "type": "string",
+          "minLength": 1
+        },
+        "options": {
+          "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+        },
+        "provider": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+          }
+        }
+      },
+      "required": [
+        "module"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agentest.dev/schemas/trace.schema.json",
+  "title": "Trace",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "planId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TraceEvent"
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Diagnostic"
+      }
+    },
+    "terminal": {
+      "$ref": "#/definitions/TraceTerminal"
+    },
+    "completeness": {
+      "enum": [
+        "complete",
+        "incomplete"
+      ],
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "runId",
+    "planId",
+    "events",
+    "diagnostics",
+    "completeness"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "Diagnostic": {
+      "title": "Diagnostic",
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "receiveSequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "rawFrame": {
+          "type": "string"
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "messageId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+          }
+        }
+      },
+      "required": [
+        "kind",
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "TraceEvent": {
+      "title": "TraceEvent",
+      "type": "object",
+      "properties": {
+        "receiveSequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "message": {
+          "$ref": "https://agentest.dev/schemas/protocol.schema.json"
+        },
+        "source": {
+          "enum": [
+            "adapter",
+            "runner"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "receiveSequence",
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "TraceTerminal": {
+      "title": "TraceTerminal",
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "run.completed",
+            "run.failed",
+            "run.errored",
+            "run.cancelled"
+          ],
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "adapter",
+            "runner"
+          ],
+          "type": "string"
+        },
+        "messageId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "type",
+        "source",
+        "messageId"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

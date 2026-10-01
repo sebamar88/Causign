@@ -1,0 +1,742 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agentest.dev/schemas/scenario.schema.json",
+  "title": "ScenarioDefinition",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agent": {
+      "type": "string",
+      "minLength": 1
+    },
+    "input": {
+      "$ref": "#/definitions/JsonValue"
+    },
+    "mocks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ToolMock"
+      }
+    },
+    "approvalDecisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ApprovalDecision"
+      }
+    },
+    "assertions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AssertionDefinition"
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "timeoutMs": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "skipReason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "agent",
+    "input",
+    "mocks",
+    "assertions",
+    "requirements",
+    "timeoutMs"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "JsonValue": {
+      "title": "JsonValue",
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/JsonValue"
+          }
+        }
+      ]
+    },
+    "StaticResponse": {
+      "title": "StaticResponse",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "result"
+            },
+            "value": {
+              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "error"
+            },
+            "value": {
+              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ToolMock": {
+      "title": "ToolMock",
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "tool"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "response": {
+          "$ref": "#/definitions/StaticResponse"
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "response"
+      ],
+      "additionalProperties": false
+    },
+    "AssertionDefinition": {
+      "title": "AssertionDefinition",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "tool.requested"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "negated": {
+              "type": "boolean"
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "parameters",
+            "negated",
+            "requirements"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "tool.executed"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "negated": {
+              "type": "boolean"
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "parameters",
+            "negated",
+            "requirements"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "tool.completed"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "negated": {
+              "type": "boolean"
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "parameters",
+            "negated",
+            "requirements"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "tool.mocked"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "negated": {
+              "type": "boolean"
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "parameters",
+            "negated",
+            "requirements"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "tool.blocked"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "negated": {
+              "type": "boolean"
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "parameters",
+            "negated",
+            "requirements"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "approval.requested"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "negated": {
+              "type": "boolean"
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "parameters",
+            "negated",
+            "requirements"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "approval.granted"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "negated": {
+              "type": "boolean"
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "parameters",
+            "negated",
+            "requirements"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "approval.rejected"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "negated": {
+              "type": "boolean"
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "parameters",
+            "negated",
+            "requirements"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "output.equal"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            "negated": {
+              "type": "boolean"
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "parameters",
+            "negated",
+            "requirements"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "output.satisfies"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "evaluator": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "criteria": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "evaluator",
+                "criteria"
+              ],
+              "additionalProperties": false
+            },
+            "negated": {
+              "type": "boolean"
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "parameters",
+            "negated",
+            "requirements"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "run.latencyLessThan"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "milliseconds": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "milliseconds"
+              ],
+              "additionalProperties": false
+            },
+            "negated": {
+              "type": "boolean"
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "parameters",
+            "negated",
+            "requirements"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "run.costLessThan"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "currency": {
+                  "const": "USD"
+                }
+              },
+              "required": [
+                "amount",
+                "currency"
+              ],
+              "additionalProperties": false
+            },
+            "negated": {
+              "type": "boolean"
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "parameters",
+            "negated",
+            "requirements"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ExecutionLimits": {
+      "title": "ExecutionLimits",
+      "type": "object",
+      "properties": {
+        "handshakeTimeoutMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "scenarioTimeoutMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "interceptionTimeoutMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxFrameBytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxStderrBytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxTraceBytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxMessages": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxBufferedBytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "terminationGraceMs": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "scenarioTimeoutMs"
+      ],
+      "additionalProperties": false
+    },
+    "ApprovalDecision": {
+      "title": "ApprovalDecision",
+      "type": "object",
+      "properties": {
+        "decision": {
+          "enum": [
+            "grant",
+            "reject"
+          ],
+          "type": "string"
+        },
+        "input": {
+          "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+        }
+      },
+      "required": [
+        "decision"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
+

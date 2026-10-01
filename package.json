@@ -1,0 +1,33 @@
+{
+  "name": "agentest-workspace",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "tsc --build && vitest run",
+    "typecheck": "tsc --build",
+    "build": "tsc --build",
+    "generate": "node scripts/generate-types.mjs",
+    "check:generated": "node scripts/generate-types.mjs --check",
+    "test:coverage": "tsc --build && vitest run --coverage",
+    "test:packed": "tsc --build && node scripts/packed-smoke.mjs",
+    "lint": "oxlint --deny-warnings ."
+  },
+  "devDependencies": {
+    "@agentest/adapter-vercel": "workspace:*",
+    "@agentest/sdk": "workspace:*",
+    "@types/node": "24.10.0",
+    "@vitest/coverage-v8": "3.2.4",
+    "ai": "7.0.127",
+    "json-schema-to-typescript": "15.0.4",
+    "oxlint": "1.86.0",
+    "typescript": "5.9.3",
+    "vitest": "3.2.4"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@11.25.0"
+}

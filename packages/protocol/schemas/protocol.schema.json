@@ -1,0 +1,1604 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agentest.dev/schemas/protocol.schema.json",
+  "title": "ProtocolMessage",
+  "oneOf": [
+    {
+      "$ref": "#/definitions/Hello"
+    },
+    {
+      "$ref": "#/definitions/AdapterReady"
+    },
+    {
+      "$ref": "#/definitions/Configure"
+    },
+    {
+      "$ref": "#/definitions/AdapterConfigured"
+    },
+    {
+      "$ref": "#/definitions/RunStart"
+    },
+    {
+      "$ref": "#/definitions/RunStarted"
+    },
+    {
+      "$ref": "#/definitions/RunCancel"
+    },
+    {
+      "$ref": "#/definitions/RunCancelled"
+    },
+    {
+      "$ref": "#/definitions/RunCompleted"
+    },
+    {
+      "$ref": "#/definitions/RunFailed"
+    },
+    {
+      "$ref": "#/definitions/RunErrored"
+    },
+    {
+      "$ref": "#/definitions/ToolRequested"
+    },
+    {
+      "$ref": "#/definitions/ToolProceed"
+    },
+    {
+      "$ref": "#/definitions/ToolMockCommand"
+    },
+    {
+      "$ref": "#/definitions/ToolReject"
+    },
+    {
+      "$ref": "#/definitions/ToolStarted"
+    },
+    {
+      "$ref": "#/definitions/ToolCompleted"
+    },
+    {
+      "$ref": "#/definitions/ToolFailed"
+    },
+    {
+      "$ref": "#/definitions/ToolRejected"
+    },
+    {
+      "$ref": "#/definitions/ApprovalRequested"
+    },
+    {
+      "$ref": "#/definitions/ApprovalResolve"
+    },
+    {
+      "$ref": "#/definitions/ApprovalCompleted"
+    },
+    {
+      "$ref": "#/definitions/ModelStarted"
+    },
+    {
+      "$ref": "#/definitions/ModelCompleted"
+    },
+    {
+      "$ref": "#/definitions/ModelFailed"
+    },
+    {
+      "$ref": "#/definitions/MessageCreated"
+    }
+  ],
+  "definitions": {
+    "ProtocolError": {
+      "title": "ProtocolError",
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "details": {
+          "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "Cost": {
+      "title": "Cost",
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "additionalProperties": false
+    },
+    "Usage": {
+      "title": "Usage",
+      "type": "object",
+      "properties": {
+        "cost": {
+          "$ref": "#/definitions/Cost"
+        },
+        "inputTokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "outputTokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalTokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "Hello": {
+      "title": "Hello",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "hello"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "supportedVersions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "supportedVersions"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "AdapterReady": {
+      "title": "AdapterReady",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "adapter.ready"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "adapter": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "version": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "name",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "supportedVersions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "capabilities": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "adapter",
+            "supportedVersions",
+            "capabilities"
+          ],
+          "additionalProperties": false
+        },
+        "correlationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "correlationId"
+      ],
+      "additionalProperties": false
+    },
+    "Configure": {
+      "title": "Configure",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "configure"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "protocol": {
+              "const": "agentest/1"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              }
+            }
+          },
+          "required": [
+            "protocol"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "AdapterConfigured": {
+      "title": "AdapterConfigured",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "adapter.configured"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "correlationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "correlationId"
+      ],
+      "additionalProperties": false
+    },
+    "RunStart": {
+      "title": "RunStart",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "run.start"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "input": {
+              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+            },
+            "interceptions": {
+              "type": "array",
+              "items": {
+                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/ToolMock"
+              }
+            },
+            "approvalDecisions": {
+              "type": "array",
+              "items": {
+                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/ApprovalDecision"
+              }
+            },
+            "limits": {
+              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/ExecutionLimits"
+            }
+          },
+          "required": [
+            "input",
+            "interceptions",
+            "approvalDecisions",
+            "limits"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "RunStarted": {
+      "title": "RunStarted",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "run.started"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "correlationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "correlationId"
+      ],
+      "additionalProperties": false
+    },
+    "RunCancel": {
+      "title": "RunCancel",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "run.cancel"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "RunCancelled": {
+      "title": "RunCancelled",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "run.cancelled"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "correlationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "RunCompleted": {
+      "title": "RunCompleted",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "run.completed"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "output": {
+              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+            },
+            "usage": {
+              "$ref": "#/definitions/Usage"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              }
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "RunFailed": {
+      "title": "RunFailed",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "run.failed"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "error": {
+              "$ref": "#/definitions/ProtocolError"
+            },
+            "usage": {
+              "$ref": "#/definitions/Usage"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              }
+            }
+          },
+          "required": [
+            "error"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "RunErrored": {
+      "title": "RunErrored",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "run.errored"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "error": {
+              "$ref": "#/definitions/ProtocolError"
+            }
+          },
+          "required": [
+            "error"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "ToolRequested": {
+      "title": "ToolRequested",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "tool.requested"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "input": {
+              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+            },
+            "intercepted": {
+              "type": "boolean"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              }
+            }
+          },
+          "required": [
+            "name",
+            "input",
+            "intercepted"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "operationId"
+      ],
+      "additionalProperties": false
+    },
+    "ToolProceed": {
+      "title": "ToolProceed",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "tool.proceed"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "correlationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "operationId",
+        "correlationId"
+      ],
+      "additionalProperties": false
+    },
+    "ToolMockCommand": {
+      "title": "ToolMockCommand",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "tool.mock"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "response": {
+              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/StaticResponse"
+            }
+          },
+          "required": [
+            "response"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "correlationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "operationId",
+        "correlationId"
+      ],
+      "additionalProperties": false
+    },
+    "ToolReject": {
+      "title": "ToolReject",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "tool.reject"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "enum": [
+                "agentest",
+                "adapter",
+                "agent",
+                "policy",
+                "external"
+              ],
+              "type": "string"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "source",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "correlationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "operationId",
+        "correlationId"
+      ],
+      "additionalProperties": false
+    },
+    "ToolStarted": {
+      "title": "ToolStarted",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "tool.started"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "operationId"
+      ],
+      "additionalProperties": false
+    },
+    "ToolCompleted": {
+      "title": "ToolCompleted",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "tool.completed"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "output": {
+              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+            },
+            "execution": {
+              "enum": [
+                "real",
+                "mock"
+              ],
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              }
+            }
+          },
+          "required": [
+            "name",
+            "output",
+            "execution"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "operationId"
+      ],
+      "additionalProperties": false
+    },
+    "ToolFailed": {
+      "title": "ToolFailed",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "tool.failed"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "error": {
+              "$ref": "#/definitions/ProtocolError"
+            },
+            "execution": {
+              "enum": [
+                "real",
+                "mock"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "error",
+            "execution"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "operationId"
+      ],
+      "additionalProperties": false
+    },
+    "ToolRejected": {
+      "title": "ToolRejected",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "tool.rejected"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source": {
+              "enum": [
+                "agentest",
+                "adapter",
+                "agent",
+                "policy",
+                "external"
+              ],
+              "type": "string"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "name",
+            "source",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "operationId"
+      ],
+      "additionalProperties": false
+    },
+    "ApprovalRequested": {
+      "title": "ApprovalRequested",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "approval.requested"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "input": {
+              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              }
+            }
+          },
+          "required": [
+            "input"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "operationId"
+      ],
+      "additionalProperties": false
+    },
+    "ApprovalResolve": {
+      "title": "ApprovalResolve",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "approval.resolve"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "enum": [
+                "grant",
+                "reject"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "correlationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "operationId",
+        "correlationId"
+      ],
+      "additionalProperties": false
+    },
+    "ApprovalCompleted": {
+      "title": "ApprovalCompleted",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "approval.completed"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "enum": [
+                "grant",
+                "reject"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "operationId"
+      ],
+      "additionalProperties": false
+    },
+    "ModelStarted": {
+      "title": "ModelStarted",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "model.started"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "model": {
+              "type": "string",
+              "minLength": 1
+            },
+            "provider": {
+              "type": "string",
+              "minLength": 1
+            },
+            "input": {
+              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              }
+            }
+          },
+          "required": [
+            "model"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "operationId"
+      ],
+      "additionalProperties": false
+    },
+    "ModelCompleted": {
+      "title": "ModelCompleted",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "model.completed"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "output": {
+              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+            },
+            "usage": {
+              "$ref": "#/definitions/Usage"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              }
+            }
+          },
+          "required": [
+            "output"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "operationId"
+      ],
+      "additionalProperties": false
+    },
+    "ModelFailed": {
+      "title": "ModelFailed",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "model.failed"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "error": {
+              "$ref": "#/definitions/ProtocolError"
+            }
+          },
+          "required": [
+            "error"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId",
+        "operationId"
+      ],
+      "additionalProperties": false
+    },
+    "MessageCreated": {
+      "title": "MessageCreated",
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "agentest/1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "message.created"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "role": {
+              "enum": [
+                "system",
+                "user",
+                "assistant",
+                "tool"
+              ],
+              "type": "string"
+            },
+            "content": {
+              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              }
+            }
+          },
+          "required": [
+            "role",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocol",
+        "id",
+        "type",
+        "timestamp",
+        "payload",
+        "runId"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

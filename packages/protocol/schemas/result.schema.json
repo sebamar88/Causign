@@ -1,0 +1,210 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agentest.dev/schemas/result.schema.json",
+  "title": "ScenarioResult",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1"
+    },
+    "scenarioId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "planId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "ERROR",
+        "INCOMPATIBLE",
+        "SKIP"
+      ],
+      "type": "string"
+    },
+    "assertions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AssertionResult"
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "$ref": "https://agentest.dev/schemas/trace.schema.json#/definitions/Diagnostic"
+      }
+    },
+    "traceId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "executionDurationMs": {
+      "type": "number",
+      "minimum": 0
+    },
+    "missingCapabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "scenarioId",
+    "status",
+    "assertions",
+    "diagnostics"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "EvidenceReference": {
+      "title": "EvidenceReference",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "message"
+            },
+            "messageId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "operationId": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "kind",
+            "messageId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "metric"
+            },
+            "metric": {
+              "enum": [
+                "executionLatencyMs",
+                "cost"
+              ],
+              "type": "string"
+            },
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "currency": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "kind",
+            "metric",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "evaluator"
+            },
+            "evaluatorId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "configHash": {
+              "type": "string",
+              "minLength": 1
+            },
+            "provider": {
+              "type": "string",
+              "minLength": 1
+            },
+            "model": {
+              "type": "string",
+              "minLength": 1
+            },
+            "score": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "kind",
+            "evaluatorId",
+            "configHash"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "AssertionResult": {
+      "title": "AssertionResult",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "ERROR",
+            "NOT_EVALUATED"
+          ],
+          "type": "string"
+        },
+        "expected": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observed": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EvidenceReference"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "expected",
+        "observed",
+        "reason",
+        "evidence"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

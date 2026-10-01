@@ -1,0 +1,29 @@
+{
+  "name": "@agentest/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "agentest": "./dist/bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/main.d.ts",
+      "import": "./dist/main.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@agentest/protocol": "workspace:*",
+    "@agentest/core": "workspace:*",
+    "tsx": "4.23.15",
+    "picomatch": "4.0.3"
+  },
+  "devDependencies": {
+    "@types/picomatch": "4.0.2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
