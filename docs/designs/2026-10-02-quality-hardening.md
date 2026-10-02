@@ -1,6 +1,6 @@
 # Causign quality hardening
 
-Status: scope approved in chat; written specification awaiting review.
+Status: written specification approved by the user; implementation plans awaiting review.
 
 ## Intent
 
