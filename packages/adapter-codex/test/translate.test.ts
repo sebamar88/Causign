@@ -8,7 +8,7 @@ it.each([
  ['null',[null]],['array',[[]]],['missing turn',[]],['missing completion',[start,output]],
  ['duplicate turn',[start,start,output,end]],['duplicate final',[start,output,output,end]],
  ['completion before text',[start,end]],['output before start',[output,end]],
- ['post terminal',[start,output,end,{type:'turn.failed'}]],
+ ['post terminal',[start,output,end,{type:'item.updated',item:{type:'agent_message'}}]],
  ['unknown',[start,{type:'unexpected'},output,end]],
  ['non-message item',[start,{type:'item.started',item:{type:'command_execution'}},output,end]],
  ['update before turn',[{type:'item.updated',item:{type:'agent_message'}},start,output,end]],
