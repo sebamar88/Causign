@@ -2,7 +2,8 @@ import {resolve} from 'node:path';
 import {createRegistry,discoverAgents,instructionPlugin,loadPluginManifest,readPluginManifest,type DiscoverySource,type RuntimePlugin} from '@causign/runtime';
 import type {CliIO} from './main.js';
 import claudePlugin from '@causign/adapter-claude-code';
-export const builtinPlugins:RuntimePlugin[]=[instructionPlugin,claudePlugin];
+import codexPlugin from '@causign/adapter-codex';
+export const builtinPlugins:RuntimePlugin[]=[instructionPlugin,claudePlugin,codexPlugin];
 export async function discoverCommand(args:string[],io:CliIO):Promise<number>{
  let path:string|undefined,sourceId:string|undefined,manifestPath:string|undefined,discovererId:string|undefined,json=false;
  for(let index=0;index<args.length;index++){
