@@ -82,6 +82,12 @@ importers:
         specifier: 3.0.1
         version: 3.0.1(ajv@8.17.1)
 
+  packages/runtime:
+    dependencies:
+      '@causign/protocol':
+        specifier: workspace:*
+        version: link:../protocol
+
   packages/sdk:
     dependencies:
       '@causign/protocol':
