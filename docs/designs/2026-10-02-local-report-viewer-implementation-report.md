@@ -8,12 +8,12 @@ The CLI now provides `report [--output-dir path] [--port number] [--no-open]` an
 
 The server binds to loopback and requires a session token for report data, exact Host, and permitted Origin. It serves fixed packaged assets only. User-generated content is rendered as text under CSP. Plain run remains unchanged; stopping the viewer after run preserves suite exit codes, including INCOMPATIBLE 3. Active execution interruption remains 130. No product dependencies or protocol changes were introduced.
 
-## Verification before independent review
+## Final verification
 
 - TypeScript build, generated contract check, and whole-repository oxlint passed.
-- 389 tests passed; one existing POSIX process-tree test was skipped on Windows.
-- Node V8 coverage: statements/lines 93.18%, branches 84.76%, functions 91.96%. Browser interactions were verified separately and are not measured by the Node test process coverage.
-- Eight tarballs installed into a clean consumer passed seven baseline scenarios, external runtime plugin acceptance, and local report acceptance: HTML/CSS/client JS, authenticated history, failure diff, evidence, and graceful command shutdown.
+- 399 tests passed; one existing POSIX process-tree test was skipped on Windows.
+- Node V8 coverage: statements/lines 93.07%, branches 85.08%, functions 92.17%. Browser interactions were verified separately and are not measured by the Node test process coverage.
+- Eight tarballs installed into a clean consumer passed seven baseline scenarios, external runtime plugin acceptance, and local report acceptance: HTML/CSS/client JS and its session/navigation modules, authenticated history, failure diff, evidence, and graceful command shutdown.
 - Integrated browser verification: visible greeting mismatch, prohibited equality explanation, literal HTML diagnostic with no image element created, incomplete-trace warning, status filtering, keyboard selection, evidence navigation to page 2, session refresh, and no logged console warnings/errors.
 - Responsive check at a 390-pixel viewport: document content width equaled viewport client width; no horizontal overflow. Desktop screenshot: `docs/images/local-report.png`.
 
@@ -27,9 +27,19 @@ Remote CI has not been run for this branch. No npm release, merge, or push was p
 4. Use the integrated CUA browser because agent-browser is unavailable. Cost if wrong: manual visual checks are not automatically replayed by CI.
 5. Packed acceptance verifies the already-built viewer; it passed without a packaging change. This verification-only addition does not introduce new production behavior and therefore required no artificial RED mutation. Cost if wrong: package completeness is guarded by acceptance rather than a separate packaging implementation cycle.
 
-## Remaining review stage
+## Review findings and closure
 
-Independent whole-branch review follows this verification commit. Findings, fixes, deferred minors, and scope rulings will be recorded here before completion.
+Independent review reproduced three important issues before stopping due to a reviewer usage limit. No complete independent verdict was received; the author completed the remaining checks. No second review was dispatched.
+
+- Response amplification from repeated observed output: bounded iterative encoding now rejects responses above 4 MiB before sending headers. The HTTP regression failed with an oversized 200 response before the fix and passes with an explicit 422 error afterward.
+- Root replacement: the repository pins the selected directory identity. A regression that previously read a replacement directory now rejects it.
+- Skip-link refresh lost the session: only a valid token fragment replaces the saved token. Browser reproduction failed before the fix; navigating the skip link and refreshing now retains the report.
+- Author checks also reproduced stale scenario details after filtering and empty-history refresh. Both now clear details and timeline; browser checks passed. Evidence navigation ignores responses after selection changes, covered by regression tests.
+
+The complete suite, generated check, TypeScript build, lint, and packed acceptance passed after these fixes. Browser checks also verified matching ERROR details, zero-match cleanup, empty-history cleanup, and no console warnings/errors.
+
+6. Add a 4 MiB aggregate API response limit to prevent amplification. Cost: very large valid details require direct artifact inspection; recorded verdicts remain unchanged.
+7. Close verification using reproduced independent findings plus author checks after the reviewer was interrupted. Cost: there is no full independent approval verdict. This limitation remains visible for integration review.
 
 ## Deferred feature scope
 

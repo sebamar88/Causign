@@ -136,13 +136,15 @@ reportCommand(args: string[], io: CliIO): Promise<number>
 
 **Interfaces:** Exercise the installed CLI binary and assets as a consumer. Do not rely on workspace file locations or imports.
 
-- [ ] Add a failing packed-consumer test that starts `report --no-open` from the clean consumer, parses the printed loopback URL without logging its fragment token, fetches authenticated history and scenario detail plus HTML/CSS/client.js, and shuts the process down in a finally block. Verify one FAIL fixture has a JSON difference and that report itself does not return the historical FAIL code.
-- [ ] Run `pnpm test:packed`; expect any missing packed asset/path behavior to fail. Fix packaging or startup using the compiled assets chosen above; do not add an unrelated build dependency.
-- [ ] Document installed CLI, npx, and pnpm dlx commands, history roots, server lifetime, exit-code distinctions, raw sensitive local data, CI plain run usage, loading limits, and the fact that the feature is not yet in npm 0.1.0. Avoid staging the two pre-existing dirty docs.
-- [ ] Run `pnpm check:generated`, `pnpm typecheck`, `pnpm lint`, `pnpm test:coverage`, and `pnpm test:packed`; expect all checks to pass. Report measured coverage and any platform skips without claiming remote CI passed before it runs.
-- [ ] Use the execution skill's independent whole-branch reviewer. Resolve important findings with failing regressions and fresh verification; record explicit scope rulings and deferred work in the implementation report.
-- [ ] Commit Task 6 files: `docs: document and verify local report viewing`. Present branch integration choices; do not automatically publish npm packages or merge the open discovery PR.
+- [x] Add a failing packed-consumer test that starts `report --no-open` from the clean consumer, parses the printed loopback URL without logging its fragment token, fetches authenticated history and scenario detail plus HTML/CSS/client.js, and shuts the process down in a finally block. Verify one FAIL fixture has a JSON difference and that report itself does not return the historical FAIL code.
+- [x] Run `pnpm test:packed`; expect any missing packed asset/path behavior to fail. Fix packaging or startup using the compiled assets chosen above; do not add an unrelated build dependency.
+- [x] Document installed CLI, npx, and pnpm dlx commands, history roots, server lifetime, exit-code distinctions, raw sensitive local data, CI plain run usage, loading limits, and the fact that the feature is not yet in npm 0.1.0. Avoid staging the two pre-existing dirty docs.
+- [x] Run `pnpm check:generated`, `pnpm typecheck`, `pnpm lint`, `pnpm test:coverage`, and `pnpm test:packed`; expect all checks to pass. Report measured coverage and any platform skips without claiming remote CI passed before it runs.
+- [x] Use the execution skill's independent whole-branch reviewer. Resolve important findings with failing regressions and fresh verification; record explicit scope rulings and deferred work in the implementation report.
+- [x] Commit Task 6 files: `docs: document and verify local report viewing`. Present branch integration choices; do not automatically publish npm packages or merge the open discovery PR.
 
 ## Plan self-review
 
 Every specification section maps to Tasks 1–6: artifacts and limits (1), explanations and evidence semantics (2), access and lifecycle primitives (3), UI and visual acceptance (4), commands and exit codes (5), packaging/platform/documentation acceptance (6). The five review-focus cases have named tests in their owning tasks. Shared interfaces remain consistent and deferred functionality is excluded. Implementation begins only after user review of this plan, using the already selected direct execution method.
+
+Review closure: three independently reproduced findings fixed; full reviewer verdict unavailable due to usage limit. Author verification completed; see implementation report.

@@ -66,6 +66,6 @@ Agent output, prompts, and diagnostics are rendered as text. Raw content is coll
 
 You can copy a results root to another directory: the viewer loads indexed `plan-N.json` and `trace-N.json` files beside each `results.json`, ignoring stale stored absolute paths. It rejects linked files/directories and mismatched artifact references.
 
-History is bounded to 1,000 execution directories and JSON files to 16 MiB each. Timeline pages contain 200 events; JSON differences stop after 1,000 changed paths, with a truncation notice. Large individual displayed values are capped at 50,000 characters. These are viewing limits; they do not change recorded verdicts or rewrite artifacts.
+History is bounded to 1,000 execution directories and JSON files to 16 MiB each. Each API response is limited to 4 MiB; larger details return an explicit loading error, and the original files remain available for inspection. Replacing the selected root directory requires restarting the viewer. Timeline pages contain 200 events; JSON differences stop after 1,000 changed paths, with a truncation notice. Large individual displayed values are capped at 50,000 characters. These are viewing limits; they do not change recorded verdicts or rewrite artifacts.
 
 Standalone HTML export, run comparisons, live updates, and execution from the browser are deferred.

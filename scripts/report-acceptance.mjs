@@ -16,7 +16,7 @@ export async function runReportAcceptance({bin,cwd}){
  child.stdout.on('data',chunk=>{stdout+=chunk;const match=/Local report: (http:\/\/127\.0\.0\.1:\d+\/#[a-f0-9]+)/.exec(stdout);if(match)resolveURL(match[1]);});child.stderr.on('data',chunk=>{stderr+=chunk;});child.once('error',rejectURL);child.once('close',code=>rejectURL(new Error(`Report stopped before opening (${code}): ${stderr}`)));
  const timer=setTimeout(()=>{rejectURL(new Error('Report startup timed out.'));child.kill();},15000);
  try{const url=new URL(await urlReady);const headers={Authorization:`Bearer ${url.hash.slice(1)}`};const base=url.origin;
-  for(const path of ['/','/style.css','/client.js']){const response=await fetch(base+path);assert.equal(response.status,200,`Packed asset ${path}`);assert((await response.text()).length>0);}
+  for(const path of ['/','/style.css','/client.js','/session.js','/navigation.js']){const response=await fetch(base+path);assert.equal(response.status,200,`Packed asset ${path}`);assert((await response.text()).length>0);}
   assert.equal((await fetch(base+'/api/history')).status,401);
   const history=await (await fetch(base+'/api/history',{headers})).json();assert.equal(history.reports[0].counts.FAIL,1);
   const d=await (await fetch(`${base}/api/reports/${history.reports[0].id}/scenarios/0`,{headers})).json();assert.equal(d.explanations[0].differences[0].path,'/greeting');assert.equal(d.explanations[0].evidence[0].available,true);

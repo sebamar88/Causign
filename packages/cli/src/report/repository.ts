@@ -15,7 +15,7 @@ export async function createReportRepository(input:string):Promise<ReportReposit
  async function checked(path:string){
   const rel=relative(root,path);if(rel==='..'||rel.startsWith(`..${sep}`)||isAbsolute(rel))throw new Error('Artifact outside results root.');
   let current=root;
-  for(const part of ['',...rel.split(sep).filter(Boolean)]){if(part)current=join(current,part);const info=await lstat(current);if(info.isSymbolicLink())throw new Error('Linked artifacts are unavailable.');}
+  for(const part of ['',...rel.split(sep).filter(Boolean)]){if(part)current=join(current,part);const info=await lstat(current);if(current===root&&(info.dev!==rootInfo.dev||info.ino!==rootInfo.ino))throw new Error('Results root was replaced or changed. Restart the report viewer.');if(info.isSymbolicLink())throw new Error('Linked artifacts are unavailable.');}
   if(await realpath(path)!==path)throw new Error('Artifact path changed.');
  }
  async function json(path:string):Promise<unknown>{

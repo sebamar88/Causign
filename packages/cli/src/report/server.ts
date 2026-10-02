@@ -5,6 +5,7 @@ import {createReportRepository} from './repository.js';
 import {explainAssertion} from './explain.js';
 import {html} from './web/html.js';
 import {style} from './web/style.js';
+import {encodeReportJson,ReportResponseLimit} from './response.js';
 export interface ReportServerOptions {root:string;port?:number;selectedReportId?:string;signal?:AbortSignal;}
 export interface ReportServerHandle {url:string;closed:Promise<void>;close():Promise<void>;}
 export async function startReportServer(options:ReportServerOptions):Promise<ReportServerHandle>{
@@ -13,7 +14,7 @@ export async function startReportServer(options:ReportServerOptions):Promise<Rep
  const repository=await createReportRepository(options.root);await repository.list();
  const token=randomBytes(32).toString('hex');let origin='';let active=0;
  const server=createServer(async(req,res)=>{
-  const reply=(code:number,data:unknown,type='application/json')=>{if(res.destroyed)return;res.writeHead(code,{'Content-Type':type,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'; form-action 'none'"});res.end(type==='application/json'?JSON.stringify(data):data as string);};
+  const reply=(code:number,data:unknown,type='application/json')=>{if(res.destroyed)return;const body=type==='application/json'?encodeReportJson(data):data as string;res.writeHead(code,{'Content-Type':type,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'; form-action 'none'"});res.end(body);};
   if(req.headers.host!==origin.slice(7)||req.headers.origin&&req.headers.origin!==origin||req.headers['sec-fetch-site']==='cross-site'){reply(403,{error:'Local origin required.'});return;}
   if(req.method!=='GET'){reply(405,{error:'Read-only report server.'});return;}
   let url:URL;try{url=new URL(req.url??'/',origin);}catch{reply(400,{error:'Invalid request.'});return;}
@@ -29,12 +30,13 @@ export async function startReportServer(options:ReportServerOptions):Promise<Rep
     const events=d.trace?.events.slice().sort((a,b)=>a.receiveSequence-b.receiveSequence)??[];const totalPages=Math.ceil(events.length/200);
     if(page>=Math.max(1,totalPages)){reply(400,{error:'Timeline page unavailable.'});return;}
     reply(200,{...d,trace:d.trace?{...d.trace,events:events.slice(page*200,(page+1)*200)}:undefined,explanations:d.result.assertions.map((_,i)=>explainAssertion(d,i)),timeline:{page,totalPages,totalEvents:events.length}});
-   }catch(error){reply(400,{error:error instanceof Error?error.message:'Report unavailable.'});}finally{active--;}
+   }catch(error){reply(error instanceof ReportResponseLimit?422:400,{error:error instanceof Error?error.message:'Report unavailable.'});}finally{active--;}
    return;
   }
   if(url.pathname==='/'){reply(200,html,'text/html; charset=utf-8');return;}
   if(url.pathname==='/style.css'){reply(200,style,'text/css; charset=utf-8');return;}
-  if(url.pathname==='/client.js'){try{reply(200,await readFile(new URL('./web/client.js',import.meta.url),'utf8'),'text/javascript; charset=utf-8');}catch{reply(500,{error:'Report assets unavailable. Build or reinstall the CLI.'});}return;}
+  const assets:Record<string,string>={'/client.js':'./web/client.js','/session.js':'./web/session.js','/navigation.js':'./web/navigation.js'};
+  if(Object.hasOwn(assets,url.pathname)){try{reply(200,await readFile(new URL(assets[url.pathname],import.meta.url),'utf8'),'text/javascript; charset=utf-8');}catch{reply(500,{error:'Report assets unavailable. Build or reinstall the CLI.'});}return;}
   reply(404,{error:'Not found.'});
  });
  server.requestTimeout=10000;server.headersTimeout=10000;server.maxConnections=32;
