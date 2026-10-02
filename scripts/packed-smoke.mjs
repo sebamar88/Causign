@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import {runReportAcceptance} from './report-acceptance.mjs';
 import { mkdtemp, writeFile, readdir, cp, readFile, realpath } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, relative, isAbsolute, sep } from "node:path";
@@ -121,6 +122,7 @@ assert.equal(result.status,'PASS',JSON.stringify(result));
 `);
 const pluginSmoke=await command(process.execPath,[join(consumer,'plugin-smoke.mjs')],consumer);
 assert.equal(pluginSmoke.exitCode,0,pluginSmoke.stderr);
+await runReportAcceptance({bin:join(consumer,'node_modules/@causign/cli/dist/bin.js'),cwd:consumer});
 console.log(
-  `Packed acceptance passed: ${packageNames.length} archives installed offline, seven baseline scenarios + external plugin, consumer ${consumer}`,
+  `Packed acceptance passed: ${packageNames.length} archives installed offline, seven baseline scenarios + external plugin + local report viewer, consumer ${consumer}`,
 );

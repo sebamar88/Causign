@@ -61,6 +61,17 @@ monitoring or security isolation, use dedicated systems alongside Causign.
 
 ## What can you test?
 
+### Understand failures visually
+
+The development build adds a [local report viewer](docs/local-reports.md). Open
+completed runs with `causign report`, or run tests with `causign run --open`.
+Compare expected and observed JSON, read the recorded failure reason, and jump
+to the trace event behind an assertion. History, status filters, and lifecycle
+evidence help you investigate a failure without reading raw artifact files.
+This feature is not yet included in npm `0.1.0`.
+
+![Causign local failure report](docs/images/local-report.png)
+
 | 🧪 Tests | 📊 Evals | 🛡️ Security |
 | --- | --- | --- |
 | Scenarios, fixtures and static mocks | Output checks and semantic evaluators | Tool intent, execution, rejection and approval evidence |
