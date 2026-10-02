@@ -4,7 +4,7 @@ import {resolve,join,relative,isAbsolute,sep} from 'node:path';
 import {createHash} from 'node:crypto';
 import {validateResult,validatePlan,validateTrace} from '@causign/protocol';
 import type {SuiteResult} from '@causign/core';
-import type {ScenarioResult,RunPlan,Trace} from '@causign/protocol';
+import type {RunPlan,Trace} from '@causign/protocol';
 import type {ReportRepository,ReportSummary,ScenarioDetails} from './types.js';
 const maxBytes=16*1024*1024;
 const errorText=(error:unknown)=>error instanceof Error?error.message:String(error);
@@ -33,7 +33,7 @@ export async function createReportRepository(input:string):Promise<ReportReposit
  function suite(raw:unknown):SuiteResult{
   if(!raw||typeof raw!=='object')throw new Error('Invalid report envelope.');const value=raw as Record<string,unknown>;
   if(value.schemaVersion!=='1')throw new Error('Unsupported report schema version.');
-  if(!Array.isArray(value.results)||!Array.isArray(value.diagnostics)||typeof value.interrupted!=='boolean'||![0,1,2,130].includes(value.exitCode as number))throw new Error('Invalid report envelope.');
+  if(!Array.isArray(value.results)||!Array.isArray(value.diagnostics)||typeof value.interrupted!=='boolean'||![0,1,2,3,130].includes(value.exitCode as number))throw new Error('Invalid report envelope.');
   const results=value.results.map(result=>validateResult(result));
   validateResult({schemaVersion:'1',scenarioId:'suite',status:'PASS',assertions:[],diagnostics:value.diagnostics});
   return {schemaVersion:'1',results,diagnostics:value.diagnostics as SuiteResult['diagnostics'],exitCode:value.exitCode as number,interrupted:value.interrupted};
