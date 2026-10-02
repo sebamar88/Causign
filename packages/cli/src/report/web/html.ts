@@ -1,0 +1,1 @@
+export const html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Causign · Local reports</title><link rel="stylesheet" href="/style.css"></head><body><main><h1>Causign reports</h1><p>Loading local reports…</p></main><script type="module" src="/client.js"></script></body></html>';
