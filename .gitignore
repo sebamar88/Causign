@@ -6,3 +6,4 @@ coverage/
 .causign/
 docs/superpowers/
 .agentest/
+publish.ps1

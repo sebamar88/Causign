@@ -1,5 +1,6 @@
 {
-  "name": "@causign/runtime", "version": "0.1.0", "type": "module",
+  "name": "@causign/runtime", "version": "0.1.1",
+  "description": "Extensible agent discovery and native runtime bridges for Causign", "type": "module",
   "exports": {".": {"types": "./dist/index.d.ts", "import": "./dist/index.js"}},
   "files": ["dist", "README.md"],
   "dependencies": {"@causign/protocol": "workspace:*", "import-meta-resolve": "4.2.0"},

@@ -1,6 +1,7 @@
 {
   "name": "@causign/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "description": "CLI for agent testing, discovery and local failure reports",
   "type": "module",
   "bin": {
     "causign": "./dist/bin.js"
