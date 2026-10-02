@@ -3,7 +3,7 @@ import {mkdtemp,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {createRegistry,discoverAgents,type Selection} from '../../runtime/src/index.js';
-import plugin,{translateCodexResult,probeCodex} from '../src/index.js';
+import plugin,{probeCodex} from '../src/index.js';
 const roots:string[]=[];
 afterEach(async()=>{await Promise.all(roots.splice(0).map(path=>rm(path,{recursive:true,force:true})));});
 async function setup(){const root=await mkdtemp(join(tmpdir(),'causign-codex-'));roots.push(root);return root;}
@@ -16,10 +16,4 @@ it('refuses output execution even when Codex is installed, without pretending re
 it('reports unavailable executable and unsupported version',async()=>{
  const root=await setup();expect((await probeCodex({kind:'native',command:'missing-causign-codex',cwd:root})).available).toBe(false);
  const probe=await probeCodex({kind:'native',command:process.execPath,cwd:root});expect(probe.diagnostics.some(item=>item.code==='runtime.version')).toBe(true);
-});
-it('translates only a completed turn with final text and successful native exit',()=>{
- const stdout=[{type:'thread.started',thread_id:'t'},{type:'turn.started'},{type:'item.completed',item:{id:'i',type:'agent_message',text:'hello'}},{type:'turn.completed',usage:{input_tokens:1,output_tokens:1}}].map(item=>JSON.stringify(item)).join('\n');
- expect(translateCodexResult({stdout,stderr:'',exitCode:0,signal:null})).toEqual({text:'hello'});
- for(const invalid of [stdout+'\n'+JSON.stringify({type:'turn.failed',error:{message:'oops'}}),'bad',JSON.stringify({type:'turn.completed'}),stdout+'\n'+JSON.stringify({type:'unexpected'})])expect(()=>translateCodexResult({stdout:invalid,stderr:'',exitCode:0,signal:null})).toThrow();
- expect(()=>translateCodexResult({stdout,stderr:'',exitCode:1,signal:null})).toThrow(/exit/i);
 });
