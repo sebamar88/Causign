@@ -6,21 +6,28 @@ Use Node 22+ and pnpm 11.25.0. Python 3 is needed for repository acceptance,
 not every CLI invocation.
 
 ```sh
-git clone https://github.com/sebamar88/bytekitsecure.git
-cd bytekitsecure
+git clone https://github.com/sebamar88/Causign.git causign
+cd causign
 pnpm install --frozen-lockfile
 pnpm build
 ```
 
-From a new project directory:
+From the repository root, create a demo directory. These commands work in
+PowerShell and POSIX shells without replacing any paths:
 
 ```sh
-node /absolute/path/to/bytekitsecure/packages/cli/dist/bin.js init
-node /absolute/path/to/bytekitsecure/packages/cli/dist/bin.js inspect
-node /absolute/path/to/bytekitsecure/packages/cli/dist/bin.js run --verbose
+node -e "require('node:fs').mkdirSync('.causign/quickstart', { recursive: true })"
+cd .causign/quickstart
+node ../../packages/cli/dist/bin.js init
+node ../../packages/cli/dist/bin.js inspect
+node ../../packages/cli/dist/bin.js run --verbose
 ```
 
-In PowerShell, quote absolute paths containing spaces. `init` creates
+The relative CLI path above assumes the current directory is `.causign/quickstart`
+inside this checkout. For a separate existing project, invoke the CLI with the
+actual absolute checkout path; in PowerShell quote paths containing spaces.
+Rerunning `init` in the same demo refuses existing files; reuse `inspect` and
+`run` instead. `init` creates
 `causign.config.ts`, `sample.causign.ts` and `sample-agent.mjs`. Existing
 target files, directories or symlinks cause refusal before writing.
 The starter agent returns a greeting without a provider.

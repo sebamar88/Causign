@@ -27,5 +27,5 @@ acceptance with the renamed runner. Earlier artifacts remain historical records;
 they are not automatically rewritten or imported. The previous artifact directory
 stays ignored by Git to preserve local history without committing run data.
 
-This local rename does not rename the GitHub repository, publish npm packages,
-reserve a domain or establish ownership of the `@causign` registry scope.
+The GitHub repository is now `sebamar88/Causign`. The code rename does not publish
+npm packages, reserve a domain or establish ownership of the `@causign` registry scope.

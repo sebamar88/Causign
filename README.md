@@ -1,6 +1,6 @@
 <p align="center"><img src="docs/assets/causign-banner.svg" alt="Causign — tests, evaluations and security evidence for AI agents" width="100%"></p>
 <p align="center">
-<a href="https://github.com/sebamar88/bytekitsecure/actions/workflows/ci.yml"><img src="https://github.com/sebamar88/bytekitsecure/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+<a href="https://github.com/sebamar88/Causign/actions/workflows/ci.yml"><img src="https://github.com/sebamar88/Causign/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 <img src="https://img.shields.io/badge/Node-%E2%89%A522-22c55e?logo=nodedotjs&logoColor=white" alt="Node 22+">
 <img src="https://img.shields.io/badge/protocol-causign%2F1-8b5cf6" alt="Protocol causign/1">
 <img src="https://img.shields.io/badge/adapters-language%20neutral-06b6d4" alt="Language neutral adapters">
@@ -85,18 +85,20 @@ Adapters declare capabilities. Unsupported requirements produce `INCOMPATIBLE` b
 Use Node **22+** and pnpm **11.25.0**. Python 3 is needed for repository cross-language acceptance. CI pins Node `24.21.0` and Python `3.12.10`.
 
 ```sh
-git clone https://github.com/sebamar88/bytekitsecure.git
-cd bytekitsecure
+git clone https://github.com/sebamar88/Causign.git causign
+cd causign
 pnpm install --frozen-lockfile
 pnpm build
 ```
 
-From a new project directory, invoke the built CLI with an absolute path:
+From the repository root, create an isolated demo and run the built CLI:
 
 ```sh
-node /absolute/path/to/bytekitsecure/packages/cli/dist/bin.js init
-node /absolute/path/to/bytekitsecure/packages/cli/dist/bin.js inspect
-node /absolute/path/to/bytekitsecure/packages/cli/dist/bin.js run --verbose
+node -e "require('node:fs').mkdirSync('.causign/quickstart', { recursive: true })"
+cd .causign/quickstart
+node ../../packages/cli/dist/bin.js init
+node ../../packages/cli/dist/bin.js inspect
+node ../../packages/cli/dist/bin.js run --verbose
 ```
 
 The starter uses a harmless local agent, without provider credentials. `init` refuses existing target files. For an installed CLI, use `pnpm exec causign run`. See [installation and tarballs](docs/getting-started.md) for consumer projects.
