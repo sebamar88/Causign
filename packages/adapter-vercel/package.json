@@ -1,6 +1,7 @@
 {
   "name": "@causign/adapter-vercel",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "description": "Causign adapter for the Vercel AI SDK",
   "type": "module",
   "exports": {
     ".": {

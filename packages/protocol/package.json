@@ -1,6 +1,7 @@
 {
   "name": "@causign/protocol",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "description": "Language-neutral wire protocol and schemas for Causign agent testing",
   "type": "module",
   "exports": {
     ".": {

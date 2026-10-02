@@ -39,7 +39,7 @@ const archives = (await readdir(consumer)).filter((f) => f.endsWith(".tgz"));
 assert.equal(archives.length, packageNames.length);
 const packed = Object.fromEntries(
   archives.map((f) => [
-    "@causign/" + f.replace(/^causign-/, "").replace(/-0\.1\.0\.tgz$/, ""),
+    "@causign/" + f.replace(/^causign-/, "").replace(/-0\.1\.1\.tgz$/, ""),
     "file:./" + f,
   ]),
 );
