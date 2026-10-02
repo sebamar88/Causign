@@ -5,3 +5,4 @@ export * from './scan.js';
 export * from './instructions.js';
 export * from './process.js';
 export * from './output-bridge.js';
+export * from './target.js';

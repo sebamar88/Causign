@@ -12,7 +12,7 @@ export interface AgentCandidate {
 }
 export interface DiscoveryReport {candidates:AgentCandidate[];diagnostics:Diagnostic[];complete:boolean;}
 export interface Discoverer {id:string;sourceKinds:readonly DiscoverySource['kind'][];discover(source:DiscoverySource,context:DiscoveryContext):Promise<DiscoveryReport>;}
-export type ExecutionTarget={kind:'native';command?:string;cwd:string}|{kind:'wsl';distro:string;cwd:string;command?:string};
+export type ExecutionTarget={kind:'native';command?:string;args?:string[];cwd:string}|{kind:'wsl';distro:string;cwd:string;command?:string;args?:string[]};
 export interface RuntimeProbe {available:boolean;version?:string;capabilities:string[];diagnostics:Diagnostic[];}
 export interface Selection {adapterId:string;candidate:AgentCandidate;target:ExecutionTarget;mode:'output';model?:string;provider?:string;}
 export interface ExecutionAdapter {id:string;supports(candidate:AgentCandidate):boolean;probe(target:ExecutionTarget,selection:Selection):Promise<RuntimeProbe>;createLaunch(selection:Selection):Promise<AgentReference>;}

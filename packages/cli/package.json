@@ -15,6 +15,7 @@
     "dist"
   ],
   "dependencies": {
+    "@causign/adapter-claude-code": "workspace:*",
     "@causign/runtime": "workspace:*",
     "@causign/protocol": "workspace:*",
     "@causign/core": "workspace:*",
