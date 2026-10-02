@@ -1,7 +1,7 @@
 # Local report viewer
 
 Date: 2026-10-02
-Status: proposed specification, awaiting written-spec review.
+Status: specification approved by the user; implementation plan pending review.
 
 ## Purpose and agreed scope
 
