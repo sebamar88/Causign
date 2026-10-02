@@ -1,7 +1,7 @@
 import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
-import type {SuiteResult} from '@agentest/core';
-import {validatePlan,validateTrace,validateResult,type RunPlan,type Trace} from '@agentest/protocol';
+import type {SuiteResult} from '@causign/core';
+import {validatePlan,validateTrace,validateResult,type RunPlan,type Trace} from '@causign/protocol';
 export interface CapturedArtifacts {plans:Map<string,RunPlan>;traces:Map<string,Trace>;}
 export interface ArtifactPaths {results:string;plans:Record<string,string>;traces:Record<string,string>;}
 // Names are derived from collection indexes, never untrusted IDs used as paths.

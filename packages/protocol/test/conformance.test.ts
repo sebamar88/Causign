@@ -4,18 +4,18 @@ import {ProtocolSession} from '../src/lifecycle.js';
 import type {AdapterReady,ProtocolMessage} from '../src/generated.js';
 let sequence=0;
 function frame(type:string,payload:unknown={},fields:Record<string,string>={}):ProtocolMessage {
- return {protocol:'agentest/1',id:`msg_${++sequence}`,timestamp:'2026-09-30T00:00:00Z',type,payload,...fields} as ProtocolMessage;
+ return {protocol:'causign/1',id:`msg_${++sequence}`,timestamp:'2026-09-30T00:00:00Z',type,payload,...fields} as ProtocolMessage;
 }
-function ready(capabilities:string[],versions=['agentest/1']):AdapterReady {
+function ready(capabilities:string[],versions=['causign/1']):AdapterReady {
  return frame('adapter.ready',{adapter:{name:'fixture',version:'1'},supportedVersions:versions,capabilities},{correlationId:'hello'}) as AdapterReady;
 }
 const all=['intercept.tools','observe.toolRequests','observe.toolExecution','observe.toolResults','observe.toolRejections','observe.approvals','control.approvals','control.cancel','observe.output','observe.cost','observe.modelCalls','observe.messages'];
 const starts=new WeakMap<ProtocolSession,ProtocolMessage>();
 function session(caps=all,interceptions=true,started=true):ProtocolSession {
  const s=new ProtocolSession();
- const hello=frame('hello',{supportedVersions:['agentest/1']});s.accept(hello,'runner');
+ const hello=frame('hello',{supportedVersions:['causign/1']});s.accept(hello,'runner');
  const r=ready(caps);r.correlationId=hello.id;s.accept(r,'adapter');
- const config=frame('configure',{protocol:'agentest/1'});s.accept(config,'runner');
+ const config=frame('configure',{protocol:'causign/1'});s.accept(config,'runner');
  s.accept(frame('adapter.configured',{}, {correlationId:config.id}),'adapter');
  const start=frame('run.start',{input:null,interceptions:interceptions?[{type:'tool',name:'lookup',response:{kind:'result',value:null}}]:[],approvalDecisions:caps.includes('control.approvals')?[{decision:'grant'}]:[],limits:{scenarioTimeoutMs:1000}},{runId:'run_1'});
  s.accept(start,'runner');starts.set(s,start);if(started)s.accept(frame('run.started',{}, {runId:'run_1',correlationId:start.id}),'adapter');return s;
@@ -32,16 +32,16 @@ describe('negotiation',()=>{
  it('requires interception observation dependencies',()=>expect(negotiate(ready(['intercept.tools']),[])).toMatchObject({status:'ERROR'}));
  it('treats unknown and absent requirements as unsupported',()=>expect(negotiate(ready(['future.magic']),['future.magic','observe.output'])).toMatchObject({status:'INCOMPATIBLE',missingCapabilities:['future.magic','observe.output']}));
  it('rejects malformed ready before semantic checks',()=>expect(negotiate({...ready([]),payload:{} } as AdapterReady,[])).toMatchObject({status:'ERROR'}));
- it('reports no common version',()=>expect(negotiate(ready([],['agentest/2']),[])).toMatchObject({status:'INCOMPATIBLE'}));
- it('negotiates recognized capabilities',()=>expect(negotiate(ready(['observe.output','future.magic']),['observe.output'])).toEqual({status:'READY',protocol:'agentest/1',capabilities:['observe.output']}));
+ it('reports no common version',()=>expect(negotiate(ready([],['causign/2']),[])).toMatchObject({status:'INCOMPATIBLE'}));
+ it('negotiates recognized capabilities',()=>expect(negotiate(ready(['observe.output','future.magic']),['observe.output'])).toEqual({status:'READY',protocol:'causign/1',capabilities:['observe.output']}));
 });
 describe('session conformance',()=>{
  it('rejects reactivation after interruption',()=>{const s=session();const r=request(s);s.finalizeInterrupted('run_1');expect(()=>s.accept(decision(r),'runner')).toThrow();});
  it('rejects malformed structures first',()=>expect(()=>new ProtocolSession().accept(frame('hello',{}),'runner')).toThrow());
- it('rejects wrong directions',()=>expect(()=>new ProtocolSession().accept(frame('hello',{supportedVersions:['agentest/1']}),'adapter')).toThrow());
+ it('rejects wrong directions',()=>expect(()=>new ProtocolSession().accept(frame('hello',{supportedVersions:['causign/1']}),'adapter')).toThrow());
  it('rejects duplicate message IDs',()=>{const s=session();const r=request(s);expect(()=>s.accept(r,'adapter')).toThrow();});
  it('requires configure acknowledgement before runs',()=>{const s=new ProtocolSession();expect(()=>s.accept(frame('run.start',{input:null,interceptions:[],approvalDecisions:[],limits:{scenarioTimeoutMs:1}},{runId:'r'}),'runner')).toThrow();});
- it('rejects valid ID with wrong reply type',()=>{const s=new ProtocolSession();const h=frame('hello',{supportedVersions:['agentest/1']});s.accept(h,'runner');expect(()=>s.accept(frame('adapter.configured',{}, {correlationId:h.id}),'adapter')).toThrow();});
+ it('rejects valid ID with wrong reply type',()=>{const s=new ProtocolSession();const h=frame('hello',{supportedVersions:['causign/1']});s.accept(h,'runner');expect(()=>s.accept(frame('adapter.configured',{}, {correlationId:h.id}),'adapter')).toThrow();});
  it('rejects duplicate operations',()=>{const s=session();request(s);expect(()=>request(s)).toThrow();});
  it('rejects duplicate decisions',()=>{const s=session();const r=request(s);s.accept(decision(r),'runner');expect(()=>s.accept(decision(r),'runner')).toThrow();});
  it('preserves operation ownership in correlation',()=>{const s=session();const r=request(s);request(s,'op_2');expect(()=>s.accept({...decision(r),operationId:'op_2'} as ProtocolMessage,'runner')).toThrow();});
@@ -57,7 +57,7 @@ describe('session conformance',()=>{
  it('allows matching mock completion',()=>{const s=session();const r=request(s);s.accept(decision(r,'tool.mock',{response:{kind:'result',value:null}}),'runner');expect(()=>s.accept(event('tool.completed',{name:'lookup',output:null,execution:'mock'}),'adapter')).not.toThrow();});
  it('rejects terminal operation reactivation',()=>{const s=session();const r=request(s);s.accept(decision(r,'tool.mock',{response:{kind:'result',value:null}}),'runner');s.accept(event('tool.completed',{name:'lookup',output:null,execution:'mock'}),'adapter');expect(()=>s.accept(event('tool.started',{name:'lookup'}),'adapter')).toThrow();});
  it('rejects post-start rejection',()=>{const s=session(all,false);request(s,'op_1',false);s.accept(event('tool.started',{name:'lookup'}),'adapter');expect(()=>s.accept(event('tool.rejected',{name:'lookup',source:'policy',reason:'blocked'}),'adapter')).toThrow();});
- it('requires agentest rejection evidence',()=>{const s=session(all,false);request(s,'op_1',false);expect(()=>s.accept(event('tool.rejected',{name:'lookup',source:'agentest',reason:'blocked'}),'adapter')).toThrow();});
+ it('requires causign rejection evidence',()=>{const s=session(all,false);request(s,'op_1',false);expect(()=>s.accept(event('tool.rejected',{name:'lookup',source:'causign',reason:'blocked'}),'adapter')).toThrow();});
  it('requires selected tools to be intercepted',()=>{const s=session();expect(()=>request(s,'op_1',false)).toThrow();});
  it('requires output and final USD cost when promised',()=>{const s=session();expect(()=>s.accept(frame('run.completed',{}, {runId:'run_1'}),'adapter')).toThrow();});
  it('rejects wrong currency cost',()=>{const s=session();expect(()=>s.accept(frame('run.completed',{output:null,usage:{cost:{amount:0,currency:'EUR'}}},{runId:'run_1'}),'adapter')).toThrow();});
@@ -74,8 +74,8 @@ describe('session conformance',()=>{
  it('allows results-only observation with no request or start',()=>{const s=session(['observe.toolResults'],false);expect(()=>s.accept(event('tool.completed',{name:'lookup',output:null,execution:'real'}),'adapter')).not.toThrow();});
  it('rejects unsolicited mock provenance on results-only adapters',()=>{const s=session(['observe.toolResults'],false);expect(()=>s.accept(event('tool.completed',{name:'lookup',output:null,execution:'mock'}),'adapter')).toThrow();});
  it('allows real failure after explicit proceed',()=>{const s=session();const r=request(s);s.accept(decision(r),'runner');s.accept(event('tool.started',{name:'lookup'}),'adapter');expect(()=>s.accept(event('tool.failed',{name:'lookup',error:{message:'bad'},execution:'real'}),'adapter')).not.toThrow();});
- it('allows matched runner rejection',()=>{const s=session();const r=request(s);s.accept(decision(r,'tool.reject',{source:'agentest',reason:'blocked'}),'runner');expect(()=>s.accept(event('tool.rejected',{name:'lookup',source:'agentest',reason:'blocked'}),'adapter')).not.toThrow();});
- it('rejects mismatched rejection reason',()=>{const s=session();const r=request(s);s.accept(decision(r,'tool.reject',{source:'agentest',reason:'blocked'}),'runner');expect(()=>s.accept(event('tool.rejected',{name:'lookup',source:'agentest',reason:'other'}),'adapter')).toThrow();});
+ it('allows matched runner rejection',()=>{const s=session();const r=request(s);s.accept(decision(r,'tool.reject',{source:'causign',reason:'blocked'}),'runner');expect(()=>s.accept(event('tool.rejected',{name:'lookup',source:'causign',reason:'blocked'}),'adapter')).not.toThrow();});
+ it('rejects mismatched rejection reason',()=>{const s=session();const r=request(s);s.accept(decision(r,'tool.reject',{source:'causign',reason:'blocked'}),'runner');expect(()=>s.accept(event('tool.rejected',{name:'lookup',source:'causign',reason:'other'}),'adapter')).toThrow();});
  it('rejects operation family reuse',()=>{const s=session();request(s);expect(()=>s.accept(event('approval.requested',{input:null}),'adapter')).toThrow();});
  it('rejects duplicate approval decisions',()=>{const s=session();const r=event('approval.requested',{input:null});s.accept(r,'adapter');s.accept(decision(r,'approval.resolve',{decision:'grant'}),'runner');expect(()=>s.accept(decision(r,'approval.resolve',{decision:'grant'}),'runner')).toThrow();});
  it('rejects unresolved approval on completed run',()=>{const s=session(['observe.approvals'],false);s.accept(event('approval.requested',{input:null}),'adapter');expect(()=>s.accept(frame('run.completed',{}, {runId:'run_1'}),'adapter')).toThrow();});

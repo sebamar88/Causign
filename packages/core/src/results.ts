@@ -1,4 +1,4 @@
-import type {ScenarioResult,AssertionResult} from '@agentest/protocol';
+import type {ScenarioResult,AssertionResult} from '@causign/protocol';
 export function scenarioStatus(terminal:string|undefined,assertions:AssertionResult[],error:boolean):ScenarioResult['status']{
  if(error||terminal==='run.errored'||terminal==='run.cancelled'||assertions.some(a=>a.status==='ERROR'||a.status==='NOT_EVALUATED'))return 'ERROR';
  return terminal==='run.failed'||assertions.some(a=>a.status==='FAIL')?'FAIL':'PASS';

@@ -1,7 +1,7 @@
 import {readFileSync} from 'node:fs';
 import AjvModule, {type ErrorObject,type ValidateFunction} from 'ajv';
 import addFormatsModule from 'ajv-formats';
-import type {ProtocolMessage,ScenarioDefinition,RunPlan,Trace,ScenarioResult,AgentestConfig,JsonValue} from './generated.js';
+import type {ProtocolMessage,ScenarioDefinition,RunPlan,Trace,ScenarioResult,CausignConfig,JsonValue} from './generated.js';
 const Ajv = AjvModule as unknown as typeof AjvModule.default;
 const addFormats = addFormatsModule as unknown as typeof addFormatsModule.default;
 const ajv=new Ajv({allErrors:true,strict:true,strictNumbers:true});
@@ -54,7 +54,7 @@ function assertJson(value:unknown,path='',ancestors=new Set<object>()):void{
 /** Validate the JavaScript-to-JSON boundary without reading accessors or coercing values. */
 export function validateJsonValue(value:unknown):JsonValue {assertJson(value);return value as JsonValue;}
 function validator<T>(family:typeof families[number]):(value:unknown)=>T{
- const validate=ajv.getSchema(`https://agentest.dev/schemas/${family}.schema.json`) as ValidateFunction<T>;
+ const validate=ajv.getSchema(`https://causign.dev/schemas/${family}.schema.json`) as ValidateFunction<T>;
  return value=>{
    assertJson(value);
    if(!validate(value)){
@@ -70,7 +70,7 @@ export const validateScenario=validator<ScenarioDefinition>('scenario');
 export const validatePlan=validator<RunPlan>('plan');
 export const validateTrace=validator<Trace>('trace');
 export const validateResult=validator<ScenarioResult>('result');
-export const validateConfig=validator<AgentestConfig>('config');
+export const validateConfig=validator<CausignConfig>('config');
 
 /** Validate the complete JSON collection before accessing any scenario identifiers. */
 export function validateScenarioCollection(definitions:ScenarioDefinition[]):void {

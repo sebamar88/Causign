@@ -1,6 +1,6 @@
 import {wrapLanguageModel} from 'ai';
-import type {AgentContext} from '@agentest/sdk';
-import type {Usage} from '@agentest/protocol';
+import type {AgentContext} from '@causign/sdk';
+import type {Usage} from '@causign/protocol';
 export type VercelModel=Parameters<typeof wrapLanguageModel>[0]['model'];
 export function observeModel(model:VercelModel,context:AgentContext):{model:ReturnType<typeof wrapLanguageModel>;reportUsage():void}{
  let inputTokens=0,outputTokens=0,inputKnown=true,outputKnown=true;

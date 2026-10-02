@@ -21,7 +21,7 @@ node /absolute/path/to/bytekitsecure/packages/cli/dist/bin.js run --verbose
 ```
 
 In PowerShell, quote absolute paths containing spaces. `init` creates
-`agentest.config.ts`, `sample.agentest.ts` and `sample-agent.mjs`. Existing
+`causign.config.ts`, `sample.causign.ts` and `sample-agent.mjs`. Existing
 target files, directories or symlinks cause refusal before writing.
 The starter agent returns a greeting without a provider.
 
@@ -37,7 +37,7 @@ export default {
 };
 ```
 
-The command must speak Agentest JSONL. Arguments are passed directly without a
+The command must speak Causign JSONL. Arguments are passed directly without a
 shell. Agent working directories resolve from the config directory, including
 omitted cwd. `env` supplies extra process environment values; do not commit secrets.
 
@@ -45,20 +45,20 @@ omitted cwd. `env` supplies extra process environment values; do not commit secr
 
 | Command | Purpose |
 | --- | --- |
-| `agentest init` | Generate starter files in the current directory |
-| `agentest inspect` | Validate/normalize definitions without starting agents |
-| `agentest run` | Negotiate, execute and evaluate |
+| `causign init` | Generate starter files in the current directory |
+| `causign inspect` | Validate/normalize definitions without starting agents |
+| `causign run` | Negotiate, execute and evaluate |
 
 `inspect` and `run` accept positional file/glob filters and `--config path`.
 Run also accepts `--output-dir path` and `--verbose`.
 
 ```sh
-pnpm exec agentest inspect 'tests/**/*.agentest.ts' --config agentest.config.ts
-pnpm exec agentest run 'tests/**/*.agentest.ts' --output-dir .agentest/results --verbose
+pnpm exec causign inspect 'tests/**/*.causign.ts' --config causign.config.ts
+pnpm exec causign run 'tests/**/*.causign.ts' --output-dir .causign/results --verbose
 ```
 
-Discovery searches recursively from config for `**/*.agentest.ts`. Dependencies,
-build output, coverage, Git and Agentest artifacts are excluded; symlinks are
+Discovery searches recursively from config for `**/*.causign.ts`. Dependencies,
+build output, coverage, Git and Causign artifacts are excluded; symlinks are
 not followed. No matches, empty collections and duplicate IDs produce ERROR.
 Config and scenario imports execute local code; inspect is not a sandbox.
 
@@ -72,18 +72,18 @@ Copy the archives to your consumer root and merge these settings into its
 
 ```yaml
 overrides:
-  '@agentest/protocol': file:./agentest-protocol-0.1.0.tgz
-  '@agentest/core': file:./agentest-core-0.1.0.tgz
-  '@agentest/sdk': file:./agentest-sdk-0.1.0.tgz
-  '@agentest/cli': file:./agentest-cli-0.1.0.tgz
-  '@agentest/adapter-vercel': file:./agentest-adapter-vercel-0.1.0.tgz
+  '@causign/protocol': file:./causign-protocol-0.1.0.tgz
+  '@causign/core': file:./causign-core-0.1.0.tgz
+  '@causign/sdk': file:./causign-sdk-0.1.0.tgz
+  '@causign/cli': file:./causign-cli-0.1.0.tgz
+  '@causign/adapter-vercel': file:./causign-adapter-vercel-0.1.0.tgz
 ```
 
 ```sh
-pnpm add -D ./agentest-protocol-0.1.0.tgz ./agentest-core-0.1.0.tgz ./agentest-sdk-0.1.0.tgz ./agentest-cli-0.1.0.tgz ./agentest-adapter-vercel-0.1.0.tgz ai@7.0.127
-pnpm exec agentest init
-pnpm exec agentest inspect
-pnpm exec agentest run
+pnpm add -D ./causign-protocol-0.1.0.tgz ./causign-core-0.1.0.tgz ./causign-sdk-0.1.0.tgz ./causign-cli-0.1.0.tgz ./causign-adapter-vercel-0.1.0.tgz ai@7.0.127
+pnpm exec causign init
+pnpm exec causign inspect
+pnpm exec causign run
 ```
 
 This full-distribution recipe includes Vercel and its exact peer. Custom agents

@@ -1,5 +1,5 @@
 {
-  "name": "@agentest/adapter-vercel",
+  "name": "@causign/adapter-vercel",
   "version": "0.1.0",
   "type": "module",
   "exports": {
@@ -13,8 +13,8 @@
     "README.md"
   ],
   "dependencies": {
-    "@agentest/sdk": "workspace:*",
-    "@agentest/protocol": "workspace:*"
+    "@causign/sdk": "workspace:*",
+    "@causign/protocol": "workspace:*"
   },
   "peerDependencies": {
     "ai": "7.0.127"

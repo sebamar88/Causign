@@ -4,7 +4,7 @@
 
 `run --verbose` prints expected/observed values, reasons and evidence references,
 plus bounded diagnostics. Each suite receives a unique results directory beneath
-`.agentest/results` by default.
+`.causign/results` by default.
 
 | Artifact | Contents |
 | --- | --- |
@@ -75,7 +75,7 @@ is outside this MVP. Live model behavior remains nondeterministic.
 | Approval unresolved | Explicit decisions and adapter approval support |
 | Evaluator ERROR | Factory export, module path and verdict shape |
 | Artifact write failure | Permissions/path; results stay ERROR |
-| Python missing | Executable or absolute `AGENTEST_PYTHON` |
+| Python missing | Executable or absolute `CAUSIGN_PYTHON` |
 | Generated types stale | `pnpm generate`; inspect real contract drift (LF/CRLF accepted) |
 
 Transport defaults: 10s handshake, 30s scenario, 5s interception, 1 MiB frame,

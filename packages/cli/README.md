@@ -1,17 +1,17 @@
-# Agentest CLI
+# Causign CLI
 
-Install as a development dependency, then use `agentest init`, `agentest inspect`,
-and `agentest run`. The starter agent only returns a local greeting; it does not
+Install as a development dependency, then use `causign init`, `causign inspect`,
+and `causign run`. The starter agent only returns a local greeting; it does not
 call a provider or perform tool side effects.
 
-Config defaults to `agentest.config.ts`. Use `--config` for another path. Agent
+Config defaults to `causign.config.ts`. Use `--config` for another path. Agent
 working directories (including an omitted cwd) are resolved from the config
 directory; executable arguments are passed directly and interpreted by the
 agent from that working directory. Evaluator relative modules and package
 resolution are anchored at the config directory, and loaded only during run.
 
-Discovery searches the config directory recursively for `**/*.agentest.ts` and
-excludes node_modules, dist, build, coverage, .agentest, .git, and .superpowers.
+Discovery searches the config directory recursively for `**/*.causign.ts` and
+excludes node_modules, dist, build, coverage, .causign, .git, and .superpowers.
 Positional files/globs filter discovery; quote paths or patterns containing
 spaces. Excluded directories stay excluded even with explicit filters.
 Symlink directories/files are not followed. No matches and empty collections
@@ -24,7 +24,7 @@ requirements without importing configured agents or evaluator modules, but
 is not a security sandbox for imported configuration/scenario code.
 
 Run supports `--verbose` and `--output-dir`; the default output directory is
-`.agentest/results` relative to the invocation directory. Each execution gets
+`.causign/results` relative to the invocation directory. Each execution gets
 a unique child directory. Console output includes exact artifact paths and
 assertion expected/observed/reason/evidence references. Verbose output includes
 raw invalid frames and stderr, bounded per diagnostic with truncation markers.

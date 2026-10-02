@@ -1,7 +1,7 @@
 import {randomUUID} from 'node:crypto';
 import {performance} from 'node:perf_hooks';
 import {isDeepStrictEqual} from 'node:util';
-import {ProtocolSession,validateMessage,validatePlan,validateDirection,validateCorrelation,negotiate,type ProtocolMessage,type AgentestConfig,type ScenarioDefinition,type ScenarioResult,type RunPlan,type Trace,type AgentReference} from '@agentest/protocol';
+import {ProtocolSession,validateMessage,validatePlan,validateDirection,validateCorrelation,negotiate,type ProtocolMessage,type CausignConfig,type ScenarioDefinition,type ScenarioResult,type RunPlan,type Trace,type AgentReference} from '@causign/protocol';
 import {prepareScenario,negotiateScenario} from './compile.js';
 import {openProcess,defaultTransportLimits,type ProcessConnection,type TransportLimits} from './transport/process.js';
 import {evaluateAssertions,createEvaluatorRegistry,type EvaluatorRegistry,type EvaluatorModuleLoader} from './assertions/evaluate.js';
@@ -14,7 +14,7 @@ export interface RunOptions {
  connectionFactory?:(agent:AgentReference,limits:TransportLimits)=>ProcessConnection;
  onPlan?:(plan:RunPlan)=>void|Promise<void>;onTrace?:(trace:Trace)=>void|Promise<void>;
 }
-const envelope=()=>({protocol:'agentest/1' as const,id:`runner_${randomUUID()}`,timestamp:new Date().toISOString()});
+const envelope=()=>({protocol:'causign/1' as const,id:`runner_${randomUUID()}`,timestamp:new Date().toISOString()});
 const reason=(e:unknown)=>e instanceof Error?e.message:String(e);
 class Deadline {
  private timer:ReturnType<typeof setTimeout>|undefined;private reject!:(error:Error)=>void;private stopped=false;
@@ -29,12 +29,12 @@ class Deadline {
 interface Context {session:ProtocolSession;iterator:AsyncIterator<import('./transport/jsonl.js').ReceivedFrame>;deadline:Deadline;}
 async function handshake(connection:ProcessConnection,options:RunOptions,required:string[]):Promise<{context:Context;ready:Extract<ProtocolMessage,{type:'adapter.ready'}>}> {
  const session=new ProtocolSession(),iterator=connection.frames[Symbol.asyncIterator](),deadline=new Deadline(connection,options.signal);deadline.arm(options.limits?.handshakeTimeoutMs??defaultTransportLimits.handshakeTimeoutMs);
- const hello:ProtocolMessage={...envelope(),type:'hello',payload:{supportedVersions:['agentest/1']}};
+ const hello:ProtocolMessage={...envelope(),type:'hello',payload:{supportedVersions:['causign/1']}};
  try{session.accept(hello,'runner');await deadline.wait(connection.send(hello));const f=await deadline.wait(iterator.next());if(f.done||f.value.diagnostic||!f.value.message)throw new Error(f.value?.diagnostic?.message??'Disconnected during handshake');const ready=validateMessage(f.value.message);validateDirection(ready,'adapter');validateCorrelation(ready,new Map([[hello.id,hello]]));if(ready.type!=='adapter.ready'||ready.id===hello.id)throw new Error('Invalid adapter.ready');
- const compatibility=negotiate(ready,required);if(compatibility.status==='READY'){session.accept(ready,'adapter');const configure:ProtocolMessage={...envelope(),type:'configure',payload:{protocol:'agentest/1'}};session.accept(configure,'runner');await deadline.wait(connection.send(configure));const ack=await deadline.wait(iterator.next());if(ack.done||ack.value.diagnostic||!ack.value.message)throw new Error('Invalid configure acknowledgement');session.accept(ack.value.message,'adapter');if(ack.value.message.type!=='adapter.configured')throw new Error('Expected adapter.configured');}
+ const compatibility=negotiate(ready,required);if(compatibility.status==='READY'){session.accept(ready,'adapter');const configure:ProtocolMessage={...envelope(),type:'configure',payload:{protocol:'causign/1'}};session.accept(configure,'runner');await deadline.wait(connection.send(configure));const ack=await deadline.wait(iterator.next());if(ack.done||ack.value.diagnostic||!ack.value.message)throw new Error('Invalid configure acknowledgement');session.accept(ack.value.message,'adapter');if(ack.value.message.type!=='adapter.configured')throw new Error('Expected adapter.configured');}
  return {context:{session,iterator,deadline},ready};}catch(e){deadline.dispose();throw e;}
 }
-export async function runScenario(def:ScenarioDefinition,config:AgentestConfig,options:RunOptions={}):Promise<ScenarioResult>{
+export async function runScenario(def:ScenarioDefinition,config:CausignConfig,options:RunOptions={}):Promise<ScenarioResult>{
  let connection:ProcessConnection|undefined;let context:Context|undefined;
  try{const prepared=prepareScenario(def,config);if(prepared.definition.skipReason)return {schemaVersion:'1',scenarioId:def.id,status:'SKIP',assertions:[],diagnostics:[{kind:'skip',message:prepared.definition.skipReason}]};
  connection=(options.connectionFactory??openProcess)(prepared.agent,options.limits??{});const handshakeResult=await handshake(connection,options,prepared.requirements);context=handshakeResult.context;const negotiated=negotiateScenario(prepared,handshakeResult.ready);

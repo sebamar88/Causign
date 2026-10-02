@@ -1,5 +1,5 @@
-import {validateConfig,type AgentestConfig,type AgentReference,type EvaluatorConfiguration} from '@agentest/protocol';
-export function resolveConfiguration(agent:string,evaluatorIds:string[],input:AgentestConfig):{agent:AgentReference;evaluators:Record<string,EvaluatorConfiguration>}{
+import {validateConfig,type CausignConfig,type AgentReference,type EvaluatorConfiguration} from '@causign/protocol';
+export function resolveConfiguration(agent:string,evaluatorIds:string[],input:CausignConfig):{agent:AgentReference;evaluators:Record<string,EvaluatorConfiguration>}{
  const config=validateConfig(input);
  if(!Object.hasOwn(config.agents,agent))throw new Error(`Unknown agent reference: ${agent}`);
  const evaluators:Record<string,EvaluatorConfiguration>={};

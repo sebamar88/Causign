@@ -1,4 +1,4 @@
-import {validateJsonValue,type JsonValue,type ToolMock} from '@agentest/protocol';
+import {validateJsonValue,type JsonValue,type ToolMock} from '@causign/protocol';
 export type MockInput = ToolMock[] | Record<string, {result:JsonValue;error?:never}|{error:JsonValue;result?:never}>;
 export function normalizeMocks(input:MockInput = []):ToolMock[]{
  validateJsonValue(input);

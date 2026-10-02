@@ -1,4 +1,6 @@
-# Agentest documentation
+# Causign documentation
+
+Coming from the earlier MVP? Read [Migrating to Causign](migration-to-causign.md).
 
 | Goal | Guide |
 | --- | --- |

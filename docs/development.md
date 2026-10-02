@@ -11,7 +11,7 @@
 | `packages/adapter-vercel` | Pinned AI SDK integration |
 | `fixtures` / `examples` | Deterministic processes and domains |
 | `scripts` | Type generation and acceptance |
-| `skills/agentest` | Assistant guidance |
+| `skills/causign` | Assistant guidance |
 
 ## Checks
 
@@ -26,8 +26,8 @@ pnpm test:coverage
 pnpm test:packed
 ```
 
-Set absolute `AGENTEST_PYTHON` when Python is not on PATH and `AGENTEST_PNPM`
-when pnpm is not discoverable. `AGENTEST_PACKED_STORE` selects a separate store
+Set absolute `CAUSIGN_PYTHON` when Python is not on PATH and `CAUSIGN_PNPM`
+when pnpm is not discoverable. `CAUSIGN_PACKED_STORE` selects a separate store
 for cold-cache package acceptance. Focused tests require a build:
 
 ```sh
@@ -49,14 +49,14 @@ in in-process coverage. Percentages imply no security certification or confidenc
 
 ## Distribution
 
-Five `0.1.0` packages expose built exports; CLI also exposes `agentest`.
+Five `0.1.0` packages expose built exports; CLI also exposes `causign`.
 Packing replaces workspace references; packed acceptance verifies clean installed
 package resolution and runs the installed executable. See [local installation](getting-started.md).
 Publishing requires registry ownership/authentication and a release decision;
 checks and packing do not publish. Keep versions, lockfile, compatibility docs
 and packed-fixture expectations synchronized for releases.
 
-Install [the assistant skill](../skills/agentest/SKILL.md) using your runtime's
+Install [the assistant skill](../skills/causign/SKILL.md) using your runtime's
 installer and its discovery/reload instructions. It guides the CLI but does not
 replace adapters. Update it when commands or evidence semantics change.
 

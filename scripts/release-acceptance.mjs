@@ -12,22 +12,22 @@ export function command(executable,args,cwd=root){return new Promise((resolve,re
 });}
 export async function runBuiltAcceptanceSuite(options={}){
  const base=options.base??root,bin=options.bin??join(root,'packages/cli/dist/bin.js');
- const cwd=await mkdtemp(join(tmpdir(),'agentest release '));
+ const cwd=await mkdtemp(join(tmpdir(),'causign release '));
  await writeFile(join(cwd,'package.json'),JSON.stringify({private:true,type:'module'}));
  const agents={},domains=['support','coding','devops','rag','multi-agent'];
  for(const folder of ['support','coding','devops','rag','coordinator','vercel']){
   agents[folder]={command:process.execPath,args:[join(base,'examples',folder,'agent.mjs')],cwd:base};
   const scenario=folder==='vercel'?'scenarios.mjs':'scenario.mjs';
-  await writeFile(join(cwd,`${folder}.agentest.ts`),`export {default} from ${JSON.stringify(pathToFileURL(join(base,'examples',folder,scenario)).href)};`);
+  await writeFile(join(cwd,`${folder}.causign.ts`),`export {default} from ${JSON.stringify(pathToFileURL(join(base,'examples',folder,scenario)).href)};`);
  }
- const python=process.env.AGENTEST_PYTHON??'python';
- const version=await command(python,['--version']);assert.equal(version.exitCode,0,'Python 3 required; set AGENTEST_PYTHON');
+ const python=process.env.CAUSIGN_PYTHON??'python';
+ const version=await command(python,['--version']);assert.equal(version.exitCode,0,'Python 3 required; set CAUSIGN_PYTHON');
  assert.match(version.stdout+version.stderr,/Python 3\./);
  agents.python={command:python,args:[join(base,'fixtures/python-agent.py')],cwd:base};
- await writeFile(join(cwd,'python.agentest.ts'),`export default ${JSON.stringify({schemaVersion:'1',id:'python-release',name:'Python interoperability',agent:'python',input:null,mocks:[{type:'tool',name:'lookup',response:{kind:'result',value:{customer:'Mock'}}}],assertions:[{id:'output',type:'output.equal',parameters:{value:{customer:'Mock'}},negated:false,requirements:[]}],requirements:[],timeoutMs:5000})};`);
- await writeFile(join(cwd,'agentest.config.ts'),`export default ${JSON.stringify({schemaVersion:'1',agents,evaluators:{citations:{module:pathToFileURL(join(base,'examples/rag/evaluator.mjs')).href}}})};`);
- await mkdir(join(root,'.agentest'),{recursive:true});
- const artifacts=await mkdtemp(join(root,'.agentest','acceptance-'));
+ await writeFile(join(cwd,'python.causign.ts'),`export default ${JSON.stringify({schemaVersion:'1',id:'python-release',name:'Python interoperability',agent:'python',input:null,mocks:[{type:'tool',name:'lookup',response:{kind:'result',value:{customer:'Mock'}}}],assertions:[{id:'output',type:'output.equal',parameters:{value:{customer:'Mock'}},negated:false,requirements:[]}],requirements:[],timeoutMs:5000})};`);
+ await writeFile(join(cwd,'causign.config.ts'),`export default ${JSON.stringify({schemaVersion:'1',agents,evaluators:{citations:{module:pathToFileURL(join(base,'examples/rag/evaluator.mjs')).href}}})};`);
+ await mkdir(join(root,'.causign'),{recursive:true});
+ const artifacts=await mkdtemp(join(root,'.causign','acceptance-'));
  const run=await command(process.execPath,[bin,'run','--verbose','--output-dir',join(artifacts,'results')],cwd);
  await writeFile(join(artifacts,'stdout.txt'),run.stdout);await writeFile(join(artifacts,'stderr.txt'),run.stderr);
  assert.equal(run.exitCode,0,run.stdout+'\n'+run.stderr);

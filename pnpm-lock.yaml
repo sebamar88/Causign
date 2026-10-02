@@ -8,10 +8,10 @@ importers:
 
   .:
     devDependencies:
-      '@agentest/adapter-vercel':
+      '@causign/adapter-vercel':
         specifier: workspace:*
         version: link:packages/adapter-vercel
-      '@agentest/sdk':
+      '@causign/sdk':
         specifier: workspace:*
         version: link:packages/sdk
       '@types/node':
@@ -38,10 +38,10 @@ importers:
 
   packages/adapter-vercel:
     dependencies:
-      '@agentest/protocol':
+      '@causign/protocol':
         specifier: workspace:*
         version: link:../protocol
-      '@agentest/sdk':
+      '@causign/sdk':
         specifier: workspace:*
         version: link:../sdk
       ai:
@@ -50,10 +50,10 @@ importers:
 
   packages/cli:
     dependencies:
-      '@agentest/core':
+      '@causign/core':
         specifier: workspace:*
         version: link:../core
-      '@agentest/protocol':
+      '@causign/protocol':
         specifier: workspace:*
         version: link:../protocol
       picomatch:
@@ -69,7 +69,7 @@ importers:
 
   packages/core:
     dependencies:
-      '@agentest/protocol':
+      '@causign/protocol':
         specifier: workspace:*
         version: link:../protocol
 
@@ -84,7 +84,7 @@ importers:
 
   packages/sdk:
     dependencies:
-      '@agentest/protocol':
+      '@causign/protocol':
         specifier: workspace:*
         version: link:../protocol
 

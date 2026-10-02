@@ -1,20 +1,20 @@
 import {resolve,dirname,isAbsolute} from 'node:path';
 import {createRequire} from 'node:module';
 import {pathToFileURL,fileURLToPath} from 'node:url';
-import {validateConfig} from '@agentest/protocol';
-import type {EvaluatorModule} from '@agentest/core';
+import {validateConfig} from '@causign/protocol';
+import type {EvaluatorModule} from '@causign/core';
 import {discover,collectScenarios,importUserModule} from './discover.js';
 import {initialize} from './init.js';
 import {inspectDefinitions} from './inspect.js';
 import {runDefinitions} from './run.js';
 import {reportConsole} from './reporters/console.js';
 export interface CliIO {cwd?:string;stdout:(message:string)=>void;stderr:(message:string)=>void;signal?:AbortSignal;}
-const help='Usage: agentest init | inspect [files/globs] [--config path] | run [files/globs] [--config path] [--verbose] [--output-dir path]';
+const help='Usage: causign init | inspect [files/globs] [--config path] | run [files/globs] [--config path] [--verbose] [--output-dir path]';
 export async function main(argv:string[],io:CliIO):Promise<number> {
  try{const cwd=resolve(io.cwd??process.cwd());const [command,...args]=argv;
  if(command==='--help'||command==='-h'){io.stdout(help);return 0;}
  if(!['init','inspect','run'].includes(command))throw new Error(help);
- let configName='agentest.config.ts',output='.agentest/results',verbose=false;const filters:string[]=[];
+ let configName='causign.config.ts',output='.causign/results',verbose=false;const filters:string[]=[];
  for(let index=0;index<args.length;index++){const arg=args[index];if(arg==='--config'||arg==='--output-dir'){const value=args[++index];if(!value||value.startsWith('--'))throw new Error(`Missing value for ${arg}`);if(arg==='--config')configName=value;else output=value;}else if(arg==='--verbose')verbose=true;else if(arg.startsWith('-'))throw new Error(`Unknown option ${arg}`);else filters.push(arg);}
  if(command==='init'){if(args.length)throw new Error('init takes no options');io.stdout((await initialize(cwd)).map(path=>`Created ${path}`).join('\n'));return 0;}
  const configPath=resolve(cwd,configName),configDirectory=dirname(configPath);

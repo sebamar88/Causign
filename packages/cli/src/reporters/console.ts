@@ -1,5 +1,5 @@
-import type {SuiteResult} from '@agentest/core';
-import type {Diagnostic} from '@agentest/protocol';
+import type {SuiteResult} from '@causign/core';
+import type {Diagnostic} from '@causign/protocol';
 export interface ConsoleOptions {verbose?:boolean;maxDiagnosticCharacters?:number;}
 export function reportConsole(suite:SuiteResult,options:ConsoleOptions={}):string {
  const lines:string[]=[];

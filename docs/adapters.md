@@ -4,7 +4,7 @@
 
 ```js
 // support-agent.mjs
-import { serveAgent } from '@agentest/sdk';
+import { serveAgent } from '@causign/sdk';
 
 await serveAgent(async (input, context) => {
   return context.callTool('lookup', input, async () => ({ customer: 'Local fixture' }));
@@ -24,8 +24,8 @@ observation require explicit opt-in and truthful instrumentation. Consult SDK
 ## Vercel AI SDK
 
 ```ts
-import { serveAgent } from '@agentest/sdk';
-import { createVercelAdapter, vercelBridgeOptions } from '@agentest/adapter-vercel';
+import { serveAgent } from '@causign/sdk';
+import { createVercelAdapter, vercelBridgeOptions } from '@causign/adapter-vercel';
 
 await serveAgent(
   createVercelAdapter({ model, tools, instructions: 'Help the user', maxSteps: 20 }),

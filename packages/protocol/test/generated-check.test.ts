@@ -5,8 +5,8 @@ import {expect, test} from 'vitest';
 
 test('generated check accepts CRLF but rejects changed contracts', async () => {
   const root = resolve('.');
-  await mkdir(join(root, '.agentest'), {recursive: true});
-  const fixture = await mkdtemp(join(root, '.agentest', 'generated-check-'));
+  await mkdir(join(root, '.causign'), {recursive: true});
+  const fixture = await mkdtemp(join(root, '.causign', 'generated-check-'));
   try {
     await mkdir(join(fixture, 'scripts'), {recursive: true});
     await mkdir(join(fixture, 'packages/protocol/src'), {recursive: true});

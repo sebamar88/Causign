@@ -1,5 +1,5 @@
 import {createHash} from 'node:crypto';
-import {validateJsonValue,type JsonValue,type EvaluatorConfiguration,type EvidenceReference,type AssertionResult} from '@agentest/protocol';
+import {validateJsonValue,type JsonValue,type EvaluatorConfiguration,type EvidenceReference,type AssertionResult} from '@causign/protocol';
 export interface EvaluatorVerdict {status:'PASS'|'FAIL'|'ERROR';explanation:string;score?:number;}
 export interface Evaluator {evaluate(output:JsonValue,criteria:string):Promise<EvaluatorVerdict>;}
 export interface EvaluatorEntry {evaluator:Evaluator;configHash:string;provider?:string;model?:string;}

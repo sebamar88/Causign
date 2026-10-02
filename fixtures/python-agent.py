@@ -13,7 +13,7 @@ terminal = False
 def emit(kind, payload, **extra):
     global sequence
     sequence += 1
-    message = dict(protocol='agentest/1', id='python:' + str(sequence),
+    message = dict(protocol='causign/1', id='python:' + str(sequence),
                    timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                    type=kind, payload=payload, **extra)
     print(json.dumps(message, allow_nan=False), flush=True)
@@ -25,7 +25,7 @@ for line in sys.stdin:
         kind = message['type']
         if kind == 'hello':
             emit('adapter.ready', dict(adapter=dict(name='python-stdlib-fixture', version='0.1.0'),
-                 supportedVersions=['agentest/1'], capabilities=['observe.output', 'observe.toolRequests',
+                 supportedVersions=['causign/1'], capabilities=['observe.output', 'observe.toolRequests',
                  'observe.toolExecution', 'observe.toolResults', 'observe.toolRejections', 'intercept.tools', 'control.cancel']), correlationId=message['id'])
         elif kind == 'configure':
             emit('adapter.configured', {}, correlationId=message['id'])

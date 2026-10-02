@@ -1,4 +1,4 @@
-import type {AssertionDefinition,AssertionResult,EvidenceReference,Trace} from '@agentest/protocol';
+import type {AssertionDefinition,AssertionResult,EvidenceReference,Trace} from '@causign/protocol';
 import {terminalMessage,messageEvidence} from './output.js';
 /** Runner monotonic duration from sending run.start to receiving its terminal.
  * Excludes handshake/preparation/assertions. Interrupted durations set latencyComplete=false.

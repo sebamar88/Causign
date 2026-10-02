@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://agentest.dev/schemas/scenario.schema.json",
+  "$id": "https://causign.dev/schemas/scenario.schema.json",
   "title": "ScenarioDefinition",
   "type": "object",
   "properties": {
@@ -58,7 +58,7 @@
     "metadata": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+        "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
       }
     }
   },
@@ -114,7 +114,7 @@
               "const": "result"
             },
             "value": {
-              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
             }
           },
           "required": [
@@ -130,7 +130,7 @@
               "const": "error"
             },
             "value": {
-              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
             }
           },
           "required": [
@@ -503,7 +503,7 @@
               "type": "object",
               "properties": {
                 "value": {
-                  "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+                  "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
                 }
               },
               "required": [
@@ -729,7 +729,7 @@
           "type": "string"
         },
         "input": {
-          "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+          "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
         }
       },
       "required": [

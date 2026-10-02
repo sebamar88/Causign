@@ -7,7 +7,7 @@ let output='// Generated from the normative JSON Schemas. Do not edit.\n';
 const exported=new Set();
 for(const family of families){
  const schema=JSON.parse(await readFile(new URL(`${family}.schema.json`,directory),'utf8'));
- const source=await compile(schema,schema.title,{cwd:fileURLToPath(directory),bannerComment:'',unreachableDefinitions:true,$refOptions:{resolve:{http:false,localSchema:{order:1,canRead:/^https:\/\/agentest\.dev\/schemas\//,read:async file=>readFile(new URL(file.url.split('/').at(-1),directory),'utf8')}}}});
+ const source=await compile(schema,schema.title,{cwd:fileURLToPath(directory),bannerComment:'',unreachableDefinitions:true,$refOptions:{resolve:{http:false,localSchema:{order:1,canRead:/^https:\/\/causign\.dev\/schemas\//,read:async file=>readFile(new URL(file.url.split('/').at(-1),directory),'utf8')}}}});
  const namespace=family[0].toUpperCase()+family.slice(1)+'Contracts';
  output+=`\nexport namespace ${namespace} {\n${source.trim()}\n}\n`;
  const names=[schema.title,...Object.values(schema.definitions??{}).map(value=>value.title).filter(Boolean)];

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://agentest.dev/schemas/plan.schema.json",
+  "$id": "https://causign.dev/schemas/plan.schema.json",
   "title": "RunPlan",
   "type": "object",
   "properties": {
@@ -13,10 +13,10 @@
       "minLength": 1
     },
     "agent": {
-      "$ref": "https://agentest.dev/schemas/config.schema.json#/definitions/AgentReference"
+      "$ref": "https://causign.dev/schemas/config.schema.json#/definitions/AgentReference"
     },
     "protocol": {
-      "const": "agentest/1"
+      "const": "causign/1"
     },
     "capabilities": {
       "type": "array",
@@ -26,7 +26,7 @@
       }
     },
     "input": {
-      "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+      "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
     },
     "requirements": {
       "type": "array",
@@ -38,28 +38,28 @@
     "interceptions": {
       "type": "array",
       "items": {
-        "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/ToolMock"
+        "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/ToolMock"
       }
     },
     "approvalDecisions": {
       "type": "array",
       "items": {
-        "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/ApprovalDecision"
+        "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/ApprovalDecision"
       }
     },
     "assertions": {
       "type": "array",
       "items": {
-        "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/AssertionDefinition"
+        "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/AssertionDefinition"
       }
     },
     "limits": {
-      "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/ExecutionLimits"
+      "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/ExecutionLimits"
     },
     "metadata": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+        "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
       }
     }
   },

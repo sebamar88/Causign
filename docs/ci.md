@@ -5,7 +5,7 @@
 Install CLI/SDK through your distribution, commit the lockfile, and add:
 
 ```json
-{ "scripts": { "test:agents": "agentest run --output-dir .agentest/results" } }
+{ "scripts": { "test:agents": "causign run --output-dir .causign/results" } }
 ```
 
 ```yaml
@@ -28,8 +28,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: agentest-results
-          path: .agentest/results/
+          name: causign-results
+          path: .causign/results/
           include-hidden-files: true
           if-no-files-found: ignore
 ```
@@ -37,7 +37,7 @@ jobs:
 Tarball consumers must supply archives at their dependency paths before install;
 this example does not assume npm publication. Add application build before tests
 when required. Python agents need their runtime installed. Repository fixtures
-use `AGENTEST_PYTHON` from `setup-python`'s executable output.
+use `CAUSIGN_PYTHON` from `setup-python`'s executable output.
 
 Preserve exit codes: do not use `continue-on-error` or mask failures. Upload
 evidence even on failure. Deterministic fixtures need no provider credentials;

@@ -1,6 +1,6 @@
-# Agentest protocol v1
+# Causign protocol v1
 
-The normative structural contracts are the six JSON schemas shipped by `@agentest/protocol`; the [approved design](superpowers/specs/2026-09-30-agentest-mvp-design.md) defines their lifecycle semantics. Generated TypeScript types represent these contracts. Scenario/result schema version `1` is separate from wire protocol `agentest/1`.
+The normative structural contracts are the six JSON schemas shipped by `@causign/protocol`; the [approved design](superpowers/specs/2026-09-30-agentest-mvp-design.md) defines their lifecycle semantics. Generated TypeScript types represent these contracts. Scenario/result schema version `1` is separate from wire protocol `causign/1`.
 
 Every frame contains protocol, unique message ID, type, timestamp and JSON payload. Execution frames include runId. An operationId is unique within its run; the pair identifies tool, approval or model activity. correlationId identifies a triggering message, rather than an operation. Timestamps are informational; receiveSequence records local arrival order, and correlations/lifecycle establish causality.
 

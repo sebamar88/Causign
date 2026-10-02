@@ -1,4 +1,4 @@
-import {validateJsonValue,validateScenario,validateScenarioCollection,type ScenarioDefinition,type AssertionDefinition,type JsonValue} from '@agentest/protocol';
+import {validateJsonValue,validateScenario,validateScenarioCollection,type ScenarioDefinition,type AssertionDefinition,type JsonValue} from '@causign/protocol';
 import {normalizeMocks,type MockInput} from './mocks.js';
 export type ScenarioInput=Omit<ScenarioDefinition,'schemaVersion'|'id'|'name'|'mocks'|'assertions'|'requirements'|'timeoutMs'> & Partial<Pick<ScenarioDefinition,'id'|'assertions'|'requirements'|'timeoutMs'>> & {mocks?:MockInput};
 type Kind=AssertionDefinition['type'];

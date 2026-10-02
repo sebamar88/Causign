@@ -1,4 +1,4 @@
-import type {AssertionDefinition,ProtocolMessage} from '@agentest/protocol';
+import type {AssertionDefinition,ProtocolMessage} from '@causign/protocol';
 /** Only recorded lifecycle events count; runner commands are not observations. */
 export function matchesTool(assertion:AssertionDefinition,message:ProtocolMessage):boolean {
  if(!('name' in assertion.parameters)||!('name' in message.payload)||message.payload.name!==assertion.parameters.name)return false;

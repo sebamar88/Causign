@@ -1,6 +1,6 @@
 import type {ToolSet} from 'ai';
-import {validateJsonValue} from '@agentest/protocol';
-import type {AgentContext} from '@agentest/sdk';
+import {validateJsonValue} from '@causign/protocol';
+import type {AgentContext} from '@causign/sdk';
 export function validateTools(tools:ToolSet):void {
  for(const [name,tool] of Object.entries(tools)) {
   if(tool.type==='provider'||typeof tool.execute!=='function'||tool.needsApproval!==undefined||tool.execute.constructor.name==='AsyncGeneratorFunction')throw new Error(`Unsupported Vercel tool ${name}: requires local execute, no native approval or async iterable`);

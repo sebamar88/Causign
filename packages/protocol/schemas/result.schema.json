@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://agentest.dev/schemas/result.schema.json",
+  "$id": "https://causign.dev/schemas/result.schema.json",
   "title": "ScenarioResult",
   "type": "object",
   "properties": {
@@ -38,7 +38,7 @@
     "diagnostics": {
       "type": "array",
       "items": {
-        "$ref": "https://agentest.dev/schemas/trace.schema.json#/definitions/Diagnostic"
+        "$ref": "https://causign.dev/schemas/trace.schema.json#/definitions/Diagnostic"
       }
     },
     "traceId": {
@@ -59,7 +59,7 @@
     "metadata": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+        "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
       }
     }
   },

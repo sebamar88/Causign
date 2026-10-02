@@ -214,7 +214,7 @@ export type JsonValue =
       [k: string]: JsonValue;
     };
 
-export interface AgentestConfig {
+export interface CausignConfig {
   schemaVersion: "1";
   agents: {
     [k: string]: AgentReference;
@@ -227,7 +227,7 @@ export interface AgentestConfig {
   };
 }
 /**
- * This interface was referenced by `AgentestConfig`'s JSON-Schema
+ * This interface was referenced by `CausignConfig`'s JSON-Schema
  * via the `definition` "AgentReference".
  */
 export interface AgentReference {
@@ -242,7 +242,7 @@ export interface AgentReference {
   };
 }
 /**
- * This interface was referenced by `AgentestConfig`'s JSON-Schema
+ * This interface was referenced by `CausignConfig`'s JSON-Schema
  * via the `definition` "EvaluatorConfiguration".
  */
 export interface EvaluatorConfiguration {
@@ -255,7 +255,7 @@ export interface EvaluatorConfiguration {
   };
 }
 }
-export type AgentestConfig = ConfigContracts.AgentestConfig;
+export type CausignConfig = ConfigContracts.CausignConfig;
 export type AgentReference = ConfigContracts.AgentReference;
 export type EvaluatorConfiguration = ConfigContracts.EvaluatorConfiguration;
 
@@ -388,7 +388,7 @@ export interface RunPlan {
   id: string;
   scenarioId: string;
   agent: AgentReference;
-  protocol: "agentest/1";
+  protocol: "causign/1";
   capabilities: string[];
   input: JsonValue;
   requirements: string[];
@@ -482,7 +482,7 @@ export type StaticResponse =
     };
 
 export interface Hello {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "hello";
   timestamp: string;
@@ -491,7 +491,7 @@ export interface Hello {
   };
 }
 export interface AdapterReady {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "adapter.ready";
   timestamp: string;
@@ -506,19 +506,19 @@ export interface AdapterReady {
   correlationId: string;
 }
 export interface Configure {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "configure";
   timestamp: string;
   payload: {
-    protocol: "agentest/1";
+    protocol: "causign/1";
     metadata?: {
       [k: string]: JsonValue;
     };
   };
 }
 export interface AdapterConfigured {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "adapter.configured";
   timestamp: string;
@@ -526,7 +526,7 @@ export interface AdapterConfigured {
   correlationId: string;
 }
 export interface RunStart {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "run.start";
   timestamp: string;
@@ -559,7 +559,7 @@ export interface ExecutionLimits {
   terminationGraceMs?: number;
 }
 export interface RunStarted {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "run.started";
   timestamp: string;
@@ -568,7 +568,7 @@ export interface RunStarted {
   correlationId: string;
 }
 export interface RunCancel {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "run.cancel";
   timestamp: string;
@@ -578,7 +578,7 @@ export interface RunCancel {
   runId: string;
 }
 export interface RunCancelled {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "run.cancelled";
   timestamp: string;
@@ -589,7 +589,7 @@ export interface RunCancelled {
   correlationId?: string;
 }
 export interface RunCompleted {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "run.completed";
   timestamp: string;
@@ -616,7 +616,7 @@ export interface Cost {
   currency: string;
 }
 export interface RunFailed {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "run.failed";
   timestamp: string;
@@ -635,7 +635,7 @@ export interface ProtocolError {
   details?: JsonValue;
 }
 export interface RunErrored {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "run.errored";
   timestamp: string;
@@ -645,7 +645,7 @@ export interface RunErrored {
   runId: string;
 }
 export interface ToolRequested {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.requested";
   timestamp: string;
@@ -661,7 +661,7 @@ export interface ToolRequested {
   operationId: string;
 }
 export interface ToolProceed {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.proceed";
   timestamp: string;
@@ -671,7 +671,7 @@ export interface ToolProceed {
   correlationId: string;
 }
 export interface ToolMockCommand {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.mock";
   timestamp: string;
@@ -683,12 +683,12 @@ export interface ToolMockCommand {
   correlationId: string;
 }
 export interface ToolReject {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.reject";
   timestamp: string;
   payload: {
-    source: "agentest" | "adapter" | "agent" | "policy" | "external";
+    source: "causign" | "adapter" | "agent" | "policy" | "external";
     reason: string;
   };
   runId: string;
@@ -696,7 +696,7 @@ export interface ToolReject {
   correlationId: string;
 }
 export interface ToolStarted {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.started";
   timestamp: string;
@@ -707,7 +707,7 @@ export interface ToolStarted {
   operationId: string;
 }
 export interface ToolCompleted {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.completed";
   timestamp: string;
@@ -723,7 +723,7 @@ export interface ToolCompleted {
   operationId: string;
 }
 export interface ToolFailed {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.failed";
   timestamp: string;
@@ -736,20 +736,20 @@ export interface ToolFailed {
   operationId: string;
 }
 export interface ToolRejected {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.rejected";
   timestamp: string;
   payload: {
     name: string;
-    source: "agentest" | "adapter" | "agent" | "policy" | "external";
+    source: "causign" | "adapter" | "agent" | "policy" | "external";
     reason: string;
   };
   runId: string;
   operationId: string;
 }
 export interface ApprovalRequested {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "approval.requested";
   timestamp: string;
@@ -763,7 +763,7 @@ export interface ApprovalRequested {
   operationId: string;
 }
 export interface ApprovalResolve {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "approval.resolve";
   timestamp: string;
@@ -775,7 +775,7 @@ export interface ApprovalResolve {
   correlationId: string;
 }
 export interface ApprovalCompleted {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "approval.completed";
   timestamp: string;
@@ -786,7 +786,7 @@ export interface ApprovalCompleted {
   operationId: string;
 }
 export interface ModelStarted {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "model.started";
   timestamp: string;
@@ -802,7 +802,7 @@ export interface ModelStarted {
   operationId: string;
 }
 export interface ModelCompleted {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "model.completed";
   timestamp: string;
@@ -817,7 +817,7 @@ export interface ModelCompleted {
   operationId: string;
 }
 export interface ModelFailed {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "model.failed";
   timestamp: string;
@@ -828,7 +828,7 @@ export interface ModelFailed {
   operationId: string;
 }
 export interface MessageCreated {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "message.created";
   timestamp: string;
@@ -943,7 +943,7 @@ export interface TraceEvent {
   source?: "adapter" | "runner";
 }
 export interface Hello {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "hello";
   timestamp: string;
@@ -952,7 +952,7 @@ export interface Hello {
   };
 }
 export interface AdapterReady {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "adapter.ready";
   timestamp: string;
@@ -967,19 +967,19 @@ export interface AdapterReady {
   correlationId: string;
 }
 export interface Configure {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "configure";
   timestamp: string;
   payload: {
-    protocol: "agentest/1";
+    protocol: "causign/1";
     metadata?: {
       [k: string]: JsonValue;
     };
   };
 }
 export interface AdapterConfigured {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "adapter.configured";
   timestamp: string;
@@ -987,7 +987,7 @@ export interface AdapterConfigured {
   correlationId: string;
 }
 export interface RunStart {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "run.start";
   timestamp: string;
@@ -1020,7 +1020,7 @@ export interface ExecutionLimits {
   terminationGraceMs?: number;
 }
 export interface RunStarted {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "run.started";
   timestamp: string;
@@ -1029,7 +1029,7 @@ export interface RunStarted {
   correlationId: string;
 }
 export interface RunCancel {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "run.cancel";
   timestamp: string;
@@ -1039,7 +1039,7 @@ export interface RunCancel {
   runId: string;
 }
 export interface RunCancelled {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "run.cancelled";
   timestamp: string;
@@ -1050,7 +1050,7 @@ export interface RunCancelled {
   correlationId?: string;
 }
 export interface RunCompleted {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "run.completed";
   timestamp: string;
@@ -1077,7 +1077,7 @@ export interface Cost {
   currency: string;
 }
 export interface RunFailed {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "run.failed";
   timestamp: string;
@@ -1096,7 +1096,7 @@ export interface ProtocolError {
   details?: JsonValue;
 }
 export interface RunErrored {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "run.errored";
   timestamp: string;
@@ -1106,7 +1106,7 @@ export interface RunErrored {
   runId: string;
 }
 export interface ToolRequested {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.requested";
   timestamp: string;
@@ -1122,7 +1122,7 @@ export interface ToolRequested {
   operationId: string;
 }
 export interface ToolProceed {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.proceed";
   timestamp: string;
@@ -1132,7 +1132,7 @@ export interface ToolProceed {
   correlationId: string;
 }
 export interface ToolMockCommand {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.mock";
   timestamp: string;
@@ -1144,12 +1144,12 @@ export interface ToolMockCommand {
   correlationId: string;
 }
 export interface ToolReject {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.reject";
   timestamp: string;
   payload: {
-    source: "agentest" | "adapter" | "agent" | "policy" | "external";
+    source: "causign" | "adapter" | "agent" | "policy" | "external";
     reason: string;
   };
   runId: string;
@@ -1157,7 +1157,7 @@ export interface ToolReject {
   correlationId: string;
 }
 export interface ToolStarted {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.started";
   timestamp: string;
@@ -1168,7 +1168,7 @@ export interface ToolStarted {
   operationId: string;
 }
 export interface ToolCompleted {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.completed";
   timestamp: string;
@@ -1184,7 +1184,7 @@ export interface ToolCompleted {
   operationId: string;
 }
 export interface ToolFailed {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.failed";
   timestamp: string;
@@ -1197,20 +1197,20 @@ export interface ToolFailed {
   operationId: string;
 }
 export interface ToolRejected {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "tool.rejected";
   timestamp: string;
   payload: {
     name: string;
-    source: "agentest" | "adapter" | "agent" | "policy" | "external";
+    source: "causign" | "adapter" | "agent" | "policy" | "external";
     reason: string;
   };
   runId: string;
   operationId: string;
 }
 export interface ApprovalRequested {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "approval.requested";
   timestamp: string;
@@ -1224,7 +1224,7 @@ export interface ApprovalRequested {
   operationId: string;
 }
 export interface ApprovalResolve {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "approval.resolve";
   timestamp: string;
@@ -1236,7 +1236,7 @@ export interface ApprovalResolve {
   correlationId: string;
 }
 export interface ApprovalCompleted {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "approval.completed";
   timestamp: string;
@@ -1247,7 +1247,7 @@ export interface ApprovalCompleted {
   operationId: string;
 }
 export interface ModelStarted {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "model.started";
   timestamp: string;
@@ -1263,7 +1263,7 @@ export interface ModelStarted {
   operationId: string;
 }
 export interface ModelCompleted {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "model.completed";
   timestamp: string;
@@ -1278,7 +1278,7 @@ export interface ModelCompleted {
   operationId: string;
 }
 export interface ModelFailed {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "model.failed";
   timestamp: string;
@@ -1289,7 +1289,7 @@ export interface ModelFailed {
   operationId: string;
 }
 export interface MessageCreated {
-  protocol: "agentest/1";
+  protocol: "causign/1";
   id: string;
   type: "message.created";
   timestamp: string;

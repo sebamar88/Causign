@@ -1,4 +1,4 @@
-import {validateJsonValue,type JsonValue,type Trace,type ProtocolMessage,type EvidenceReference} from '@agentest/protocol';
+import {validateJsonValue,type JsonValue,type Trace,type ProtocolMessage,type EvidenceReference} from '@causign/protocol';
 export function structuralEqual(left:JsonValue,right:JsonValue):boolean {
  if(left===right)return true;
  if(left===null||right===null||typeof left!=='object'||typeof right!=='object')return false;

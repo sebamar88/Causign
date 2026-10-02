@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://agentest.dev/schemas/config.schema.json",
-  "title": "AgentestConfig",
+  "$id": "https://causign.dev/schemas/config.schema.json",
+  "title": "CausignConfig",
   "type": "object",
   "properties": {
     "schemaVersion": {
@@ -22,7 +22,7 @@
     "metadata": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+        "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
       }
     }
   },
@@ -60,7 +60,7 @@
         "metadata": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+            "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
           }
         }
       },
@@ -79,7 +79,7 @@
           "minLength": 1
         },
         "options": {
-          "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+          "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
         },
         "provider": {
           "type": "string",
@@ -92,7 +92,7 @@
         "metadata": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+            "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
           }
         }
       },

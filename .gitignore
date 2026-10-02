@@ -3,5 +3,6 @@ node_modules/
 dist/
 *.tsbuildinfo
 coverage/
-.agentest/
+.causign/
 docs/superpowers/
+.agentest/

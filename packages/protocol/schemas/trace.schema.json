@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://agentest.dev/schemas/trace.schema.json",
+  "$id": "https://causign.dev/schemas/trace.schema.json",
   "title": "Trace",
   "type": "object",
   "properties": {
@@ -44,7 +44,7 @@
     "metadata": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+        "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
       }
     }
   },
@@ -92,7 +92,7 @@
         "metadata": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+            "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
           }
         }
       },
@@ -111,7 +111,7 @@
           "minimum": 1
         },
         "message": {
-          "$ref": "https://agentest.dev/schemas/protocol.schema.json"
+          "$ref": "https://causign.dev/schemas/protocol.schema.json"
         },
         "source": {
           "enum": [

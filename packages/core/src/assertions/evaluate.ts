@@ -1,4 +1,4 @@
-import type {RunPlan,Trace,AssertionDefinition,AssertionResult} from '@agentest/protocol';
+import type {RunPlan,Trace,AssertionDefinition,AssertionResult} from '@causign/protocol';
 import {matchesTool} from './tools.js';
 import {matchesApproval} from './approvals.js';
 import {finalOutput,structuralEqual,messageEvidence,terminalMessage} from './output.js';

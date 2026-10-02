@@ -1,27 +1,27 @@
-<p align="center"><img src="docs/assets/agentest-banner.svg" alt="Agentest — tests, evaluations and security evidence for AI agents" width="100%"></p>
+<p align="center"><img src="docs/assets/causign-banner.svg" alt="Causign — tests, evaluations and security evidence for AI agents" width="100%"></p>
 <p align="center">
 <a href="https://github.com/sebamar88/bytekitsecure/actions/workflows/ci.yml"><img src="https://github.com/sebamar88/bytekitsecure/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 <img src="https://img.shields.io/badge/Node-%E2%89%A522-22c55e?logo=nodedotjs&logoColor=white" alt="Node 22+">
-<img src="https://img.shields.io/badge/protocol-agentest%2F1-8b5cf6" alt="Protocol agentest/1">
+<img src="https://img.shields.io/badge/protocol-causign%2F1-8b5cf6" alt="Protocol causign/1">
 <img src="https://img.shields.io/badge/adapters-language%20neutral-06b6d4" alt="Language neutral adapters">
 </p>
 <p align="center"><strong>Test what your agent requests. Verify what it executes. Keep the evidence.</strong></p>
 <p align="center"><a href="docs/getting-started.md">Get started</a> · <a href="docs/scenarios.md">Write scenarios</a> · <a href="docs/adapters.md">Connect an agent</a> · <a href="docs/ci.md">Run in CI</a> · <a href="docs/README.md">Documentation</a></p>
 
-## Meet Agentest
+## Meet Causign
 
 Your agent can give the right answer and still call the wrong tool, skip an
 approval, or trigger an unwanted effect. Testing only its final text misses
 that behavior. Reading logs manually makes regressions harder to repeat and
 harder to enforce in CI.
 
-Agentest turns those expectations into repeatable tests. It runs your instrumented
+Causign turns those expectations into repeatable tests. It runs your instrumented
 agent, controls selected tool calls, checks what happened, and saves the evidence.
 You get a test result your CI can act on and a trace you can use to explain it.
 
 ## Why use it?
 
-| When this happens… | Agentest helps you… | What you gain |
+| When this happens… | Causign helps you… | What you gain |
 | --- | --- | --- |
 | A prompt, model or tool change alters behavior | Rerun the same scenarios and assertions | A regression check before shipping |
 | A test would execute a payment, deployment or external lookup | Replace selected instrumented tools with static results/errors | Test the surrounding agent flow without invoking those real implementations |
@@ -30,7 +30,7 @@ You get a test result your CI can act on and a trace you can use to explain it.
 | Teams use different languages or frameworks | Connect them through the same JSONL contract | A shared runner, result model and CI workflow |
 | Your CI only knows whether the process exited | Return distinct behavior, infrastructure and compatibility outcomes | Failures that point to the kind of problem you need to fix |
 
-You provide your scenarios and an instrumented adapter. Agentest provides process
+You provide your scenarios and an instrumented adapter. Causign provides process
 management, capability checks, static tool interception, assertions, evidence
 artifacts and CI exit codes. You do not have to build that plumbing again for
 each agent. It does not automatically discover every risk or make live models
@@ -38,20 +38,20 @@ deterministic.
 
 ## How it fits your existing tests
 
-These approaches solve different parts of the problem; Agentest can sit alongside
+These approaches solve different parts of the problem; Causign can sit alongside
 your unit tests and output evaluations.
 
-| Approach | Useful for | What Agentest adds |
+| Approach | Useful for | What Causign adds |
 | --- | --- | --- |
 | Unit tests for individual tools/functions | Checking isolated implementation logic | Scenarios around the instrumented agent's actual tool-selection and approval flow |
 | Assertions on the final answer | Checking expected content and quality | Evidence of intent, execution, mocks and rejections, even when the answer looks fine |
 | Ad hoc scripts and manual logs | Exploring or debugging a particular run | A reusable scenario format, lifecycle validation, standardized artifacts and CI status semantics |
 | A custom framework-specific harness | Deep integration with one application stack | A common protocol and runner across adapters; framework-specific instrumentation is still required |
 
-**Use Agentest when** you need to verify observable agent behavior across runs,
+**Use Causign when** you need to verify observable agent behavior across runs,
 especially tool calls, approvals and regressions in CI. For a pure function with
 no agent interaction, an ordinary unit test is usually enough. For production
-monitoring or security isolation, use dedicated systems alongside Agentest.
+monitoring or security isolation, use dedicated systems alongside Causign.
 
 ## What can you test?
 
@@ -66,8 +66,8 @@ monitoring or security isolation, use dedicated systems alongside Agentest.
 
 ```mermaid
 flowchart TB
-    S[Scenarios · mocks · assertions] --> A[Agentest runner]
-    A <-->|JSONL · agentest/1| P[Process adapter]
+    S[Scenarios · mocks · assertions] --> A[Causign runner]
+    A <-->|JSONL · causign/1| P[Process adapter]
     P --> V[Vercel AI SDK]
     P --> J[Custom JS / TS agent]
     P --> O[Python or another language]
@@ -99,12 +99,12 @@ node /absolute/path/to/bytekitsecure/packages/cli/dist/bin.js inspect
 node /absolute/path/to/bytekitsecure/packages/cli/dist/bin.js run --verbose
 ```
 
-The starter uses a harmless local agent, without provider credentials. `init` refuses existing target files. For an installed CLI, use `pnpm exec agentest run`. See [installation and tarballs](docs/getting-started.md) for consumer projects.
+The starter uses a harmless local agent, without provider credentials. `init` refuses existing target files. For an installed CLI, use `pnpm exec causign run`. See [installation and tarballs](docs/getting-started.md) for consumer projects.
 
 ## Tests that describe intent
 
 ```ts
-import { agentTest, expect } from '@agentest/sdk';
+import { agentTest, expect } from '@causign/sdk';
 
 export default agentTest('refund requires approval', {
   agent: 'support',
@@ -119,7 +119,7 @@ export default agentTest('refund requires approval', {
 });
 ```
 
-Save as `refund.agentest.ts` and configure an instrumented `support` agent. This follows the [support fixture](examples/support/scenario.mjs). Mocking and business approval are separate decisions.
+Save as `refund.causign.ts` and configure an instrumented `support` agent. This follows the [support fixture](examples/support/scenario.mjs). Mocking and business approval are separate decisions.
 
 ## Requested ≠ executed
 
@@ -148,7 +148,7 @@ A request records intent; `tool.started` records real execution. A mock never pr
 | INCOMPATIBLE | 3 | Required capability or protocol unavailable |
 | Interrupted | 130 | Explicit user interruption |
 
-The [acceptance workflow](.github/workflows/ci.yml) runs the same checks on **Linux x64 · Windows x64 · macOS ARM64 · Linux ARM64**, including coverage and seven installed-CLI scenarios. The badge shows the current remote status. Reports retain evidence under `.agentest/results` by default.
+The [acceptance workflow](.github/workflows/ci.yml) runs the same checks on **Linux x64 · Windows x64 · macOS ARM64 · Linux ARM64**, including coverage and seven installed-CLI scenarios. The badge shows the current remote status. Reports retain evidence under `.causign/results` by default.
 
 ## Explore the examples
 
@@ -162,19 +162,19 @@ The [acceptance workflow](.github/workflows/ci.yml) runs the same checks on **Li
 | [Python](fixtures/python-agent.py) | Standard-library JSONL interoperability |
 | [Vercel](examples/vercel) | Real AI SDK with a deterministic mock model |
 
-These fixtures use fake/local tools. Their `.mjs` exports need `*.agentest.ts` wrappers for CLI discovery; see [the examples guide](examples/README.md).
+These fixtures use fake/local tools. Their `.mjs` exports need `*.causign.ts` wrappers for CLI discovery; see [the examples guide](examples/README.md).
 
 ## Packages and assistant skill
 
 | Package | Responsibility |
 | --- | --- |
-| `@agentest/protocol` | Schemas, types and lifecycle validation |
-| `@agentest/core` | Negotiation, processes, assertions and evidence |
-| `@agentest/sdk` | Declarative scenarios and JS/TS bridge |
-| `@agentest/cli` | `init`, `inspect`, `run` and reports |
-| `@agentest/adapter-vercel` | Adapter for exactly `ai@7.0.127` |
+| `@causign/protocol` | Schemas, types and lifecycle validation |
+| `@causign/core` | Negotiation, processes, assertions and evidence |
+| `@causign/sdk` | Declarative scenarios and JS/TS bridge |
+| `@causign/cli` | `init`, `inspect`, `run` and reports |
+| `@causign/adapter-vercel` | Adapter for exactly `ai@7.0.127` |
 
-The [Agentest skill](skills/agentest/SKILL.md) guides coding assistants through setup and evidence interpretation. Install `skills/agentest` with your runtime's skill installer, then invoke `$agentest`. The CLI executes tests; the skill guides its use.
+The [Causign skill](skills/causign/SKILL.md) guides coding assistants through setup and evidence interpretation. Install `skills/causign` with your runtime's skill installer, then invoke `$causign`. The CLI executes tests; the skill guides its use.
 
 ## Documentation
 

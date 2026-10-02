@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://agentest.dev/schemas/protocol.schema.json",
+  "$id": "https://causign.dev/schemas/protocol.schema.json",
   "title": "ProtocolMessage",
   "oneOf": [
     {
@@ -96,7 +96,7 @@
           "minLength": 1
         },
         "details": {
-          "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+          "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
         }
       },
       "required": [
@@ -145,7 +145,7 @@
         "metadata": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+            "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
           }
         }
       },
@@ -157,7 +157,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -201,7 +201,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -277,7 +277,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -294,12 +294,12 @@
           "type": "object",
           "properties": {
             "protocol": {
-              "const": "agentest/1"
+              "const": "causign/1"
             },
             "metadata": {
               "type": "object",
               "additionalProperties": {
-                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+                "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
               }
             }
           },
@@ -323,7 +323,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -362,7 +362,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -379,22 +379,22 @@
           "type": "object",
           "properties": {
             "input": {
-              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
             },
             "interceptions": {
               "type": "array",
               "items": {
-                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/ToolMock"
+                "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/ToolMock"
               }
             },
             "approvalDecisions": {
               "type": "array",
               "items": {
-                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/ApprovalDecision"
+                "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/ApprovalDecision"
               }
             },
             "limits": {
-              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/ExecutionLimits"
+              "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/ExecutionLimits"
             }
           },
           "required": [
@@ -425,7 +425,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -469,7 +469,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -515,7 +515,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -565,7 +565,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -582,7 +582,7 @@
           "type": "object",
           "properties": {
             "output": {
-              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
             },
             "usage": {
               "$ref": "#/definitions/Usage"
@@ -590,7 +590,7 @@
             "metadata": {
               "type": "object",
               "additionalProperties": {
-                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+                "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
               }
             }
           },
@@ -617,7 +617,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -642,7 +642,7 @@
             "metadata": {
               "type": "object",
               "additionalProperties": {
-                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+                "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
               }
             }
           },
@@ -671,7 +671,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -716,7 +716,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -737,7 +737,7 @@
               "minLength": 1
             },
             "input": {
-              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
             },
             "intercepted": {
               "type": "boolean"
@@ -745,7 +745,7 @@
             "metadata": {
               "type": "object",
               "additionalProperties": {
-                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+                "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
               }
             }
           },
@@ -781,7 +781,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -830,7 +830,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -847,7 +847,7 @@
           "type": "object",
           "properties": {
             "response": {
-              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/StaticResponse"
+              "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/StaticResponse"
             }
           },
           "required": [
@@ -885,7 +885,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -903,7 +903,7 @@
           "properties": {
             "source": {
               "enum": [
-                "agentest",
+                "causign",
                 "adapter",
                 "agent",
                 "policy",
@@ -952,7 +952,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -1003,7 +1003,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -1024,7 +1024,7 @@
               "minLength": 1
             },
             "output": {
-              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
             },
             "execution": {
               "enum": [
@@ -1036,7 +1036,7 @@
             "metadata": {
               "type": "object",
               "additionalProperties": {
-                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+                "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
               }
             }
           },
@@ -1072,7 +1072,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -1135,7 +1135,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -1157,7 +1157,7 @@
             },
             "source": {
               "enum": [
-                "agentest",
+                "causign",
                 "adapter",
                 "agent",
                 "policy",
@@ -1202,7 +1202,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -1219,12 +1219,12 @@
           "type": "object",
           "properties": {
             "input": {
-              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
             },
             "metadata": {
               "type": "object",
               "additionalProperties": {
-                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+                "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
               }
             }
           },
@@ -1258,7 +1258,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -1317,7 +1317,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -1371,7 +1371,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -1396,12 +1396,12 @@
               "minLength": 1
             },
             "input": {
-              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
             },
             "metadata": {
               "type": "object",
               "additionalProperties": {
-                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+                "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
               }
             }
           },
@@ -1435,7 +1435,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -1452,7 +1452,7 @@
           "type": "object",
           "properties": {
             "output": {
-              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
             },
             "usage": {
               "$ref": "#/definitions/Usage"
@@ -1460,7 +1460,7 @@
             "metadata": {
               "type": "object",
               "additionalProperties": {
-                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+                "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
               }
             }
           },
@@ -1494,7 +1494,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -1544,7 +1544,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "const": "agentest/1"
+          "const": "causign/1"
         },
         "id": {
           "type": "string",
@@ -1570,12 +1570,12 @@
               "type": "string"
             },
             "content": {
-              "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+              "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
             },
             "metadata": {
               "type": "object",
               "additionalProperties": {
-                "$ref": "https://agentest.dev/schemas/scenario.schema.json#/definitions/JsonValue"
+                "$ref": "https://causign.dev/schemas/scenario.schema.json#/definitions/JsonValue"
               }
             }
           },

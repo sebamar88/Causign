@@ -1,5 +1,5 @@
 import {randomUUID} from 'node:crypto';
-import {validateScenario,validatePlan,negotiate,type AssertionDefinition,type AgentestConfig,type AdapterReady,type ScenarioDefinition,type AgentReference,type EvaluatorConfiguration,type RunPlan,type NegotiationResult,type JsonValue} from '@agentest/protocol';
+import {validateScenario,validatePlan,negotiate,type AssertionDefinition,type CausignConfig,type AdapterReady,type ScenarioDefinition,type AgentReference,type EvaluatorConfiguration,type RunPlan,type NegotiationResult,type JsonValue} from '@causign/protocol';
 import {resolveConfiguration} from './config.js';
 import {defaultTransportLimits} from './transport/process.js';
 export interface PreparedScenario {definition:ScenarioDefinition;agent:AgentReference;evaluators:Record<string,EvaluatorConfiguration>;requirements:string[];}
@@ -11,7 +11,7 @@ const matcherRequirements:Record<AssertionDefinition['type'],string[]>={
 };
 function freeze<T>(value:T):T {if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
 function canonical(value:JsonValue):string {if(value===null||typeof value!=='object')return JSON.stringify(value);if(Array.isArray(value))return `[${value.map(canonical).join(',')}]`;return `{${Object.keys(value).sort().map(k=>`${JSON.stringify(k)}:${canonical(value[k])}`).join(',')}}`;}
-export function prepareScenario(def:ScenarioDefinition,config:AgentestConfig):PreparedScenario{
+export function prepareScenario(def:ScenarioDefinition,config:CausignConfig):PreparedScenario{
  const definition=structuredClone(validateScenario(def));
  const mockNames=new Set<string>();for(const mock of definition.mocks){if(mockNames.has(mock.name))throw new Error(`Duplicate mock name: ${mock.name}`);mockNames.add(mock.name);}
  const assertionIds=new Set<string>();for(const assertion of definition.assertions){if(assertionIds.has(assertion.id))throw new Error(`Duplicate assertion ID: ${assertion.id}`);assertionIds.add(assertion.id);}
@@ -31,4 +31,4 @@ export function negotiateScenario(prepared:PreparedScenario,ready:AdapterReady):
  try{const plan=validatePlan({id:`plan_${randomUUID()}`,scenarioId:prepared.definition.id,agent:structuredClone(prepared.agent),protocol:negotiation.protocol,capabilities:negotiation.capabilities,input:structuredClone(prepared.definition.input),requirements:[...prepared.requirements],interceptions:structuredClone(prepared.definition.mocks),approvalDecisions:structuredClone(prepared.definition.approvalDecisions??[]),assertions:structuredClone(prepared.definition.assertions),limits:{...defaultTransportLimits,scenarioTimeoutMs:prepared.definition.timeoutMs}});return {status:'READY',plan:freeze(plan)};}
  catch(error){return {status:'ERROR',reason:error instanceof Error?error.message:String(error)};}
 }
-export function inspectScenario(def:ScenarioDefinition,config:AgentestConfig):Inspection {return {...prepareScenario(def,config),compatibility:'unverified'};}
+export function inspectScenario(def:ScenarioDefinition,config:CausignConfig):Inspection {return {...prepareScenario(def,config),compatibility:'unverified'};}

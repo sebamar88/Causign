@@ -1,4 +1,4 @@
-name: Agentest release acceptance
+name: Causign release acceptance
 on: [push, pull_request]
 jobs:
   acceptance:
@@ -42,16 +42,16 @@ jobs:
       - run: pnpm build
       - run: pnpm test:coverage
         env:
-          AGENTEST_PYTHON: ${{ steps.python.outputs.python-path }}
+          CAUSIGN_PYTHON: ${{ steps.python.outputs.python-path }}
       - run: pnpm test:packed
         env:
-          AGENTEST_PYTHON: ${{ steps.python.outputs.python-path }}
+          CAUSIGN_PYTHON: ${{ steps.python.outputs.python-path }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: acceptance-${{ matrix.os }}-${{ matrix.arch }}
           path: |
             coverage/
-            .agentest/
+            .causign/
           if-no-files-found: ignore
           include-hidden-files: true

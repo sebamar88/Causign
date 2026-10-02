@@ -2,7 +2,7 @@ import {PassThrough,Writable} from 'node:stream';
 import {describe,it,expect,vi} from 'vitest';
 import {serveAgent} from '../src/bridge.js';
 import {instrument} from '../src/instrument.js';
-function frame(type:string,payload:unknown,extra={}){return {protocol:'agentest/1',id:`runner-${++sequence}`,timestamp:new Date().toISOString(),type,payload,...extra};}
+function frame(type:string,payload:unknown,extra={}){return {protocol:'causign/1',id:`runner-${++sequence}`,timestamp:new Date().toISOString(),type,payload,...extra};}
 let sequence=0;
 async function fixture(handler:any,selected=true,options:any={},approvalDecisions:any[]=[]){
  const input=new PassThrough(),output=new PassThrough();const messages:any[]=[];let buffer='';
@@ -10,7 +10,7 @@ async function fixture(handler:any,selected=true,options:any={},approvalDecision
  const done=serveAgent(handler,{input,output,diagnostics:new PassThrough(),...options});
  const send=(m:any)=>input.write(JSON.stringify(m)+'\n');
  const until=async(type:string)=>{for(let n=0;n<100;n++){const m=messages.find(m=>m.type===type);if(m)return m;await new Promise(r=>setTimeout(r,2));}throw Error(`Missing ${type}`);};
- send(frame('hello',{supportedVersions:['agentest/1']}));await until('adapter.ready');send(frame('configure',{protocol:'agentest/1'}));await until('adapter.configured');
+ send(frame('hello',{supportedVersions:['causign/1']}));await until('adapter.ready');send(frame('configure',{protocol:'causign/1'}));await until('adapter.configured');
  send(frame('run.start',{input:null,interceptions:selected?[{type:'tool',name:'fake',response:{kind:'result',value:null}}]:[],approvalDecisions,limits:{scenarioTimeoutMs:1000,interceptionTimeoutMs:40}},{runId:'run'}));
  return {send,until,messages,output,close:async()=>{input.end();await done;}};
 }
@@ -21,7 +21,7 @@ describe('agent bridge',()=>{
   let context:any;const real=vi.fn(async()=>null);
   const done=serveAgent(async(_,c)=>{context=c;return 'x'.repeat(2000);},{input,output,diagnostics,maxBufferedOutputBytes:800});
   const send=(type:string,payload:unknown,extra={})=>input.write(JSON.stringify(frame(type,payload,extra))+'\n');
-  send('hello',{supportedVersions:['agentest/1']});send('configure',{protocol:'agentest/1'});send('run.start',{input:null,interceptions:[],approvalDecisions:[],limits:{scenarioTimeoutMs:50}},{runId:'run'});
+  send('hello',{supportedVersions:['causign/1']});send('configure',{protocol:'causign/1'});send('run.start',{input:null,interceptions:[],approvalDecisions:[],limits:{scenarioTimeoutMs:50}},{runId:'run'});
   let settled=false;void done.then(()=>{settled=true;});await new Promise(r=>setTimeout(r,120));
   try{expect(settled).toBe(true);expect(context.signal.aborted).toBe(true);expect(diagnostic).toMatch(/transport|disconnected/i);expect(output.listenerCount('error')).toBe(0);expect(output.listenerCount('drain')).toBe(0);expect(output.listenerCount('close')).toBe(0);await expect(context.callTool('late',null,real)).rejects.toThrow('Run closed');expect(real).not.toHaveBeenCalled();}
   finally{input.end();output.destroy();await done;}

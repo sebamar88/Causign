@@ -1,9 +1,9 @@
 {
-  "name": "@agentest/cli",
+  "name": "@causign/cli",
   "version": "0.1.0",
   "type": "module",
   "bin": {
-    "agentest": "./dist/bin.js"
+    "causign": "./dist/bin.js"
   },
   "exports": {
     ".": {
@@ -15,8 +15,8 @@
     "dist"
   ],
   "dependencies": {
-    "@agentest/protocol": "workspace:*",
-    "@agentest/core": "workspace:*",
+    "@causign/protocol": "workspace:*",
+    "@causign/core": "workspace:*",
     "tsx": "4.23.15",
     "picomatch": "4.0.3"
   },

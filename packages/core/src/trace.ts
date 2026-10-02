@@ -1,5 +1,5 @@
 import {randomUUID} from 'node:crypto';
-import type {RunPlan,Trace,ProtocolMessage,Diagnostic} from '@agentest/protocol';
+import type {RunPlan,Trace,ProtocolMessage,Diagnostic} from '@causign/protocol';
 export class TraceCollector {
  readonly trace:Trace;private bytes=0;private sequence=0;private localBytes=0;
  // Local error records have a separate fixed reserve. They cannot erase facts

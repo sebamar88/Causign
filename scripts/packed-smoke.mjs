@@ -7,7 +7,7 @@ import {
   root,
   runBuiltAcceptanceSuite,
 } from "./release-acceptance.mjs";
-const pnpm = process.env.AGENTEST_PNPM ?? "pnpm";
+const pnpm = process.env.CAUSIGN_PNPM ?? "pnpm";
 async function pm(args, cwd) {
   // Windows command shims execute in one PowerShell with literal arguments.
   const literal = (value) => "'" + value.replaceAll("'", "''") + "'";
@@ -27,7 +27,7 @@ async function pm(args, cwd) {
   assert.equal(result.exitCode, 0, result.stdout + "\n" + result.stderr);
   return result;
 }
-const consumer = await mkdtemp(join(tmpdir(), "agentest packed consumer "));
+const consumer = await mkdtemp(join(tmpdir(), "causign packed consumer "));
 for (const name of ["protocol", "core", "sdk", "cli", "adapter-vercel"])
   await pm(
     ["pack", "--pack-destination", consumer],
@@ -37,7 +37,7 @@ const archives = (await readdir(consumer)).filter((f) => f.endsWith(".tgz"));
 assert.equal(archives.length, 5);
 const packed = Object.fromEntries(
   archives.map((f) => [
-    "@agentest/" + f.replace(/^agentest-/, "").replace(/-0\.1\.0\.tgz$/, ""),
+    "@causign/" + f.replace(/^causign-/, "").replace(/-0\.1\.0\.tgz$/, ""),
     "file:./" + f,
   ]),
 );
@@ -62,15 +62,15 @@ await writeFile(
 );
 // A frozen workspace install does not populate registry metadata for a new
 // consumer. Resolve its own lockfile and fetch packages before testing offline.
-const storeArgs = process.env.AGENTEST_PACKED_STORE
-  ? ["--store-dir", process.env.AGENTEST_PACKED_STORE]
+const storeArgs = process.env.CAUSIGN_PACKED_STORE
+  ? ["--store-dir", process.env.CAUSIGN_PACKED_STORE]
   : [];
 await pm(["install", "--lockfile-only", ...storeArgs], consumer);
 await pm(["fetch", ...storeArgs], consumer);
 await pm(["install", "--offline", "--frozen-lockfile", ...storeArgs], consumer);
 const canonicalConsumer = await realpath(consumer);
 for (const name of ["protocol", "core", "sdk", "cli", "adapter-vercel"]) {
-  const installed = await realpath(join(consumer, "node_modules/@agentest", name));
+  const installed = await realpath(join(consumer, "node_modules/@causign", name));
   const withinConsumer = relative(canonicalConsumer, installed);
   assert(
     withinConsumer !== ".." && !withinConsumer.startsWith(`..${sep}`) && !isAbsolute(withinConsumer),
@@ -89,11 +89,11 @@ for (const folder of ["support", "coding", "devops", "rag", "coordinator"])
   for (const file of ["agent.mjs", "scenario.mjs", "evaluator.mjs"]) {
     const path = join(consumer, "examples", folder, file);
     try {
-      const source = (await readFile(path, "utf8")).replaceAll("../../packages/sdk/dist/index.js", "@agentest/sdk");
+      const source = (await readFile(path, "utf8")).replaceAll("../../packages/sdk/dist/index.js", "@causign/sdk");
       assert(!source.includes("../../packages/"), "Consumer uses installed packages");
       await writeFile(
         path,
-        source.replaceAll("../../packages/sdk/dist/index.js", "@agentest/sdk"),
+        source.replaceAll("../../packages/sdk/dist/index.js", "@causign/sdk"),
       );
     } catch (error) {
       if (error.code !== "ENOENT") throw error;
@@ -101,7 +101,7 @@ for (const folder of ["support", "coding", "devops", "rag", "coordinator"])
   }
 await runBuiltAcceptanceSuite({
   base: consumer,
-  bin: join(consumer, "node_modules/@agentest/cli/dist/bin.js"),
+  bin: join(consumer, "node_modules/@causign/cli/dist/bin.js"),
 });
 console.log(
   `Packed acceptance passed: five archives installed offline, seven scenarios, consumer ${consumer}`,

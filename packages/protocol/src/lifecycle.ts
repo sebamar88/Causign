@@ -124,7 +124,7 @@ export class ProtocolSession {
    assertProtocol(op.state==='pending','Rejection must precede execution');
    if(op.intercepted)assertProtocol(decision?.type==='tool.reject','Rejection requires reject decision');
    if(decision?.type==='tool.reject')assertProtocol(decision.payload.source===message.payload.source&&decision.payload.reason===message.payload.reason,'Rejection does not match decision');
-   if(message.payload.source==='agentest')assertProtocol(decision?.type==='tool.reject','Missing runner rejection');
+   if(message.payload.source==='causign')assertProtocol(decision?.type==='tool.reject','Missing runner rejection');
   }else{
    if(message.payload.execution==='mock'){
     assertProtocol(decision?.type==='tool.mock'&&op.state==='pending','Mock requires pending mock decision');

@@ -1,9 +1,9 @@
-import {validateScenarioCollection,type ScenarioDefinition,type AgentestConfig,type ScenarioResult,type Diagnostic} from '@agentest/protocol';
+import {validateScenarioCollection,type ScenarioDefinition,type CausignConfig,type ScenarioResult,type Diagnostic} from '@causign/protocol';
 import {runScenario,type RunOptions} from './execute.js';
 import {suiteExitCode} from './results.js';
 import {prepareScenario} from './compile.js';
 export interface SuiteResult {schemaVersion:'1';results:ScenarioResult[];diagnostics:Diagnostic[];exitCode:number;interrupted:boolean;}
-export async function runSuite(defs:ScenarioDefinition[],config:AgentestConfig,options:RunOptions={}):Promise<SuiteResult>{
+export async function runSuite(defs:ScenarioDefinition[],config:CausignConfig,options:RunOptions={}):Promise<SuiteResult>{
  validateScenarioCollection(defs);
  for(const def of defs)prepareScenario(def,config);
  const results:ScenarioResult[]=[];const diagnostics:Diagnostic[]=[];if(!defs.length)diagnostics.push({kind:'configuration-error',message:'Empty suite'});

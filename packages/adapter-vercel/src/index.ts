@@ -1,10 +1,10 @@
 import {ToolLoopAgent,isStepCount,type ModelMessage,type ToolSet} from 'ai';
-import {validateJsonValue,type JsonValue} from '@agentest/protocol';
-import type {AgentHandler,BridgeOptions} from '@agentest/sdk';
+import {validateJsonValue,type JsonValue} from '@causign/protocol';
+import type {AgentHandler,BridgeOptions} from '@causign/sdk';
 import {observeModel,type VercelModel} from './events.js';
 import {validateTools,wrapTools} from './tools.js';
 export const vercelCapabilities=['observe.output','observe.messages','observe.modelCalls','observe.usage','observe.toolRequests','observe.toolExecution','observe.toolResults','observe.toolRejections','intercept.tools','control.cancel'] as const;
-export const vercelBridgeOptions={name:'agentest-vercel',version:'0.1.0',observations:['observe.messages','observe.modelCalls','observe.usage'],controlApprovals:false,observeApprovals:false} as const satisfies BridgeOptions;
+export const vercelBridgeOptions={name:'causign-vercel',version:'0.1.0',observations:['observe.messages','observe.modelCalls','observe.usage'],controlApprovals:false,observeApprovals:false} as const satisfies BridgeOptions;
 export interface VercelAdapterOptions {model:VercelModel;tools?:ToolSet;instructions?:string;maxSteps?:number;}
 function readInput(input:JsonValue):{prompt:string}|{messages:ModelMessage[]} {
  if(input===null||typeof input!=='object'||Array.isArray(input))throw Error('Expected object containing prompt or text messages');

@@ -3,13 +3,13 @@
 Compatibility is deliberately narrow: `ai@7.0.127` is the exact peer and deterministic test version. Earlier or later releases are not claimed compatible. No provider package, live credentials, model catalog, or pricing configuration is required for the example.
 
 ```ts
-import { serveAgent } from '@agentest/sdk';
-import { createVercelAdapter, vercelBridgeOptions } from '@agentest/adapter-vercel';
+import { serveAgent } from '@causign/sdk';
+import { createVercelAdapter, vercelBridgeOptions } from '@causign/adapter-vercel';
 // model and tools belong to the application.
 await serveAgent(createVercelAdapter({ model, tools }), vercelBridgeOptions);
 ```
 
-Input is declarative JSON: `{ "prompt": "hello" }`, or `{ "messages": [{ "role": "user", "content": "hello" }] }`. Exactly one field is required; messages accept user/assistant text only. Application options are `model` (a model object accepted by `wrapLanguageModel`), `tools`, optional `instructions`, and positive `maxSteps` (default 20). Output is `{ text: string }`. The handler runs the installed `ToolLoopAgent.generate`, with `isStepCount` and retries disabled. Provider errors are rethrown unchanged. AI SDK normally represents local tool exceptions as tool-error messages and can continue to a final answer; the Agentest trace still records the real tool failure.
+Input is declarative JSON: `{ "prompt": "hello" }`, or `{ "messages": [{ "role": "user", "content": "hello" }] }`. Exactly one field is required; messages accept user/assistant text only. Application options are `model` (a model object accepted by `wrapLanguageModel`), `tools`, optional `instructions`, and positive `maxSteps` (default 20). Output is `{ text: string }`. The handler runs the installed `ToolLoopAgent.generate`, with `isStepCount` and retries disabled. Provider errors are rethrown unchanged. AI SDK normally represents local tool exceptions as tool-error messages and can continue to a final answer; the Causign trace still records the real tool failure.
 
 | Capability | Implemented evidence |
 | --- | --- |
@@ -31,4 +31,4 @@ No dynamic prompt mapper, provider selection, model interception, streaming API,
 
 Verified installed sources: `ai/src/agent/tool-loop-agent.ts`, `ai/src/middleware/wrap-language-model.ts`, `ai/src/generate-text/generate-text.ts`, `ai/src/generate-text/generate-text-events.ts`, `ai/src/generate-text/to-response-messages.ts`, `ai/src/test/mock-language-model-v4.ts`; bundled docs under `ai/docs/`. onStepStart is before the provider but represents step intent; onStepEnd follows tool execution, so neither is falsely used as provider completion timing. The middleware directly brackets provider execution; onStepEnd is used only for messages.
 
-Run the deterministic example after building: `node examples/vercel/agent.mjs`. It speaks JSONL on stdin/stdout and uses ai/test.MockLanguageModelV4, never a network provider. The companion config/scenario can be loaded by the Agentest CLI.
+Run the deterministic example after building: `node examples/vercel/agent.mjs`. It speaks JSONL on stdin/stdout and uses ai/test.MockLanguageModelV4, never a network provider. The companion config/scenario can be loaded by the Causign CLI.

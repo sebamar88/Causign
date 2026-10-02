@@ -5,4 +5,4 @@ export * from './config.js';
 export * from './assertions/evaluate.js';
 export * from './execute.js';
 export type {SuiteResult} from './suite.js';
-export {validateScenarioCollection} from '@agentest/protocol';
+export {validateScenarioCollection} from '@causign/protocol';

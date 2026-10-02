@@ -5,7 +5,7 @@ export const knownCapabilities:ReadonlySet<string> = new Set([
  'observe.toolRequests','observe.toolExecution','observe.toolResults','observe.toolRejections',
  'observe.approvals','control.cancel','control.approvals','intercept.tools',
 ]);
-export type NegotiationResult = {status:'READY';protocol:'agentest/1';capabilities:string[]} | {status:'ERROR';reason:string} | {status:'INCOMPATIBLE';reason:string;missingCapabilities:string[]};
+export type NegotiationResult = {status:'READY';protocol:'causign/1';capabilities:string[]} | {status:'ERROR';reason:string} | {status:'INCOMPATIBLE';reason:string;missingCapabilities:string[]};
 export function negotiate(ready:AdapterReady,required:string[]):NegotiationResult {
  try {validateMessage(ready);if(ready.type!=='adapter.ready')throw new Error('Expected adapter.ready');}
  catch(error){return {status:'ERROR',reason:error instanceof Error?error.message:String(error)};}
@@ -15,7 +15,7 @@ export function negotiate(ready:AdapterReady,required:string[]):NegotiationResul
  }
  const capabilities=[...advertised].filter(capability=>knownCapabilities.has(capability));
  const missingCapabilities=[...new Set(required)].filter(capability=>!capabilities.includes(capability));
- if(!ready.payload.supportedVersions.includes('agentest/1'))return {status:'INCOMPATIBLE',reason:'No common protocol version',missingCapabilities};
+ if(!ready.payload.supportedVersions.includes('causign/1'))return {status:'INCOMPATIBLE',reason:'No common protocol version',missingCapabilities};
  if(missingCapabilities.length)return {status:'INCOMPATIBLE',reason:'Missing required capabilities',missingCapabilities};
- return {status:'READY',protocol:'agentest/1',capabilities};
+ return {status:'READY',protocol:'causign/1',capabilities};
 }

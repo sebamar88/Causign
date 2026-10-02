@@ -1,5 +1,5 @@
 import {spawn} from 'node:child_process';
-import {validateMessage,type AgentReference,type ProtocolMessage} from '@agentest/protocol';
+import {validateMessage,type AgentReference,type ProtocolMessage} from '@causign/protocol';
 import {JsonlDecoder,type ReceivedFrame} from './jsonl.js';
 export interface TransportLimits {maxFrameBytes?:number;maxStderrBytes?:number;maxTraceBytes?:number;maxMessages?:number;maxBufferedBytes?:number;terminationGraceMs?:number;handshakeTimeoutMs?:number;scenarioTimeoutMs?:number;interceptionTimeoutMs?:number;}
 export const defaultTransportLimits={maxFrameBytes:1048576,maxStderrBytes:65536,maxTraceBytes:33554432,maxMessages:100000,maxBufferedBytes:2097152,terminationGraceMs:1000,handshakeTimeoutMs:10000,scenarioTimeoutMs:30000,interceptionTimeoutMs:5000} as const;

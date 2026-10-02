@@ -1,4 +1,4 @@
-import type {JsonValue,MessageCreated,ModelStarted,ModelCompleted,Usage} from '@agentest/protocol';
+import type {JsonValue,MessageCreated,ModelStarted,ModelCompleted,Usage} from '@causign/protocol';
 /** Context belongs to one run. Cooperative handlers must honor signal. */
 export interface AgentContext {
  readonly signal:AbortSignal;

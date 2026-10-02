@@ -1,4 +1,4 @@
-import {validateMessage,type ProtocolMessage} from '@agentest/protocol';
+import {validateMessage,type ProtocolMessage} from '@causign/protocol';
 export interface ReceivedFrame {
  receiveSequence:number;
  raw:string;

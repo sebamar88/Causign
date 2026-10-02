@@ -3,7 +3,7 @@
 ## Declarative SDK
 
 ```ts
-import { agentTest, expect } from '@agentest/sdk';
+import { agentTest, expect } from '@causign/sdk';
 
 export default agentTest('lookup returns fixture', {
   id: 'lookup-fixture', agent: 'support', input: { customerId: 'fake' },
@@ -18,7 +18,7 @@ export default agentTest('lookup returns fixture', {
 });
 ```
 
-Save as `lookup.agentest.ts`. The configured agent must call `lookup` and return
+Save as `lookup.causign.ts`. The configured agent must call `lookup` and return
 its result. `agentTest` fills schema version, name, ID, mock list and assertion
 IDs. Default ID is the name; scenario IDs are unique across discovery. Default
 timeout is 30s. Inputs are plain JSON-compatible data: no functions, getters,
