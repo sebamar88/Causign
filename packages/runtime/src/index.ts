@@ -1,3 +1,5 @@
 export * from './types.js';
 export * from './registry.js';
 export * from './manifest.js';
+export * from './scan.js';
+export * from './instructions.js';

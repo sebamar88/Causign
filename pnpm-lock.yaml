@@ -56,6 +56,9 @@ importers:
       '@causign/protocol':
         specifier: workspace:*
         version: link:../protocol
+      '@causign/runtime':
+        specifier: workspace:*
+        version: link:../runtime
       picomatch:
         specifier: 4.0.3
         version: 4.0.3

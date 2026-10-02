@@ -15,6 +15,7 @@
     "dist"
   ],
   "dependencies": {
+    "@causign/runtime": "workspace:*",
     "@causign/protocol": "workspace:*",
     "@causign/core": "workspace:*",
     "tsx": "4.23.15",
