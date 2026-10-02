@@ -9,3 +9,5 @@ export async function findEvidencePage(messageId:string,currentPage:number,detai
  }
  return null;
 }
+interface EvidenceTarget {tabIndex:number;focus(options:FocusOptions):void;scrollIntoView(options:ScrollIntoViewOptions):void;getBoundingClientRect():{top:number;bottom:number};}
+export function focusEvidence(target:EvidenceTarget,viewportHeight:number,reducedMotion:boolean){target.tabIndex=-1;target.focus({preventScroll:true});const bounds=target.getBoundingClientRect();if(bounds.top<0||bounds.bottom>viewportHeight)target.scrollIntoView({block:'nearest',behavior:reducedMotion?'instant':'smooth'});}
