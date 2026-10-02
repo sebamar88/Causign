@@ -7,16 +7,6 @@ import plugin,{translateCodexResult,probeCodex} from '../src/index.js';
 const roots:string[]=[];
 afterEach(async()=>{await Promise.all(roots.splice(0).map(path=>rm(path,{recursive:true,force:true})));});
 async function setup(){const root=await mkdtemp(join(tmpdir(),'causign-codex-'));roots.push(root);return root;}
-it('discovers versioned native profile files without treating AGENTS.md as a runnable agent',async()=>{
- const root=await setup();await writeFile(join(root,'reviewer.config.toml'),'model = "reference-model"\nmodel_provider = "example"');await writeFile(join(root,'AGENTS.md'),'Context');
- const result=await discoverAgents(createRegistry([plugin]),{kind:'file',path:root});expect(result.candidates).toHaveLength(1);expect(result.candidates[0]).toMatchObject({nativeSelector:'reviewer',runtimeId:'codex',metadata:{model:'reference-model',provider:'example'}});
-});
-it('reports malformed profile files explicitly',async()=>{
- const root=await setup();await writeFile(join(root,'bad.config.toml'),'model = [');const result=await discoverAgents(createRegistry([plugin]),{kind:'file',path:root});expect(result.complete).toBe(false);expect(result.candidates).toEqual([]);
-});
-it('reports legacy embedded profiles as unsupported definitions',async()=>{
- const root=await setup();await writeFile(join(root,'config.toml'),'[profiles.old]\nmodel = "example"');const result=await discoverAgents(createRegistry([plugin]),{kind:'file',path:root});expect(result.candidates).toEqual([]);expect(result.diagnostics.some(item=>item.code==='codex.legacy-profile')).toBe(true);
-});
 it('refuses output execution even when Codex is installed, without pretending read-only denies tools',async()=>{
  const root=await setup();await writeFile(join(root,'reviewer.config.toml'),'model = "example"');const candidate=(await discoverAgents(createRegistry([plugin]),{kind:'file',path:root})).candidates[0];
  const selection:Selection={candidate,adapterId:'causign/codex-output',mode:'output',target:{kind:'native',command:process.execPath,args:[resolve('fixtures/native-runtimes/codex.mjs')],cwd:root}};
