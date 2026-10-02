@@ -17,7 +17,7 @@ pnpm test:coverage
 pnpm test:packed
 ```
 
-Tests build TypeScript projects before loading distribution exports. Coverage writes HTML, LCOV and JSON summary to `coverage/`; inspect `coverage/coverage-summary.json` for measured totals. No statistical confidence or release threshold is inferred from coverage. The Windows/Linux CI workflow executes deterministic fixtures without provider credentials. A workflow definition is not evidence of a remote CI run.
+Tests build TypeScript projects before loading distribution exports. Coverage writes HTML, LCOV and JSON summary to `coverage/`; inspect `coverage/coverage-summary.json` for measured totals. No statistical confidence or release threshold is inferred from coverage. CI runs the same deterministic fixtures without provider credentials on Linux x64, Windows x64, macOS ARM64 (`macos-15`), and Linux ARM64 (`ubuntu-24.04-arm`). Each job verifies its runtime architecture and uploads separate artifacts. A workflow definition is not evidence of a remote CI run.
 
 For a workspace starter, use the built CLI in a new directory:
 
