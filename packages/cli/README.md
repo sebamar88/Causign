@@ -1,5 +1,11 @@
 # Causign CLI
 
+The development build includes a [local report viewer](../../docs/local-reports.md):
+`causign report [--output-dir path] [--port number] [--no-open]` opens completed
+reports; `causign run --open` opens the report after execution. The server stays
+in the foreground until Ctrl+C, and `run --open` preserves the suite exit code.
+Plain `run` remains suitable for CI. The viewer is not in published npm 0.1.0.
+
 Development branch adds `discover --path <root> [--discoverer <id>]
 [--plugins <manifest.json>] [--json]` and explicit configured-service discovery.
 See [agent discovery](../../docs/agent-discovery.md). This command is not included

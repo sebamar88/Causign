@@ -1,6 +1,6 @@
 # Local Report Viewer Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Make completed Causign failures understandable through a local history viewer with comparisons, explanations, and trace evidence.
 
@@ -71,12 +71,12 @@ reportCommand(args: string[], io: CliIO): Promise<number>
 
 **Interfaces:** Produce `createReportRepository` and shared repository types above. Consume existing `validateResult`, `validatePlan`, and `validateTrace` and the writer's collection-index convention from `src/reporters/json.ts`.
 
-- [ ] Write failing tests: `copied_report_uses_local_indexed_artifacts` asserts stale absolute paths are ignored; `invalid_run_does_not_hide_history` asserts a corrupt report is listed beside a valid one; `mismatched_ids_do_not_join_evidence` asserts warnings and omitted mismatched plan/trace; `missing_trace_retains_assertions` asserts a valid result survives.
-- [ ] Add boundary tests: root missing errors; empty existing root returns no reports; 1,001 execution directories produce at most 1,000 entries plus explicit truncation; a 16 MiB + 1 byte JSON file is rejected; junction/symlink files and directories are not followed; an artifact disappearing during read yields a loading diagnostic. Assert timestamp-prefix ordering with deterministic fallback and unknown schema rejection.
-- [ ] Run `pnpm exec vitest run packages/cli/test/report/repository.test.ts`; expect failure for the missing repository implementation.
-- [ ] Implement the declared interfaces. Validate the suite envelope explicitly because the current suite is not a standalone protocol schema. Use bounded file-handle reads, canonical containment checks, identity/link checks around opening, and immediate-directory enumeration. Lazy-load optional plan/trace data. Never follow `suite.artifacts` paths.
-- [ ] Run the repository tests; expect all supported platform cases to pass. Any skipped link-creation case must explain the environment limitation and retain a runnable Unix equivalent.
-- [ ] Commit only Task 1 files: `feat: load validated local report artifacts`.
+- [x] Write failing tests: `copied_report_uses_local_indexed_artifacts` asserts stale absolute paths are ignored; `invalid_run_does_not_hide_history` asserts a corrupt report is listed beside a valid one; `mismatched_ids_do_not_join_evidence` asserts warnings and omitted mismatched plan/trace; `missing_trace_retains_assertions` asserts a valid result survives.
+- [x] Add boundary tests: root missing errors; empty existing root returns no reports; 1,001 execution directories produce at most 1,000 entries plus explicit truncation; a 16 MiB + 1 byte JSON file is rejected; junction/symlink files and directories are not followed; an artifact disappearing during read yields a loading diagnostic. Assert timestamp-prefix ordering with deterministic fallback and unknown schema rejection.
+- [x] Run `pnpm exec vitest run packages/cli/test/report/repository.test.ts`; expect failure for the missing repository implementation.
+- [x] Implement the declared interfaces. Validate the suite envelope explicitly because the current suite is not a standalone protocol schema. Use bounded file-handle reads, canonical containment checks, identity/link checks around opening, and immediate-directory enumeration. Lazy-load optional plan/trace data. Never follow `suite.artifacts` paths.
+- [x] Run the repository tests; expect all supported platform cases to pass. Any skipped link-creation case must explain the environment limitation and retain a runnable Unix equivalent.
+- [x] Commit only Task 1 files: `feat: load validated local report artifacts`.
 
 ### Task 2: Deterministic explanations, JSON differences, and evidence links
 
@@ -84,12 +84,12 @@ reportCommand(args: string[], io: CliIO): Promise<number>
 
 **Interfaces:** Consume `ScenarioDetails`; produce `explainAssertion(details, assertionIndex)` and `AssertionExplanation`. Evidence links identify a trace message or recorded metric/evaluator, not a pathname.
 
-- [ ] Write failing tests for nested JSON changes, absent keys versus null, arrays, object key order, negated equality, 1,001 changed paths returning exactly 1,000 plus truncation, and absent structured expected data retaining the recorded strings.
-- [ ] Write lifecycle tests asserting `tool.requested` never becomes executed, mock/reject facts remain distinct, incomplete traces do not prove absence, and missing referenced messages produce unavailable evidence. Assert ERROR, INCOMPATIBLE, NOT_EVALUATED, evaluator provenance, and explicit metric thresholds retain recorded semantics without fabricated causes.
-- [ ] Run `pnpm exec vitest run packages/cli/test/report/explain.test.ts`; expect failure for missing explanation functions.
-- [ ] Implement structured comparisons using validated plan parameters and trace final output. Keep original verdict/reason immutable. Bound depth during comparison using an iterative traversal so deeply nested valid JSON does not overflow the JS stack. Emit JSON Pointer paths, escaped correctly for `/` and `~` keys. Label guidance separately from recorded facts.
-- [ ] Run explanation and repository tests; expect PASS. Add a deeply nested JSON regression and verify the 1,000-path bound includes arrays.
-- [ ] Commit Task 2 files: `feat: explain report failures from recorded evidence`.
+- [x] Write failing tests for nested JSON changes, absent keys versus null, arrays, object key order, negated equality, 1,001 changed paths returning exactly 1,000 plus truncation, and absent structured expected data retaining the recorded strings.
+- [x] Write lifecycle tests asserting `tool.requested` never becomes executed, mock/reject facts remain distinct, incomplete traces do not prove absence, and missing referenced messages produce unavailable evidence. Assert ERROR, INCOMPATIBLE, NOT_EVALUATED, evaluator provenance, and explicit metric thresholds retain recorded semantics without fabricated causes.
+- [x] Run `pnpm exec vitest run packages/cli/test/report/explain.test.ts`; expect failure for missing explanation functions.
+- [x] Implement structured comparisons using validated plan parameters and trace final output. Keep original verdict/reason immutable. Bound depth during comparison using an iterative traversal so deeply nested valid JSON does not overflow the JS stack. Emit JSON Pointer paths, escaped correctly for `/` and `~` keys. Label guidance separately from recorded facts.
+- [x] Run explanation and repository tests; expect PASS. Add a deeply nested JSON regression and verify the 1,000-path bound includes arrays.
+- [x] Commit Task 2 files: `feat: explain report failures from recorded evidence`.
 
 ### Task 3: Protected local server and browser launcher
 
@@ -97,12 +97,12 @@ reportCommand(args: string[], io: CliIO): Promise<number>
 
 **Interfaces:** Consume the repository and explanation model; produce `startReportServer`, `ReportServerOptions`, `ReportServerHandle`, and `openBrowser`. Server API exposes history, a selected report summary, and indexed scenario details; timeline data is paginated in 200-event pages with validated nonnegative page numbers.
 
-- [ ] Write failing HTTP tests for OS-assigned loopback port, explicit occupied port, required Bearer token, wrong Host, foreign Origin, malformed IDs, traversal attempts, unknown routes, and idempotent shutdown. Assert requests without Origin still require the session token. Cap concurrent report loads at four and return a clear busy response above that limit.
-- [ ] Write launcher tests that inspect injected spawn calls: `open` on macOS, `xdg-open` on Linux, and literal `rundll32.exe` URL arguments on Windows. Verify spawn/exit failures are surfaced without executing a shell command.
-- [ ] Run `pnpm exec vitest run packages/cli/test/report/server.test.ts packages/cli/test/report/open-browser.test.ts`; expect missing-module failures.
-- [ ] Implement GET-only report APIs and fixed assets. Place the random session token in the URL fragment; validate Host/Origin and token before reading report data; send no-store for data and restrictive CSP for HTML. Never echo a token in diagnostics. Serve compiled `web/client.js` only from its fixed packaged path. Abort closes the server and idle HTTP connections once.
-- [ ] Run HTTP and launcher tests; expect PASS, including paginated event order, no general static-file access, and cancellation during an outstanding response.
-- [ ] Commit Task 3 files: `feat: serve protected reports on localhost`.
+- [x] Write failing HTTP tests for OS-assigned loopback port, explicit occupied port, required Bearer token, wrong Host, foreign Origin, malformed IDs, traversal attempts, unknown routes, and idempotent shutdown. Assert requests without Origin still require the session token. Cap concurrent report loads at four and return a clear busy response above that limit.
+- [x] Write launcher tests that inspect injected spawn calls: `open` on macOS, `xdg-open` on Linux, and literal `rundll32.exe` URL arguments on Windows. Verify spawn/exit failures are surfaced without executing a shell command.
+- [x] Run `pnpm exec vitest run packages/cli/test/report/server.test.ts packages/cli/test/report/open-browser.test.ts`; expect missing-module failures.
+- [x] Implement GET-only report APIs and fixed assets. Place the random session token in the URL fragment; validate Host/Origin and token before reading report data; send no-store for data and restrictive CSP for HTML. Never echo a token in diagnostics. Serve compiled `web/client.js` only from its fixed packaged path. Abort closes the server and idle HTTP connections once.
+- [x] Run HTTP and launcher tests; expect PASS, including paginated event order, no general static-file access, and cancellation during an outstanding response.
+- [x] Commit Task 3 files: `feat: serve protected reports on localhost`.
 
 ### Task 4: Accessible browser report interface
 
@@ -110,12 +110,12 @@ reportCommand(args: string[], io: CliIO): Promise<number>
 
 **Interfaces:** Consume the GET API from Task 3 and type-only imports from `report/types.ts`. Client has no runtime package imports. HTML loads external same-origin module JS and CSS under the CSP.
 
-- [ ] Write failing asset tests proving the HTML exposes named regions for history, filters, scenario list, details, and timeline; assets use the proper content types and the browser module is shipped by TypeScript. Malicious artifact strings stay in JSON responses and never enter the shell HTML.
-- [ ] Run `pnpm exec vitest run packages/cli/test/report/web-assets.test.ts`; expect incomplete-interface failures.
-- [ ] Implement responsive branded overview, execution selection, explicit refresh, search/status filters, failure-first stable ordering, assertion comparisons, guidance, evidence navigation, diagnostics, and lazy 200-event timeline pages. Use DOM textContent for all artifact content. Read the fragment token into memory and same-tab sessionStorage, remove it from the visible URL, and retain it across refresh; do not put it in localStorage. Clear unusable session state after authorization failure.
-- [ ] Run asset tests; expect PASS. Use the project build to verify browser module compilation has no Node dependencies.
-- [ ] Perform browser verification against generated fixture reports: keyboard-only selection, 390 px and desktop layout, differing JSON fields, a negated failure, incomplete trace warning, malicious HTML shown literally, history refresh, and evidence jump to an event on a later page. Record screenshots and observed results in the final implementation report; fix any discovered behavior before committing.
-- [ ] Commit Task 4 files: `feat: render readable failure reports in the browser`.
+- [x] Write failing asset tests proving the HTML exposes named regions for history, filters, scenario list, details, and timeline; assets use the proper content types and the browser module is shipped by TypeScript. Malicious artifact strings stay in JSON responses and never enter the shell HTML.
+- [x] Run `pnpm exec vitest run packages/cli/test/report/web-assets.test.ts`; expect incomplete-interface failures.
+- [x] Implement responsive branded overview, execution selection, explicit refresh, search/status filters, failure-first stable ordering, assertion comparisons, guidance, evidence navigation, diagnostics, and lazy 200-event timeline pages. Use DOM textContent for all artifact content. Read the fragment token into memory and same-tab sessionStorage, remove it from the visible URL, and retain it across refresh; do not put it in localStorage. Clear unusable session state after authorization failure.
+- [x] Run asset tests; expect PASS. Use the project build to verify browser module compilation has no Node dependencies.
+- [x] Perform browser verification against generated fixture reports: keyboard-only selection, 390 px and desktop layout, differing JSON fields, a negated failure, incomplete trace warning, malicious HTML shown literally, history refresh, and evidence jump to an event on a later page. Record screenshots and observed results in the final implementation report; fix any discovered behavior before committing.
+- [x] Commit Task 4 files: `feat: render readable failure reports in the browser`.
 
 ### Task 5: CLI report command and opt-in run integration
 
@@ -123,12 +123,12 @@ reportCommand(args: string[], io: CliIO): Promise<number>
 
 **Interfaces:** Produce `reportCommand(args, io)`. Consume `startReportServer`, `openBrowser`, and existing `runDefinitions`. Introduce an injectable internal viewer lifecycle helper for CLI tests; keep the existing public main signature usable.
 
-- [ ] Write failing command tests for `report`, `--no-open`, `--output-dir`, `--port`, missing/invalid option values, browser launch failure with usable printed URL, and operation without a project config file.
-- [ ] Write run tests asserting plain `run` exits normally without a server; `run --open` selects the produced execution; viewer shutdown preserves suite exit codes 0, 1, and 2; interruption during execution remains 130 and starts no viewer; artifact-write failure starts no viewer; viewer startup failure preserves the suite verdict; cancellation at the execution/viewer boundary closes resources once.
-- [ ] Run `pnpm exec vitest run packages/cli/test/report/command.test.ts packages/cli/test/cli.test.ts`; expect new-command failures.
-- [ ] Implement command-specific parsing before config imports and document the foreground lifetime in printed messages. Accept `--open` only for run, retaining existing filters/options. Reuse the selected output root and just-written execution directory; handle all viewer errors separately from suite execution results. Map deliberate Ctrl+C during report viewing to 0 or the saved suite code as specified.
-- [ ] Run the CLI, command, and all report tests; expect PASS and no report handles preventing Vitest exit.
-- [ ] Commit Task 5 files: `feat: open local reports from the causign CLI`.
+- [x] Write failing command tests for `report`, `--no-open`, `--output-dir`, `--port`, missing/invalid option values, browser launch failure with usable printed URL, and operation without a project config file.
+- [x] Write run tests asserting plain `run` exits normally without a server; `run --open` selects the produced execution; viewer shutdown preserves suite exit codes 0, 1, and 2; interruption during execution remains 130 and starts no viewer; artifact-write failure starts no viewer; viewer startup failure preserves the suite verdict; cancellation at the execution/viewer boundary closes resources once.
+- [x] Run `pnpm exec vitest run packages/cli/test/report/command.test.ts packages/cli/test/cli.test.ts`; expect new-command failures.
+- [x] Implement command-specific parsing before config imports and document the foreground lifetime in printed messages. Accept `--open` only for run, retaining existing filters/options. Reuse the selected output root and just-written execution directory; handle all viewer errors separately from suite execution results. Map deliberate Ctrl+C during report viewing to 0 or the saved suite code as specified.
+- [x] Run the CLI, command, and all report tests; expect PASS and no report handles preventing Vitest exit.
+- [x] Commit Task 5 files: `feat: open local reports from the causign CLI`.
 
 ### Task 6: Packed acceptance, documentation, and complete verification
 
