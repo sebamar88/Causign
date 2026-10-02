@@ -1,5 +1,73 @@
 # Getting started
 
+## Run with npx, pnpm dlx or pnpx
+
+In a new directory, no project installation is needed for the starter:
+
+```sh
+npx --yes @causign/cli@0.1.0 init
+npx --yes @causign/cli@0.1.0 inspect
+npx --yes @causign/cli@0.1.0 run
+```
+
+Equivalent pnpm commands:
+
+```sh
+pnpm dlx @causign/cli@0.1.0 init
+pnpm dlx @causign/cli@0.1.0 inspect
+pnpm dlx @causign/cli@0.1.0 run
+```
+
+Or use `pnpx @causign/cli@0.1.0 init`, replacing `init`
+with `inspect` or `run` as needed. Pinning the version makes the intended CLI
+release explicit. Downloads are cached by the executor; these commands do not
+add the CLI to project dependencies. pnpm may update its release-age exceptions
+according to the current project's trust policy.
+
+The static starter does not import the SDK. For your own scenarios importing
+`@causign/sdk`, install it locally; the executor's CLI cache is not a substitute
+for application dependencies. Use a lockfile/project installation for repeatable CI.
+
+See [npm executor documentation](https://docs.npmjs.com/cli/v11/commands/npm-exec/)
+and [pnpm temporary execution](https://pnpm.io/cli/dlx) for executor behavior.
+
+## Install from npm
+
+Use Node 22+ and a new project directory:
+
+```sh
+pnpm init
+pnpm add -D @causign/cli@0.1.0 @causign/sdk@0.1.0
+pnpm exec causign init
+pnpm exec causign inspect
+pnpm exec causign run
+```
+
+Expected: PASS sample-greeting, exit 0, with plan/trace/results under
+`.causign/results`. This exact flow was verified by a Windows consumer using
+Node 24.21.0 and pnpm 12.8.1. Inspect reports compatibility as unverified until
+run negotiates with the adapter.
+
+If install or exec stops with `ERR_PNPM_IGNORED_BUILDS` naming esbuild,
+explicitly reject its build in the project's `pnpm-workspace.yaml` (merge rather
+than replace existing settings):
+
+```yaml
+allowBuilds:
+  esbuild: false
+```
+
+Run `pnpm install` and resume at `causign init`. This was verified on Windows
+with pnpm 12.8.1, a fresh package store and the published 0.1.0 packages.
+The CLI uses tsx, which uses esbuild; the platform binary arrives as an optional
+dependency, so postinstall is unnecessary in this verified setup. Do not omit
+optional dependencies. Temporary dlx/pnpx environments have their own build
+approval state; project settings are not guaranteed to control that cache.
+`--allow-build=esbuild` is an optional explicit approval for those environments,
+not a Causign requirement.
+If init was blocked, run cannot find config until starter creation succeeds.
+Repeated init refuses existing targets by design.
+
 ## Build from source
 
 Use Node 22+ and pnpm 11.25.0. Python 3 is needed for repository acceptance,
@@ -71,7 +139,7 @@ Config and scenario imports execute local code; inspect is not a sandbox.
 
 ## Local package installation
 
-Public npm availability is not assumed. Build, then run
+For unpublished local changes, build, then run
 `pnpm pack --pack-destination /absolute/path/to/archives` from each of the five
 package directories: protocol, core, sdk, cli and adapter-vercel.
 Copy the archives to your consumer root and merge these settings into its

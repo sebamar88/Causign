@@ -51,7 +51,7 @@ in in-process coverage. Percentages imply no security certification or confidenc
 
 Five `0.1.0` packages expose built exports; CLI also exposes `causign`.
 Packing replaces workspace references; packed acceptance verifies clean installed
-package resolution and runs the installed executable. See [local installation](getting-started.md).
+package resolution and runs the installed executable. Version 0.1.0 is published on npm; see [installation](getting-started.md).
 Publishing requires registry ownership/authentication and a release decision;
 checks and packing do not publish. Keep versions, lockfile, compatibility docs
 and packed-fixture expectations synchronized for releases.
