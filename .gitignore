@@ -7,3 +7,4 @@ coverage/
 docs/superpowers/
 .agentest/
 publish.ps1
+.npmrc
