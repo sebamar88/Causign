@@ -42,7 +42,7 @@ export async function discoverAgents(registry:Registry,source:DiscoverySource,op
    }catch(error){if(controller.signal.aborted)throw error;report.complete=false;report.diagnostics.push({code:'plugin.discovery',message:error instanceof Error?error.message:String(error),source:discoverer.id,severity:'error'});}
    finally{controller.signal.removeEventListener('abort',listener);}
   }
-  if(!discoverers.length)report.diagnostics.push({code:'source.unrecognized',message:'No registered discoverer supports this source',severity:'warning'});
+  if(!discoverers.length||files.length>0&&!report.candidates.length&&report.complete)report.diagnostics.push({code:'source.unrecognized',message:'No registered discoverer recognized agent definitions in this source',severity:'warning'});
  }catch(error){report.complete=false;const message=error instanceof Error?error.message:String(error);report.diagnostics.push({code:message.startsWith('scan.')?message:'scan.error',message:message==='scan.limit'?'Discovery limit reached; source scan is incomplete':message,severity:'error'});}
  finally{clearTimeout(timer);options.signal?.removeEventListener('abort',cancel);}
  const ids=new Set<string>();for(const candidate of report.candidates){if(ids.has(candidate.id)){report.complete=false;report.diagnostics.push({code:'candidate.duplicate',message:'Duplicate candidate identity',severity:'error'});}ids.add(candidate.id);}

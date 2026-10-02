@@ -46,3 +46,6 @@ it('rejects invalid limits and unknown discoverer filters',async()=>{
  await expect(discoverAgents(registry(),{kind:'file',path:await setup()},{limits:{maxFiles:0}})).rejects.toThrow(/limit/i);
  await expect(discoverAgents(registry(),{kind:'file',path:await setup()},{discovererId:'test/missing'})).rejects.toThrow(/discoverer/i);
 });
+it('reports an unrecognized format explicitly',async()=>{
+ const root=await setup();await writeFile(join(root,'unknown.agent'),'opaque');const result=await discoverAgents(registry(),{kind:'file',path:root});expect(result.candidates).toEqual([]);expect(result.diagnostics.some(item=>item.code==='source.unrecognized')).toBe(true);
+});

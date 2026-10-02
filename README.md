@@ -38,6 +38,12 @@ deterministic.
 
 ## How it fits your existing tests
 
+**Development preview:** [agent discovery and open plugins](docs/agent-discovery.md)
+add explicit source scanning and independent execution adapters for custom
+frameworks. Claude has a restricted output profile; Codex discovery is available
+with execution blocked pending verified tool denial. This feature is not in the
+published CLI 0.1.0.
+
 These approaches solve different parts of the problem; Causign can sit alongside
 your unit tests and output evaluations.
 
@@ -60,7 +66,7 @@ monitoring or security isolation, use dedicated systems alongside Causign.
 | Scenarios, fixtures and static mocks | Output checks and semantic evaluators | Tool intent, execution, rejection and approval evidence |
 | Deterministic local examples | Regression scenarios, latency and explicit USD cost | Interception that fails closed |
 
-**MVP scope:** a CLI, declarative SDK, language-neutral protocol and Vercel AI SDK adapter. Model-diff dashboards, model interception and security sandboxing are outside this release. The five packages are version `0.1.0`; public npm availability is not assumed.
+**MVP scope:** a CLI, declarative SDK, language-neutral protocol and Vercel AI SDK adapter. Model-diff dashboards, model interception and security sandboxing are outside this release. The five packages are published on npm at version `0.1.0`.
 
 ## One runner. Multiple adapters.
 
@@ -82,26 +88,58 @@ Adapters declare capabilities. Unsupported requirements produce `INCOMPATIBLE` b
 
 ## Try it locally
 
-Use Node **22+** and pnpm **11.25.0**. Python 3 is needed for repository cross-language acceptance. CI pins Node `24.21.0` and Python `3.12.10`.
+### Run without adding a project dependency
+
+From a new directory, use Node **22+** and one of these executors:
 
 ```sh
-git clone https://github.com/sebamar88/Causign.git causign
-cd causign
-pnpm install --frozen-lockfile
-pnpm build
+npx --yes @causign/cli@0.1.0 init
+npx --yes @causign/cli@0.1.0 inspect
+npx --yes @causign/cli@0.1.0 run
 ```
 
-From the repository root, create an isolated demo and run the built CLI:
+| Executor | Equivalent command (replace `init` with `inspect` or `run`) |
+| --- | --- |
+| pnpm dlx | `pnpm dlx @causign/cli@0.1.0 init` |
+| pnpx | `pnpx @causign/cli@0.1.0 init` |
+
+These executors download/cache the CLI without adding it to project dependencies.
+The starter requires no local SDK. Scenarios that import `@causign/sdk` need that
+package installed in their project. pnpm may prompt for dependency-build decisions; enabling esbuild's postinstall
+is not an intrinsic requirement of Causign.
+
+### Install in a project
+
+Use Node **22+**. In a new project:
 
 ```sh
-node -e "require('node:fs').mkdirSync('.causign/quickstart', { recursive: true })"
-cd .causign/quickstart
-node ../../packages/cli/dist/bin.js init
-node ../../packages/cli/dist/bin.js inspect
-node ../../packages/cli/dist/bin.js run --verbose
+pnpm init
+pnpm add -D @causign/cli@0.1.0 @causign/sdk@0.1.0
+pnpm exec causign init
+pnpm exec causign inspect
+pnpm exec causign run
 ```
 
-The starter uses a harmless local agent, without provider credentials. `init` refuses existing target files. For an installed CLI, use `pnpm exec causign run`. See [installation and tarballs](docs/getting-started.md) for consumer projects.
+If pnpm blocks pending esbuild scripts, merge this explicit rejection into your
+project's `pnpm-workspace.yaml`, run `pnpm install`, and retry:
+
+```yaml
+allowBuilds:
+  esbuild: false
+```
+
+Causign uses esbuild through tsx to load TypeScript, but its postinstall need not
+run when the platform binary dependency is installed. A clean Windows consumer
+with pnpm 12.8.1 passed the starter with this policy and an empty package store.
+
+Expected result: **PASS sample-greeting**, exit code **0**, and plan, trace and
+results files under `.causign/results`. The starter is local and needs no model
+credentials. `init` refuses existing target files; reuse `inspect` and `run` on
+subsequent executions.
+
+See [getting started](docs/getting-started.md) for agent configuration, source
+builds and local tarball installation. Python is needed only when your agent or
+repository cross-language tests use it.
 
 ## Tests that describe intent
 

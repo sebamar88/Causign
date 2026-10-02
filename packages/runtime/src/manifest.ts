@@ -1,6 +1,6 @@
 import {readFile} from 'node:fs/promises';
 import {dirname,resolve,isAbsolute} from 'node:path';
-import {createRequire} from 'node:module';
+import {resolve as resolveModule} from 'import-meta-resolve';
 import {pathToFileURL} from 'node:url';
 import type {PluginManifest,RuntimePlugin} from './types.js';
 import {createRegistry} from './registry.js';
@@ -14,11 +14,10 @@ export async function readPluginManifest(path:string):Promise<PluginManifest>{
 }
 export async function loadPluginManifest(path:string):Promise<RuntimePlugin[]>{
  const absolute=resolve(path),manifest=await readPluginManifest(absolute),loaded:RuntimePlugin[]=[];
- const require=createRequire(pathToFileURL(absolute));
  for(const specifier of manifest.plugins){
   if(specifier.startsWith('node:')||/^[a-z]+:/i.test(specifier)&&!isAbsolute(specifier))throw new Error('Plugin manifest supports local files or installed modules only');
-  const target=isAbsolute(specifier)||specifier.startsWith('.')?resolve(dirname(absolute),specifier):require.resolve(specifier);
-  loaded.push((await import(pathToFileURL(target).href)).default as RuntimePlugin);
+  const target=isAbsolute(specifier)||specifier.startsWith('.')?pathToFileURL(resolve(dirname(absolute),specifier)).href:resolveModule(specifier,pathToFileURL(absolute).href);
+  loaded.push((await import(target)).default as RuntimePlugin);
  }
  createRegistry(loaded);return loaded;
 }

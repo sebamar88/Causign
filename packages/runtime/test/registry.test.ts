@@ -43,4 +43,11 @@ describe('plugin registry',()=>{
  it('rejects malformed plugin methods at registration',()=>{
   expect(()=>createRegistry([{...plugin(),adapters:[{id:'example/bad'}] as never}])).toThrow(/adapter/i);
  });
+ it('loads installed ESM packages with import-only exports from the manifest location',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'causign-esm-plugin-'));directories.push(root);const module=join(root,'node_modules','example-plugin');await mkdir(module,{recursive:true});
+  await writeFile(join(module,'package.json'),JSON.stringify({name:'example-plugin',type:'module',exports:{import:'./plugin.mjs'}}));
+  await writeFile(join(module,'plugin.mjs'),"export default {id:'example/esm',apiVersion:'1',discoverers:[],adapters:[]};");
+  await writeFile(join(root,'plugins.json'),JSON.stringify({schemaVersion:'1',plugins:['example-plugin']}));
+  expect((await loadPluginManifest(join(root,'plugins.json')))[0].id).toBe('example/esm');
+ });
 });

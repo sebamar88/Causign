@@ -15,7 +15,7 @@ export const claudeDiscoverer:Discoverer={id:'causign/claude-agents',sourceKinds
  const candidates:AgentCandidate[]=[],diagnostics:Diagnostic[]=[],selectors=new Set<string>();
  for(const file of context.files){if(!file.path.toLowerCase().endsWith('.md')||!file.text.startsWith('---'))continue;
   try{const {definition,unknown}=parseClaudeDefinition(file.text);if(selectors.has(definition.name)){diagnostics.push({code:'claude.duplicate',message:`Duplicate native selector: ${definition.name}`,source:file.path,severity:'error'});continue;}selectors.add(definition.name);
-   candidates.push({id:candidateId('causign/claude-agents',file.path,definition.name),discovererId:'causign/claude-agents',name:definition.name,description:definition.description,kind:'agent',nativeSelector:definition.name,source:{kind:'file',path:file.path},revision:file.revision,runtimeId:'claude-code',metadata:{...(definition.model?{model:definition.model}:{})}});
+   candidates.push({id:candidateId('causign/claude-agents',file.path,definition.name),discovererId:'causign/claude-agents',name:definition.name,description:definition.description,kind:'agent',nativeSelector:definition.name,source:{kind:'file',path:file.path},revision:file.revision,runtimeId:'claude-code',metadata:definition.model?{model:definition.model}:{}});
    if(unknown.length)diagnostics.push({code:'claude.metadata',message:`Metadata not used by output profile: ${unknown.join(', ')}`,source:file.path,severity:'warning'});
   }catch(error){diagnostics.push({code:'claude.definition',message:error instanceof Error?error.message:String(error),source:file.path,severity:'error'});}
  }
