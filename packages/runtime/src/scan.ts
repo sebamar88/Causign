@@ -9,11 +9,14 @@ export function candidateId(discovererId:string,source:string,nativeId:string):s
 async function readBounded(path:string,max:number):Promise<Buffer>{
  const handle=await open(path,'r');try{const data=Buffer.alloc(max+1);let used=0;while(used<data.length){const {bytesRead}=await handle.read(data,used,data.length-used,null);if(!bytesRead)break;used+=bytesRead;}if(used>max)throw new Error('scan.limit');return data.subarray(0,used);}finally{await handle.close();}
 }
-export async function verifyCandidateRevision(candidate:AgentCandidate):Promise<void>{
+export async function readVerifiedCandidate(candidate:AgentCandidate):Promise<string>{
  if(candidate.source.kind!=='file')throw new Error('Service revisions must be verified by their adapter');
  const info=await lstat(candidate.source.path);if(!info.isFile()||info.isSymbolicLink()||info.size>defaultDiscoveryLimits.maxFileBytes)throw new Error('Candidate source changed or unsupported');
- if(contentHash(await readBounded(candidate.source.path,defaultDiscoveryLimits.maxFileBytes))!==candidate.revision)throw new Error('Candidate definition changed; rediscover before launch');
+ const bytes=await readBounded(candidate.source.path,defaultDiscoveryLimits.maxFileBytes);
+ if(contentHash(bytes)!==candidate.revision)throw new Error('Candidate definition changed; rediscover before launch');
+ return bytes.toString('utf8');
 }
+export async function verifyCandidateRevision(candidate:AgentCandidate):Promise<void>{await readVerifiedCandidate(candidate);}
 export async function discoverAgents(registry:Registry,source:DiscoverySource,options:{discovererId?:string;limits?:Partial<DiscoveryLimits>;signal?:AbortSignal}={}):Promise<DiscoveryReport>{
  const limits={...defaultDiscoveryLimits,...options.limits};for(const value of Object.values(limits))if(!Number.isSafeInteger(value)||value<1)throw new Error('Discovery limits must be positive integers');
  const wanted=options.discovererId??(source.kind==='service'?source.discovererId:undefined);
@@ -31,7 +34,7 @@ export async function discoverAgents(registry:Registry,source:DiscoverySource,op
   const bytes=await readBounded(path,Math.min(limits.maxFileBytes,limits.maxTotalBytes-total));check();total+=bytes.length;files.push({path:await realpath(path),text:bytes.toString('utf8'),revision:contentHash(bytes)});
  };
  try{
-  check();if(source.kind==='file')await walk(resolve(source.path));
+  check();if(source.kind==='file'){const root=resolve(source.path),info=await lstat(root);if(info.isSymbolicLink()||!info.isFile()&&!info.isDirectory())throw new Error('scan.unsupported-root');await walk(root);}
   for(const discoverer of discoverers){
    check();let listener:()=>void=()=>{};
    try{

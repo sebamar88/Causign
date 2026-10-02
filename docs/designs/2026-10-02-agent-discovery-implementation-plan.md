@@ -1,6 +1,6 @@
 # Extensible Agent Discovery Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Discover agents through extensible plugins and test selected Claude/Codex agents through truthful output adapters.
 
@@ -47,11 +47,11 @@
 `Discoverer.discover(source:DiscoverySource, context:DiscoveryContext):Promise<DiscoveryReport>`; `ExecutionAdapter.supports(candidate:AgentCandidate):boolean`, `probe(target:ExecutionTarget, selection:Selection):Promise<RuntimeProbe>`, `createLaunch(selection:Selection):Promise<AgentReference>`.
 Define all shared types here: discriminated file/service sources; native/WSL targets; diagnostics with code/message/source; candidates with discoverer/native/source identity, revision hash and optional framework/runtime IDs; selection includes adapter ID, candidate, target, mode and explicit model/provider. Registry reports all matching adapter IDs without selecting one.
 
-- [ ] Write `registry.test.ts`: `expect(() => createRegistry([plugin, plugin])).toThrow(/duplicate/i)`; unsupported API rejected; two matching adapters both returned; a failed manifest load exposes no partial registry. Test relative module resolution from a Unicode/spaced manifest directory and reject malformed manifest fields before importing modules.
-- [ ] Run `pnpm exec vitest run packages/runtime/test/registry.test.ts`; confirm failures for missing functionality.
-- [ ] Implement the interfaces and transactional validation. Manifest requires schemaVersion/plugins and permits optional `sources: Record<string, {discovererId:string; options:Record<string,unknown>}>` for explicitly configured services; reject other fields. Service options are plugin-validated data, not credentials copied into reports. Module specifiers resolve from its directory, local paths become file URLs. Default export must validate as RuntimePlugin. Never install missing modules or auto-load scanned code.
-- [ ] Run focused tests and `pnpm typecheck`; require success.
-- [ ] Commit only task files with `feat: add extensible runtime plugin registry`.
+- [x] Write `registry.test.ts`: `expect(() => createRegistry([plugin, plugin])).toThrow(/duplicate/i)`; unsupported API rejected; two matching adapters both returned; a failed manifest load exposes no partial registry. Test relative module resolution from a Unicode/spaced manifest directory and reject malformed manifest fields before importing modules.
+- [x] Run `pnpm exec vitest run packages/runtime/test/registry.test.ts`; confirm failures for missing functionality.
+- [x] Implement the interfaces and transactional validation. Manifest requires schemaVersion/plugins and permits optional `sources: Record<string, {discovererId:string; options:Record<string,unknown>}>` for explicitly configured services; reject other fields. Service options are plugin-validated data, not credentials copied into reports. Module specifiers resolve from its directory, local paths become file URLs. Default export must validate as RuntimePlugin. Never install missing modules or auto-load scanned code.
+- [x] Run focused tests and `pnpm typecheck`; require success.
+- [x] Commit only task files with `feat: add extensible runtime plugin registry`.
 
 ## Task 2: Bounded Discovery and Candidate Provenance
 
@@ -59,12 +59,12 @@ Define all shared types here: discriminated file/service sources; native/WSL tar
 
 **Interfaces:** Export `discoverAgents(registry:Registry, source:DiscoverySource, options:{discovererId?:string; limits:DiscoveryLimits; signal?:AbortSignal}):Promise<DiscoveryReport>` and `verifyCandidateRevision(candidate:AgentCandidate):Promise<void>` for file candidates. DiscoveryLimits fields: maxFiles, maxFileBytes, maxTotalBytes, timeoutMs. CLI defaults: 10,000 files, 1 MiB/file, 32 MiB total, 10 seconds. Generic instructions have no native runnable selector and no matching execution adapter by default.
 
-- [ ] Write tests asserting no model/import side effects, no symlink traversal, excluded node_modules/dist/build/coverage/.git/.causign/.superpowers directories, cancellation, missing source diagnostics and each limit. Assert stable IDs across content edits, changed hashes, separate IDs for equal names in different sources and rejection of stale revisions. Assert unrecognized files never become runnable candidates.
-- [ ] Run `pnpm exec vitest run packages/runtime/test/discovery.test.ts packages/cli/test/agent-discovery.test.ts`; verify expected failures.
-- [ ] Implement bounded reads shared by discoverers. IDs derive from discoverer ID/canonical source/native ID; content uses SHA-256 separately. Return deterministic ordering, per-source diagnostics and explicit truncated/incomplete status when a limit is reached.
-- [ ] Implement `causign discover --path <root> [--discoverer <id>] [--plugins <manifest>] [--json]`; mutually exclusive `--source <configured-source-id>` routes to registered service sources defined in the task 1 manifest. Never infer endpoints from files. Exit 0 complete, 2 errors/incomplete, 130 interrupted; diagnostics available in JSON and text. Preserve existing inspect/run paths.
-- [ ] Run focused tests and `pnpm typecheck`; require success.
-- [ ] Commit task files with `feat: discover agent candidates from explicit sources`.
+- [x] Write tests asserting no model/import side effects, no symlink traversal, excluded node_modules/dist/build/coverage/.git/.causign/.superpowers directories, cancellation, missing source diagnostics and each limit. Assert stable IDs across content edits, changed hashes, separate IDs for equal names in different sources and rejection of stale revisions. Assert unrecognized files never become runnable candidates.
+- [x] Run `pnpm exec vitest run packages/runtime/test/discovery.test.ts packages/cli/test/agent-discovery.test.ts`; verify expected failures.
+- [x] Implement bounded reads shared by discoverers. IDs derive from discoverer ID/canonical source/native ID; content uses SHA-256 separately. Return deterministic ordering, per-source diagnostics and explicit truncated/incomplete status when a limit is reached.
+- [x] Implement `causign discover --path <root> [--discoverer <id>] [--plugins <manifest>] [--json]`; mutually exclusive `--source <configured-source-id>` routes to registered service sources defined in the task 1 manifest. Never infer endpoints from files. Exit 0 complete, 2 errors/incomplete, 130 interrupted; diagnostics available in JSON and text. Preserve existing inspect/run paths.
+- [x] Run focused tests and `pnpm typecheck`; require success.
+- [x] Commit task files with `feat: discover agent candidates from explicit sources`.
 
 ## Task 3: Native Process Lifecycle and Output Protocol Bridge
 
@@ -72,11 +72,11 @@ Define all shared types here: discriminated file/service sources; native/WSL tar
 
 **Interfaces:** Export `runNativeProcess(launch:NativeLaunch, options:{signal:AbortSignal; maxOutputBytes:number; timeoutMs:number}):Promise<NativeResult>` and `serveOutputBridge(driver:OutputDriver):Promise<void>`. NativeLaunch contains literal command/args/cwd/env; OutputDriver provides probe and per-run launch/translation callbacks. Translation returns `{text:string}` only after validated native completion and successful exit. Wire capabilities are `observe.output` only; latency is measured by existing runner.
 
-- [ ] Write tests for successful final output, intermediate-only output, malformed JSONL, native error result, output followed by nonzero exit, timeout, cancellation, stdout overflow and descendant cleanup. Assert exactly one run terminal, protocol-only stdout, diagnostics stderr and no native spawn when requested capabilities are unsupported.
-- [ ] Run `pnpm exec vitest run packages/runtime/test/process.test.ts packages/runtime/test/output-bridge.test.ts`; verify failures.
-- [ ] Implement shell:false subprocesses with bounded output and cancellation; complete existing handshake/configure/run semantics. Never advertise intercept/observe.tools/control.approvals through generic SDK defaults. Use 8 MiB aggregate native capture default; surface overflow as ERROR. Document OS/WSL cleanup limits rather than claiming a sandbox.
-- [ ] Run focused tests plus existing core/SDK tests; require success.
-- [ ] Commit task files with `feat: bridge native agent output to causign protocol`.
+- [x] Write tests for successful final output, intermediate-only output, malformed JSONL, native error result, output followed by nonzero exit, timeout, cancellation, stdout overflow and descendant cleanup. Assert exactly one run terminal, protocol-only stdout, diagnostics stderr and no native spawn when requested capabilities are unsupported.
+- [x] Run `pnpm exec vitest run packages/runtime/test/process.test.ts packages/runtime/test/output-bridge.test.ts`; verify failures.
+- [x] Implement shell:false subprocesses with bounded output and cancellation; complete existing handshake/configure/run semantics. Never advertise intercept/observe.tools/control.approvals through generic SDK defaults. Use 8 MiB aggregate native capture default; surface overflow as ERROR. Document OS/WSL cleanup limits rather than claiming a sandbox.
+- [x] Run focused tests plus existing core/SDK tests; require success.
+- [x] Commit task files with `feat: bridge native agent output to causign protocol`.
 
 ## Task 4: Claude Code Reference Plugin
 
@@ -84,12 +84,12 @@ Define all shared types here: discriminated file/service sources; native/WSL tar
 
 **Interfaces:** Export default RuntimePlugin ID `causign/claude-code`; discoverer ID `causign/claude-agents`; execution adapter ID `causign/claude-output`. Produce file candidates from selected Markdown YAML frontmatter and preserve native names. Bridge command uses installed package bin resolved by package exports, not source/dist guesses.
 
-- [ ] Write fixtures for valid frontmatter, malformed YAML, duplicate native names, unknown metadata and invalid runtime selectors. Verify source text is never rewritten. Include literal Windows Unicode paths and explicit WSL distro/POSIX cwd; reject UNC used as Linux cwd. Assert revision check before launch.
-- [ ] Run `pnpm exec vitest run packages/adapter-claude-code/test`; verify failures.
-- [ ] Verify version-specific native argument/settings behavior using installed help and official sources before coding. Parse frontmatter with a pinned pure-JS YAML dependency, strict validation and bounded reads. Probe version without login or token access. Unsupported versions/profiles return diagnostics; no guessed compatibility.
-- [ ] Implement print structured output translation and native selection with explicit tool-disable policy and controlled effective settings. If the reference version cannot enforce the profile, report it unsupported rather than weaken it. Launch WSL with literal wsl.exe arguments; do not interpolate definition text into a shell. Do not use bare mode if it silently changes authentication requirements.
-- [ ] Run fixture protocol PASS/FAIL/ERROR/INCOMPATIBLE cases; require unsupported tool/mock scenario never spawns native process. Run package tests and typecheck.
-- [ ] Commit task files with `feat: add Claude Code discovery and output adapter`.
+- [x] Write fixtures for valid frontmatter, malformed YAML, duplicate native names, unknown metadata and invalid runtime selectors. Verify source text is never rewritten. Include literal Windows Unicode paths and explicit WSL distro/POSIX cwd; reject UNC used as Linux cwd. Assert revision check before launch.
+- [x] Run `pnpm exec vitest run packages/adapter-claude-code/test`; verify failures.
+- [x] Verify version-specific native argument/settings behavior using installed help and official sources before coding. Parse frontmatter with a pinned pure-JS YAML dependency, strict validation and bounded reads. Probe version without login or token access. Unsupported versions/profiles return diagnostics; no guessed compatibility.
+- [x] Implement print structured output translation and native selection with explicit tool-disable policy and controlled effective settings. If the reference version cannot enforce the profile, report it unsupported rather than weaken it. Launch WSL with literal wsl.exe arguments; do not interpolate definition text into a shell. Do not use bare mode if it silently changes authentication requirements.
+- [x] Run fixture protocol PASS/FAIL/ERROR/INCOMPATIBLE cases; require unsupported tool/mock scenario never spawns native process. Run package tests and typecheck.
+- [x] Commit task files with `feat: add Claude Code discovery and output adapter`.
 
 ## Task 5: Codex Reference Plugin
 
@@ -97,12 +97,12 @@ Define all shared types here: discriminated file/service sources; native/WSL tar
 
 **Interfaces:** Export default RuntimePlugin ID `causign/codex`; discoverer ID `causign/codex-config`; execution adapter ID `causign/codex-output`. Produce profile/native-definition candidates only for formats verified for the supported version. AGENTS.md remains instruction context, not an executable candidate.
 
-- [ ] Write fixture tests for selected profiles, invalid/duplicate definitions, contextual AGENTS.md, explicit model/provider metadata, absent executable and unsupported version. Test final event/native error/nonzero exit combinations and stale definition rejection.
-- [ ] Run `pnpm exec vitest run packages/adapter-codex/test`; verify failures.
-- [ ] Verify installed 0.159.0 config schema/help before implementing parsers; use pinned pure-JS TOML parser for verified config formats. Native definitions unsupported by the version produce explicit diagnostics. Implement fresh ephemeral `exec --json`, explicit cwd/profile and enforced tool-denial policy; read-only sandbox alone does not prove tools disabled. If reliable tool denial/settings isolation cannot be enforced, probe marks output profile unsupported and tests assert no launch.
-- [ ] Translate validated final output to `{text:string}` using task 3 lifecycle; reject unknown event shapes that invalidate completeness. Never infer tool execution, cost or approval control from text.
-- [ ] Run package tests and typecheck; compare identical fixture scenarios with Claude results.
-- [ ] Commit task files with `feat: add Codex discovery and output adapter`.
+- [x] Write fixture tests for selected profiles, invalid/duplicate definitions, contextual AGENTS.md, explicit model/provider metadata, absent executable and unsupported version. Test final event/native error/nonzero exit combinations and stale definition rejection.
+- [x] Run `pnpm exec vitest run packages/adapter-codex/test`; verify failures.
+- [x] Verify installed 0.159.0 config schema/help before implementing parsers; use pinned pure-JS TOML parser for verified config formats. Native definitions unsupported by the version produce explicit diagnostics. Implement fresh ephemeral `exec --json`, explicit cwd/profile and enforced tool-denial policy; read-only sandbox alone does not prove tools disabled. If reliable tool denial/settings isolation cannot be enforced, probe marks output profile unsupported and tests assert no launch.
+- [x] Translate validated final output to `{text:string}` using task 3 lifecycle; reject unknown event shapes that invalidate completeness. Never infer tool execution, cost or approval control from text.
+- [x] Run package tests and typecheck; compare identical fixture scenarios with Claude results.
+- [x] Commit task files with `feat: add Codex discovery and output adapter`.
 
 ## Task 6: External Extension Conformance, Packed Consumers and Documentation
 
@@ -110,11 +110,11 @@ Define all shared types here: discriminated file/service sources; native/WSL tar
 
 **Interfaces:** External fixture exports the task 1 RuntimePlugin contract and recognizes an invented `example-agent.json` format; its bridge implements causign/1. Export package subpaths needed to resolve bins from packed consumers. Document manifest, registration API, discovery status, explicit adapter selection and reviewable AgentReference generation; no automatic config mutation.
 
-- [ ] Write acceptance tests importing the external plugin from a consumer directory: discover candidate, report two matches without choosing, explicitly select/probe/createLaunch, run existing output scenario and assert PASS/FAIL/ERROR/INCOMPATIBLE. Assert no core/CLI catalogue modification required. Verify missing plugin dependency and unavailable runtime have actionable diagnostics.
-- [ ] Run `pnpm exec vitest run tests/acceptance/runtime-plugins.test.ts`; verify initial failures.
-- [ ] Extend packed smoke to install new package tarballs and run the fixture extension outside the workspace, without credentials. Use deterministic native fixtures in existing Linux x64/ARM64, Windows x64 and macOS ARM64 jobs. Document actual support and WSL cleanup limits; VS Code/API bridges and controlled tools remain unimplemented extensions.
-- [ ] Run `pnpm check:generated`, `pnpm typecheck`, `pnpm lint`, `pnpm test:coverage`, `pnpm test:packed`. Require success and record new coverage results; investigate reductions rather than inventing a coverage threshold. Live model runs require separate user-selected agent/model and finite bounds.
-- [ ] Perform a final spec-to-tests review and commit scoped task files with `test: verify external runtime plugins and packed adapters`.
+- [x] Write acceptance tests importing the external plugin from a consumer directory: discover candidate, report two matches without choosing, explicitly select/probe/createLaunch, run existing output scenario and assert PASS/FAIL/ERROR/INCOMPATIBLE. Assert no core/CLI catalogue modification required. Verify missing plugin dependency and unavailable runtime have actionable diagnostics.
+- [x] Run `pnpm exec vitest run tests/acceptance/runtime-plugins.test.ts`; verify initial failures.
+- [x] Extend packed smoke to install new package tarballs and run the fixture extension outside the workspace, without credentials. Use deterministic native fixtures in existing Linux x64/ARM64, Windows x64 and macOS ARM64 jobs. Document actual support and WSL cleanup limits; VS Code/API bridges and controlled tools remain unimplemented extensions.
+- [x] Run `pnpm check:generated`, `pnpm typecheck`, `pnpm lint`, `pnpm test:coverage`, `pnpm test:packed`. Require success and record new coverage results; investigate reductions rather than inventing a coverage threshold. Live model runs require separate user-selected agent/model and finite bounds.
+- [x] Perform a final spec-to-tests review and commit scoped task files with `test: verify external runtime plugins and packed adapters`.
 
 ## Execution Handoff
 

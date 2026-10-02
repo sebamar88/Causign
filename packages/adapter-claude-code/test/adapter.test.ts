@@ -1,5 +1,5 @@
 import {afterEach,expect,it} from 'vitest';
-import {mkdtemp,writeFile,rm} from 'node:fs/promises';
+import {mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {resolve} from 'node:path';
@@ -49,3 +49,15 @@ it('runs fixture output scenarios and negotiates tool incompatibility before nat
  expect((await runScenario({...scenario,input:'malformed'},config)).status).toBe('ERROR');
  expect((await runScenario({...scenario,mocks:[{type:'tool',name:'delete',response:{kind:'result',value:null}}]},config)).status).toBe('INCOMPATIBLE');
 },15000);
+it.each(['cancel','timeout'])('cleans native process through core → bridge after %s',async mode=>{
+ const {root}=await setup(),marker=join(root,'native.pid');let pid:number|undefined;
+ const candidate=(await discoverAgents(createRegistry([plugin]),{kind:'file',path:root})).candidates[0],adapter=plugin.adapters[0];
+ const selection:Selection={candidate,adapterId:adapter.id,mode:'output',target:{kind:'native',command:process.execPath,args:[resolve('fixtures/native-runtimes/claude.mjs')],cwd:root}};
+ const agent=await adapter.createLaunch(selection),controller=new AbortController();
+ const scenario:ScenarioDefinition={schemaVersion:'1',id:'cleanup',name:'cleanup',agent:'agent',input:`stall:${marker}`,mocks:[],assertions:[],requirements:[],timeoutMs:mode==='timeout'?1000:5000};
+ const pending=runScenario(scenario,{schemaVersion:'1',agents:{agent},evaluators:{}},{signal:controller.signal});
+ try{for(let tries=0;tries<150;tries++){try{pid=Number(await readFile(marker,'utf8'));break;}catch{await new Promise(resolve=>setTimeout(resolve,20));}}
+  expect(pid).toBeTypeOf('number');if(mode==='cancel')controller.abort();expect((await pending).status).toBe('ERROR');
+  await new Promise(resolve=>setTimeout(resolve,400));let alive=true;try{process.kill(pid!,0);}catch{alive=false;}expect(alive).toBe(false);
+ }finally{controller.abort();await pending;if(pid)try{process.kill(pid,'SIGKILL');}catch{/* Test does not leave an orphan on failure. */}}
+},10000);

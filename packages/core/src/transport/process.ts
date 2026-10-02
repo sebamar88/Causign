@@ -29,7 +29,20 @@ export function openProcess(agent:AgentReference,overrides:TransportLimits={}):P
  async function close(){
   if(closePromise)return closePromise;
   closing=true;
-  closePromise=(async()=>{output.destroy();child.stdout.destroy();if(!ended){child.stdin.destroy();child.kill();const timer=setTimeout(()=>{if(!ended)child.kill('SIGKILL');},limits.terminationGraceMs);try{await completion;}finally{clearTimeout(timer);}}})();
+  closePromise=(async()=>{
+   output.destroy();child.stdout.destroy();if(!ended){
+    // EOF gives adapters time to abort and reap their own native children.
+    child.stdin.end();let fallback:ReturnType<typeof setTimeout>|undefined;
+    const timer=setTimeout(()=>{if(ended)return;
+     if(process.platform==='win32'&&child.pid){
+      const killer=spawn('taskkill.exe',['/pid',String(child.pid),'/T','/F'],{windowsHide:true,stdio:'ignore'});
+      killer.once('error',()=>child.kill('SIGKILL'));killer.once('close',code=>{if(code!==0&&!ended)child.kill('SIGKILL');});
+      fallback=setTimeout(()=>{if(!ended)child.kill('SIGKILL');killer.kill();},250);
+     }else{child.kill('SIGTERM');fallback=setTimeout(()=>{if(!ended)child.kill('SIGKILL');},250);}
+    },limits.terminationGraceMs);
+    try{await completion;}finally{clearTimeout(timer);clearTimeout(fallback);}
+   }
+  })();
   return closePromise;
  }
  async function* frames():AsyncGenerator<ReceivedFrame>{

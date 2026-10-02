@@ -18,6 +18,7 @@ export async function serveOutputBridge(driver:OutputDriver,options:OutputBridge
  const failure=(error:unknown)=>{diagnose(error);try{finish('run.errored',{error:{message:error instanceof Error?error.message:String(error)}});}catch{close();}close();};
  const bounded=(chunk:Buffer|string)=>{for(const byte of Buffer.isBuffer(chunk)?chunk:Buffer.from(chunk)){if(byte===10)lineBytes=0;else if(++lineBytes>1048576){failure(new Error('Protocol input frame byte limit exceeded'));break;}}};
  const disconnected=()=>close();input.on('data',bounded);input.on('error',failure);output.on('error',failure);output.on('close',disconnected);
+ const signalShutdown=()=>close();if(!options.input){process.on('SIGTERM',signalShutdown);process.on('SIGINT',signalShutdown);}
  let timer:ReturnType<typeof setTimeout>|undefined;
  try{
   for await(const line of lines){
@@ -37,5 +38,5 @@ export async function serveOutputBridge(driver:OutputDriver,options:OutputBridge
     else throw new Error('Unsupported output bridge command');
    }catch(error){failure(error);break;}
   }
- }finally{close();clearTimeout(timer);input.off('data',bounded);input.off('error',failure);output.off('error',failure);output.off('close',disconnected);await job;}
+ }finally{close();clearTimeout(timer);input.off('data',bounded);input.off('error',failure);output.off('error',failure);output.off('close',disconnected);if(!options.input){process.off('SIGTERM',signalShutdown);process.off('SIGINT',signalShutdown);}await job;}
 }

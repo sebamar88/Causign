@@ -5,6 +5,7 @@ else{
  if(process.env.CAUSIGN_NATIVE_MARKER)writeFileSync(process.env.CAUSIGN_NATIVE_MARKER,'executed');
  let input='';for await(const chunk of process.stdin)input+=chunk;
  if(input==='malformed')console.log('not JSON');
- else if(input==='stall')await new Promise(()=>{});
+ else if(input.startsWith('stall:')){writeFileSync(input.slice(6),String(process.pid));setInterval(()=>{},1000);}
+ else if(input==='stall'){setInterval(()=>{},1000);}
  else{console.log(JSON.stringify({type:'result',subtype:'success',is_error:false,result:input}));if(input==='nonzero')process.exitCode=7;}
 }

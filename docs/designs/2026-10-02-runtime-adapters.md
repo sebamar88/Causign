@@ -1,6 +1,9 @@
 # Causign runtime adapters
 
-Status: proposed design; implementation has not started.
+Status: approved design, implemented on `codex/extensible-agent-discovery`.
+Claude output profile and open plugins are fixture-verified. Codex discovery is
+implemented; production output execution remains unavailable until global tool
+denial is verified, as required by the profile's enforcement gate below.
 
 ## Objective
 

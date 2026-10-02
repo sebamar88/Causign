@@ -1,12 +1,11 @@
-import {readFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
-import {targetLaunch,verifyCandidateRevision,type NativeLaunch,type Selection,type AgentReference} from '@causign/runtime';
+import {targetLaunch,readVerifiedCandidate,type NativeLaunch,type Selection,type AgentReference} from '@causign/runtime';
 import {parseClaudeDefinition} from './discover.js';
 import {probeClaude} from './probe.js';
 export async function buildClaudeLaunch(selection:Selection,prompt:string):Promise<NativeLaunch>{
  if(selection.adapterId!=='causign/claude-output'||selection.mode!=='output'||selection.candidate.discovererId!=='causign/claude-agents'||selection.candidate.kind!=='agent'||selection.candidate.source.kind!=='file')throw new Error('Invalid Claude output selection');
  if(selection.provider)throw new Error('Claude provider selection is not implemented; native auth/provider environment applies');
- await verifyCandidateRevision(selection.candidate);const {definition}=parseClaudeDefinition(await readFile(selection.candidate.source.path,'utf8'));
+ const {definition}=parseClaudeDefinition(await readVerifiedCandidate(selection.candidate));
  if(definition.name!==selection.candidate.nativeSelector)throw new Error('Native selector changed');
  const args=['--print','--output-format','json','--restricted','--tools','','--disallowedTools','*','--strict-mcp-config','--mcp-config','{"mcpServers":{}}','--disable-slash-commands','--setting-sources','','--settings','{"disableAllHooks":true,"enabledPlugins":{}}','--no-session-persistence','--no-chrome','--agents',JSON.stringify({[definition.name]:{description:definition.description,prompt:definition.prompt,tools:[],...(definition.model?{model:definition.model}:{})}}),'--agent',definition.name];
  if(selection.model)args.push('--model',selection.model);

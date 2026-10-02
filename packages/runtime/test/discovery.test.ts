@@ -49,3 +49,6 @@ it('rejects invalid limits and unknown discoverer filters',async()=>{
 it('reports an unrecognized format explicitly',async()=>{
  const root=await setup();await writeFile(join(root,'unknown.agent'),'opaque');const result=await discoverAgents(registry(),{kind:'file',path:root});expect(result.candidates).toEqual([]);expect(result.diagnostics.some(item=>item.code==='source.unrecognized')).toBe(true);
 });
+it('reports an explicit symlink root as unsupported instead of a successful empty scan',async()=>{
+ const root=await setup(),outside=await setup();await symlink(outside,join(root,'link'),process.platform==='win32'?'junction':'dir');const result=await discoverAgents(registry(),{kind:'file',path:join(root,'link')});expect(result.complete).toBe(false);expect(result.diagnostics.some(item=>item.code==='scan.unsupported-root')).toBe(true);
+});
