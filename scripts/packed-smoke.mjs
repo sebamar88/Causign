@@ -37,12 +37,13 @@ for (const name of packageNames)
   );
 const archives = (await readdir(consumer)).filter((f) => f.endsWith(".tgz"));
 assert.equal(archives.length, packageNames.length);
-const packed = Object.fromEntries(
-  archives.map((f) => [
-    "@causign/" + f.replace(/^causign-/, "").replace(/-0\.1\.1\.tgz$/, ""),
-    "file:./" + f,
-  ]),
-);
+const packed = {};
+for (const name of packageNames) {
+  const manifest=JSON.parse(await readFile(join(root,'packages',name,'package.json'),'utf8'));
+  const archive=`${manifest.name.replace('@','').replace('/','-')}-${manifest.version}.tgz`;
+  assert(archives.includes(archive),`Missing packed archive: ${archive}`);
+  packed[manifest.name]=`file:./${archive}`;
+}
 await writeFile(
   join(consumer, "package.json"),
   JSON.stringify(
