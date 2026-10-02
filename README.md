@@ -1,38 +1,190 @@
-# Agentest
+<p align="center"><img src="docs/assets/agentest-banner.svg" alt="Agentest — tests, evaluations and security evidence for AI agents" width="100%"></p>
+<p align="center">
+<a href="https://github.com/sebamar88/bytekitsecure/actions/workflows/ci.yml"><img src="https://github.com/sebamar88/bytekitsecure/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+<img src="https://img.shields.io/badge/Node-%E2%89%A522-22c55e?logo=nodedotjs&logoColor=white" alt="Node 22+">
+<img src="https://img.shields.io/badge/protocol-agentest%2F1-8b5cf6" alt="Protocol agentest/1">
+<img src="https://img.shields.io/badge/adapters-language%20neutral-06b6d4" alt="Language neutral adapters">
+</p>
+<p align="center"><strong>Test what your agent requests. Verify what it executes. Keep the evidence.</strong></p>
+<p align="center"><a href="docs/getting-started.md">Get started</a> · <a href="docs/scenarios.md">Write scenarios</a> · <a href="docs/adapters.md">Connect an agent</a> · <a href="docs/ci.md">Run in CI</a> · <a href="docs/README.md">Documentation</a></p>
 
-Agentest tests instrumented AI agents through a language-neutral JSONL protocol. Scenarios describe static tool mocks, output and behavior assertions, approvals, and explicit capability requirements. The runner saves plans, traces, and results and returns an exit code suitable for CI.
+## Meet Agentest
 
-This repository contains five version 0.1.0 packages: `@agentest/protocol`, `@agentest/core`, `@agentest/sdk`, `@agentest/cli`, and `@agentest/adapter-vercel`. Public npm availability is not assumed.
+Your agent can give the right answer and still call the wrong tool, skip an
+approval, or trigger an unwanted effect. Testing only its final text misses
+that behavior. Reading logs manually makes regressions harder to repeat and
+harder to enforce in CI.
 
-Use Node 22 or newer and pnpm 11.25.0. CI acceptance is configured for Node 24.21.0 and Python 3.12.10; Python is required for the cross-language fixture. `AGENTEST_PYTHON` can select an absolute Python 3 executable.
+Agentest turns those expectations into repeatable tests. It runs your instrumented
+agent, controls selected tool calls, checks what happened, and saves the evidence.
+You get a test result your CI can act on and a trace you can use to explain it.
+
+## Why use it?
+
+| When this happens… | Agentest helps you… | What you gain |
+| --- | --- | --- |
+| A prompt, model or tool change alters behavior | Rerun the same scenarios and assertions | A regression check before shipping |
+| A test would execute a payment, deployment or external lookup | Replace selected instrumented tools with static results/errors | Test the surrounding agent flow without invoking those real implementations |
+| The answer looks correct, but the agent attempted a forbidden operation | Assert tool requests, real execution, rejections and approvals separately | Visibility into actions that final-text checks miss |
+| A failing run leaves you guessing what happened | Retain assertion reasons and references to trace events | Evidence you can inspect instead of reconstructing a run from scattered logs |
+| Teams use different languages or frameworks | Connect them through the same JSONL contract | A shared runner, result model and CI workflow |
+| Your CI only knows whether the process exited | Return distinct behavior, infrastructure and compatibility outcomes | Failures that point to the kind of problem you need to fix |
+
+You provide your scenarios and an instrumented adapter. Agentest provides process
+management, capability checks, static tool interception, assertions, evidence
+artifacts and CI exit codes. You do not have to build that plumbing again for
+each agent. It does not automatically discover every risk or make live models
+deterministic.
+
+## How it fits your existing tests
+
+These approaches solve different parts of the problem; Agentest can sit alongside
+your unit tests and output evaluations.
+
+| Approach | Useful for | What Agentest adds |
+| --- | --- | --- |
+| Unit tests for individual tools/functions | Checking isolated implementation logic | Scenarios around the instrumented agent's actual tool-selection and approval flow |
+| Assertions on the final answer | Checking expected content and quality | Evidence of intent, execution, mocks and rejections, even when the answer looks fine |
+| Ad hoc scripts and manual logs | Exploring or debugging a particular run | A reusable scenario format, lifecycle validation, standardized artifacts and CI status semantics |
+| A custom framework-specific harness | Deep integration with one application stack | A common protocol and runner across adapters; framework-specific instrumentation is still required |
+
+**Use Agentest when** you need to verify observable agent behavior across runs,
+especially tool calls, approvals and regressions in CI. For a pure function with
+no agent interaction, an ordinary unit test is usually enough. For production
+monitoring or security isolation, use dedicated systems alongside Agentest.
+
+## What can you test?
+
+| 🧪 Tests | 📊 Evals | 🛡️ Security |
+| --- | --- | --- |
+| Scenarios, fixtures and static mocks | Output checks and semantic evaluators | Tool intent, execution, rejection and approval evidence |
+| Deterministic local examples | Regression scenarios, latency and explicit USD cost | Interception that fails closed |
+
+**MVP scope:** a CLI, declarative SDK, language-neutral protocol and Vercel AI SDK adapter. Model-diff dashboards, model interception and security sandboxing are outside this release. The five packages are version `0.1.0`; public npm availability is not assumed.
+
+## One runner. Multiple adapters.
+
+```mermaid
+flowchart TB
+    S[Scenarios · mocks · assertions] --> A[Agentest runner]
+    A <-->|JSONL · agentest/1| P[Process adapter]
+    P --> V[Vercel AI SDK]
+    P --> J[Custom JS / TS agent]
+    P --> O[Python or another language]
+    A --> R[Plans · traces · results]
+    R --> C[Local debugging + CI exit code]
+    style A fill:#7c3aed,color:#fff,stroke:#a78bfa
+    style P fill:#0891b2,color:#fff,stroke:#67e8f9
+    style R fill:#15803d,color:#fff,stroke:#86efac
+```
+
+Adapters declare capabilities. Unsupported requirements produce `INCOMPATIBLE` before execution. JS/TS can use the SDK bridge; other languages can implement the JSONL protocol without an SDK.
+
+## Try it locally
+
+Use Node **22+** and pnpm **11.25.0**. Python 3 is needed for repository cross-language acceptance. CI pins Node `24.21.0` and Python `3.12.10`.
 
 ```sh
+git clone https://github.com/sebamar88/bytekitsecure.git
+cd bytekitsecure
 pnpm install --frozen-lockfile
-pnpm check:generated
-pnpm lint
-pnpm typecheck
 pnpm build
-pnpm test
-pnpm test:coverage
-pnpm test:packed
 ```
 
-Tests build TypeScript projects before loading distribution exports. Coverage writes HTML, LCOV and JSON summary to `coverage/`; inspect `coverage/coverage-summary.json` for measured totals. No statistical confidence or release threshold is inferred from coverage. CI runs the same deterministic fixtures without provider credentials on Linux x64, Windows x64, macOS ARM64 (`macos-15`), and Linux ARM64 (`ubuntu-24.04-arm`). Each job verifies its runtime architecture and uploads separate artifacts. A workflow definition is not evidence of a remote CI run.
-
-For a workspace starter, use the built CLI in a new directory:
+From a new project directory, invoke the built CLI with an absolute path:
 
 ```sh
-node /absolute/path/to/agentest/packages/cli/dist/bin.js init
-node /absolute/path/to/agentest/packages/cli/dist/bin.js inspect
-node /absolute/path/to/agentest/packages/cli/dist/bin.js run --verbose
+node /absolute/path/to/bytekitsecure/packages/cli/dist/bin.js init
+node /absolute/path/to/bytekitsecure/packages/cli/dist/bin.js inspect
+node /absolute/path/to/bytekitsecure/packages/cli/dist/bin.js run --verbose
 ```
 
-`init` writes a configuration, a sample `*.agentest.ts` definition, and a harmless process agent. It refuses to overwrite existing files. `inspect [files/globs] --config path` displays normalized scenarios and requirements without starting agents; compatibility is unverified until negotiation. `run [files/globs] --config path --output-dir path --verbose` discovers TypeScript scenarios, runs them, and saves evidence. Default artifacts live in `.agentest/results`. Inputs, outputs and diagnostics may appear in those local files.
+The starter uses a harmless local agent, without provider credentials. `init` refuses existing target files. For an installed CLI, use `pnpm exec agentest run`. See [installation and tarballs](docs/getting-started.md) for consumer projects.
 
-To use the distribution in another project, pack each package with `pnpm pack --pack-destination /absolute/archive/directory` from its package directory, then install the five resulting `.tgz` files as development dependencies in the consumer. For pnpm, add `overrides` in the consumer's `pnpm-workspace.yaml`, mapping each of the five package names to its `file:./archive.tgz` path, so transitive package versions resolve locally too. [The packed smoke script](scripts/packed-smoke.mjs) creates this exact configuration. Install the Vercel adapter's `ai@7.0.127` peer when using it. Run `pnpm exec agentest init`, `pnpm exec agentest inspect`, and `pnpm exec agentest run`; the same last command works in consumer CI. `pnpm test:packed` resolves a consumer lockfile and fetches dependencies online, then performs a frozen offline installation in a fresh temporary consumer and runs the installed CLI against all five domains, Python, and deterministic Vercel examples. Set `AGENTEST_PNPM` if pnpm is not on PATH. This performs no publication.
+## Tests that describe intent
 
-The [examples](examples/README.md) use fake support, coding, DevOps, RAG, and coordinator tools. Their `.mjs` definitions are reusable exports; CLI discovery uses `*.agentest.ts` wrappers, as demonstrated by the acceptance script. The Vercel example uses the real pinned AI SDK with its deterministic mock model.
+```ts
+import { agentTest, expect } from '@agentest/sdk';
 
-Process isolation separates scenario state; it is not a security sandbox. Instrumentation must expose actual tool intent before effects. Static mocks bypass selected real implementations, but live model behavior remains nondeterministic. See [protocol v1](docs/protocol-v1.md) and [adapter conformance](docs/adapter-conformance.md) for evidence boundaries and integration rules.
+export default agentTest('refund requires approval', {
+  agent: 'support',
+  input: { customerId: 'fake' },
+  mocks: { 'customer.lookup': { result: { name: 'Ada' } } },
+  approvalDecisions: [{ decision: 'reject' }],
+  assertions: [
+    expect.tool('customer.lookup').toHaveBeenMocked(),
+    expect.approval().toHaveBeenRejected(),
+    expect.tool('refund').not.toHaveBeenExecuted(),
+  ],
+});
+```
 
-The complementary [Agentest skill](skills/agentest/SKILL.md) guides coding assistants through CLI setup, scenarios, evidence interpretation, and CI integration. Install the skills/agentest folder with your runtime’s skill installer to use it as $agentest. The CLI remains the executable test runner.
+Save as `refund.agentest.ts` and configure an instrumented `support` agent. This follows the [support fixture](examples/support/scenario.mjs). Mocking and business approval are separate decisions.
+
+## Requested ≠ executed
+
+```mermaid
+flowchart LR
+    Q[tool.requested] --> D{Explicit decision}
+    D -->|proceed| S[tool.started]
+    S --> E[tool.completed / tool.failed]
+    D -->|mock| M[Mock result / error]
+    D -->|reject| B[tool.rejected]
+    style Q fill:#0891b2,color:#fff
+    style S fill:#7c3aed,color:#fff
+    style M fill:#15803d,color:#fff
+    style B fill:#b91c1c,color:#fff
+```
+
+A request records intent; `tool.started` records real execution. A mock never proves real execution. Absence in an incomplete trace cannot prove a tool was safe. Interception timeouts never authorize execution. [Read the evidence model](docs/results-and-security.md).
+
+## Built for CI
+
+| Result | Exit | Meaning |
+| --- | ---: | --- |
+| PASS / SKIP | 0 | Passed assertions or explicit skip |
+| FAIL | 1 | Unexpected behavior |
+| ERROR | 2 | Infrastructure, protocol or evaluator problem |
+| INCOMPATIBLE | 3 | Required capability or protocol unavailable |
+| Interrupted | 130 | Explicit user interruption |
+
+The [acceptance workflow](.github/workflows/ci.yml) runs the same checks on **Linux x64 · Windows x64 · macOS ARM64 · Linux ARM64**, including coverage and seven installed-CLI scenarios. The badge shows the current remote status. Reports retain evidence under `.agentest/results` by default.
+
+## Explore the examples
+
+| Fixture | Focus |
+| --- | --- |
+| [Support](examples/support) | Customer lookup mock and rejected refund approval |
+| [Coding](examples/coding) | Instrumented coding-tool behavior |
+| [DevOps](examples/devops) | Operational tool and approval assertions |
+| [RAG](examples/rag) | Citation evaluator |
+| [Coordinator](examples/coordinator) | Instrumented coordinator scenario |
+| [Python](fixtures/python-agent.py) | Standard-library JSONL interoperability |
+| [Vercel](examples/vercel) | Real AI SDK with a deterministic mock model |
+
+These fixtures use fake/local tools. Their `.mjs` exports need `*.agentest.ts` wrappers for CLI discovery; see [the examples guide](examples/README.md).
+
+## Packages and assistant skill
+
+| Package | Responsibility |
+| --- | --- |
+| `@agentest/protocol` | Schemas, types and lifecycle validation |
+| `@agentest/core` | Negotiation, processes, assertions and evidence |
+| `@agentest/sdk` | Declarative scenarios and JS/TS bridge |
+| `@agentest/cli` | `init`, `inspect`, `run` and reports |
+| `@agentest/adapter-vercel` | Adapter for exactly `ai@7.0.127` |
+
+The [Agentest skill](skills/agentest/SKILL.md) guides coding assistants through setup and evidence interpretation. Install `skills/agentest` with your runtime's skill installer, then invoke `$agentest`. The CLI executes tests; the skill guides its use.
+
+## Documentation
+
+- [Documentation map](docs/README.md)
+- [Getting started](docs/getting-started.md)
+- [Scenarios, assertions and evaluators](docs/scenarios.md)
+- [Adapters](docs/adapters.md)
+- [Results and security boundaries](docs/results-and-security.md)
+- [GitHub Actions](docs/ci.md)
+- [Development and distribution](docs/development.md)
+- [Protocol v1](docs/protocol-v1.md) and [adapter conformance](docs/adapter-conformance.md)
+
+Process isolation is not a security sandbox. Instrumentation must observe intent before effects; an untrusted adapter can conceal activity. Live models remain nondeterministic. Cost assertions need a final explicit USD amount; tokens alone imply neither pricing nor statistical confidence.

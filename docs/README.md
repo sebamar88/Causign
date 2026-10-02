@@ -1,0 +1,18 @@
+# Agentest documentation
+
+| Goal | Guide |
+| --- | --- |
+| Run a harmless first test | [Getting started](getting-started.md) |
+| Write mocks, assertions and evaluations | [Scenarios](scenarios.md) |
+| Connect JavaScript, Python or Vercel AI SDK | [Adapters](adapters.md) |
+| Explain failures and security claims | [Results and security](results-and-security.md) |
+| Test in GitHub Actions | [CI](ci.md) |
+| Contribute, measure coverage or pack distributions | [Development](development.md) |
+| Implement the wire contract | [Protocol v1](protocol-v1.md) |
+| Verify adapter guarantees | [Adapter conformance](adapter-conformance.md) |
+
+The [six JSON schemas](../packages/protocol/schemas) are authoritative for
+structure; protocol documentation defines lifecycle semantics. Historical
+specifications and plans under `superpowers/` are not installation instructions.
+See the [example catalogue](../examples/README.md), [CLI reference](../packages/cli/README.md)
+and [Vercel compatibility reference](../packages/adapter-vercel/README.md).

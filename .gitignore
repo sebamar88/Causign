@@ -4,4 +4,4 @@ dist/
 *.tsbuildinfo
 coverage/
 .agentest/
-docs/
+docs/superpowers/
