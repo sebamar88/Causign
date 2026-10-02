@@ -15,6 +15,9 @@
     "dist"
   ],
   "dependencies": {
+    "@causign/adapter-codex": "workspace:*",
+    "@causign/adapter-claude-code": "workspace:*",
+    "@causign/runtime": "workspace:*",
     "@causign/protocol": "workspace:*",
     "@causign/core": "workspace:*",
     "tsx": "4.23.15",

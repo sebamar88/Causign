@@ -8,11 +8,13 @@ import {initialize} from './init.js';
 import {inspectDefinitions} from './inspect.js';
 import {runDefinitions} from './run.js';
 import {reportConsole} from './reporters/console.js';
+import {discoverCommand} from './agent-discovery.js';
 export interface CliIO {cwd?:string;stdout:(message:string)=>void;stderr:(message:string)=>void;signal?:AbortSignal;}
-const help='Usage: causign init | inspect [files/globs] [--config path] | run [files/globs] [--config path] [--verbose] [--output-dir path]';
+const help='Usage: causign init | discover --path root [--discoverer id] [--plugins manifest.json] [--json] | discover --source id --plugins manifest.json [--json] | inspect [files/globs] [--config path] | run [files/globs] [--config path] [--verbose] [--output-dir path]';
 export async function main(argv:string[],io:CliIO):Promise<number> {
  try{const cwd=resolve(io.cwd??process.cwd());const [command,...args]=argv;
  if(command==='--help'||command==='-h'){io.stdout(help);return 0;}
+ if(command==='discover')return await discoverCommand(args,io);
  if(!['init','inspect','run'].includes(command))throw new Error(help);
  let configName='causign.config.ts',output='.causign/results',verbose=false;const filters:string[]=[];
  for(let index=0;index<args.length;index++){const arg=args[index];if(arg==='--config'||arg==='--output-dir'){const value=args[++index];if(!value||value.startsWith('--'))throw new Error(`Missing value for ${arg}`);if(arg==='--config')configName=value;else output=value;}else if(arg==='--verbose')verbose=true;else if(arg.startsWith('-'))throw new Error(`Unknown option ${arg}`);else filters.push(arg);}

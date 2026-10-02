@@ -7,6 +7,7 @@ Coming from the earlier MVP? Read [Migrating to Causign](migration-to-causign.md
 | Run a harmless first test | [Getting started](getting-started.md) |
 | Write mocks, assertions and evaluations | [Scenarios](scenarios.md) |
 | Connect JavaScript, Python or Vercel AI SDK | [Adapters](adapters.md) |
+| Discover agents and extend framework support (development) | [Agent discovery and plugins](agent-discovery.md) |
 | Explain failures and security claims | [Results and security](results-and-security.md) |
 | Test in GitHub Actions | [CI](ci.md) |
 | Contribute, measure coverage or pack distributions | [Development](development.md) |

@@ -1,0 +1,7 @@
+{
+  "name": "@causign/runtime", "version": "0.1.0", "type": "module",
+  "exports": {".": {"types": "./dist/index.d.ts", "import": "./dist/index.js"}},
+  "files": ["dist", "README.md"],
+  "dependencies": {"@causign/protocol": "workspace:*", "import-meta-resolve": "4.2.0"},
+  "engines": {"node": ">=22"}
+}

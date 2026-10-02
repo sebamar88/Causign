@@ -28,13 +28,14 @@ async function pm(args, cwd) {
   return result;
 }
 const consumer = await mkdtemp(join(tmpdir(), "causign packed consumer "));
-for (const name of ["protocol", "core", "sdk", "cli", "adapter-vercel"])
+const packageNames=["protocol", "core", "sdk", "cli", "adapter-vercel", "runtime", "adapter-claude-code", "adapter-codex"];
+for (const name of packageNames)
   await pm(
     ["pack", "--pack-destination", consumer],
     join(root, "packages", name),
   );
 const archives = (await readdir(consumer)).filter((f) => f.endsWith(".tgz"));
-assert.equal(archives.length, 5);
+assert.equal(archives.length, packageNames.length);
 const packed = Object.fromEntries(
   archives.map((f) => [
     "@causign/" + f.replace(/^causign-/, "").replace(/-0\.1\.0\.tgz$/, ""),
@@ -69,7 +70,7 @@ await pm(["install", "--lockfile-only", ...storeArgs], consumer);
 await pm(["fetch", ...storeArgs], consumer);
 await pm(["install", "--offline", "--frozen-lockfile", ...storeArgs], consumer);
 const canonicalConsumer = await realpath(consumer);
-for (const name of ["protocol", "core", "sdk", "cli", "adapter-vercel"]) {
+for (const name of packageNames) {
   const installed = await realpath(join(consumer, "node_modules/@causign", name));
   const withinConsumer = relative(canonicalConsumer, installed);
   assert(
@@ -103,6 +104,23 @@ await runBuiltAcceptanceSuite({
   base: consumer,
   bin: join(consumer, "node_modules/@causign/cli/dist/bin.js"),
 });
+await writeFile(join(consumer,'example-agent.json'),JSON.stringify({framework:'example',name:'External Agent',text:'hello'}));
+await writeFile(join(consumer,'plugins.json'),JSON.stringify({schemaVersion:'1',plugins:['./fixtures/runtime-plugins/custom-framework.mjs']}));
+const discovery=await command(process.execPath,[join(consumer,'node_modules/@causign/cli/dist/bin.js'),'discover','--path',consumer,'--plugins',join(consumer,'plugins.json'),'--discoverer','example/json-agents','--json'],consumer);
+assert.equal(discovery.exitCode,0,discovery.stderr);assert.equal(JSON.parse(discovery.stdout).candidates[0].name,'External Agent');
+await writeFile(join(consumer,'plugin-smoke.mjs'),`
+import assert from 'node:assert/strict';
+import {createRegistry,loadPluginManifest,discoverAgents} from '@causign/runtime';
+import {runScenario} from '@causign/core';
+const registry=createRegistry(await loadPluginManifest('./plugins.json'));
+const report=await discoverAgents(registry,{kind:'file',path:process.cwd()});
+const adapter=registry.adapters.find(adapter=>adapter.id==='example/output');
+const launch=await adapter.createLaunch({candidate:report.candidates[0],adapterId:adapter.id,mode:'output',target:{kind:'native',cwd:process.cwd()}});
+const result=await runScenario({schemaVersion:'1',id:'packed-plugin',name:'packed-plugin',agent:'a',input:null,mocks:[],assertions:[{id:'text',type:'output.equal',parameters:{value:{text:'hello'}},negated:false,requirements:[]}],requirements:[],timeoutMs:3000},{schemaVersion:'1',agents:{a:launch},evaluators:{}});
+assert.equal(result.status,'PASS',JSON.stringify(result));
+`);
+const pluginSmoke=await command(process.execPath,[join(consumer,'plugin-smoke.mjs')],consumer);
+assert.equal(pluginSmoke.exitCode,0,pluginSmoke.stderr);
 console.log(
-  `Packed acceptance passed: five archives installed offline, seven scenarios, consumer ${consumer}`,
+  `Packed acceptance passed: ${packageNames.length} archives installed offline, seven baseline scenarios + external plugin, consumer ${consumer}`,
 );

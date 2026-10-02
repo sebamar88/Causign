@@ -1,5 +1,23 @@
 # Causign CLI
 
+Development branch adds `discover --path <root> [--discoverer <id>]
+[--plugins <manifest.json>] [--json]` and explicit configured-service discovery.
+See [agent discovery](../../docs/agent-discovery.md). This command is not included
+in published 0.1.0. Discovery finds candidates; execution requires explicit
+adapter selection and scenario capability negotiation.
+
+Run the published CLI without adding it to dependencies:
+
+```sh
+npx --yes @causign/cli@0.1.0 init
+npx --yes @causign/cli@0.1.0 run
+```
+
+Also supported: `pnpm dlx @causign/cli@0.1.0 init`
+and `pnpx @causign/cli@0.1.0 init`. Replace `init` with
+`inspect` or `run` as needed. Scenarios importing SDK/application packages need
+those dependencies installed locally, even when CLI execution is temporary.
+
 Install as a development dependency, then use `causign init`, `causign inspect`,
 and `causign run`. The starter agent only returns a local greeting; it does not
 call a provider or perform tool side effects.
