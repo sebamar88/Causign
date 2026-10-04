@@ -2,6 +2,7 @@ import { basename } from "node:path";
 import { parse } from "@iarna/toml";
 import {
   candidateId,
+  collectFileDiscovery,
   type AgentCandidate,
   type Diagnostic,
   type Discoverer,
@@ -10,10 +11,10 @@ export const codexDiscoverer: Discoverer = {
   id: "causign/codex-config",
   sourceKinds: ["file"],
   async discover(_source, context) {
-    const candidates: AgentCandidate[] = [],
-      diagnostics: Diagnostic[] = [],
-      selectors = new Set<string>();
-    for (const file of context.files) {
+    const selectors = new Set<string>();
+    return collectFileDiscovery(context.files, (file) => {
+      const candidates: AgentCandidate[] = [],
+        diagnostics: Diagnostic[] = [];
       const name = basename(file.path);
       if (name === "config.toml") {
         try {
@@ -34,9 +35,9 @@ export const codexDiscoverer: Discoverer = {
             severity: "error",
           });
         }
-        continue;
+        return { candidates, diagnostics };
       }
-      if (!name.endsWith(".config.toml")) continue;
+      if (!name.endsWith(".config.toml")) return { candidates, diagnostics };
       try {
         const selector = name.slice(0, -".config.toml".length);
         if (!/^[a-zA-Z0-9_-]+$/.test(selector))
@@ -73,11 +74,7 @@ export const codexDiscoverer: Discoverer = {
           severity: "error",
         });
       }
-    }
-    return {
-      candidates,
-      diagnostics,
-      complete: !diagnostics.some((item) => item.severity === "error"),
-    };
+      return { candidates, diagnostics };
+    });
   },
 };
