@@ -2,13 +2,7 @@ import {describe,it,expect,vi} from 'vitest';
 import {MockLanguageModelV4} from 'ai/test';
 import {jsonSchema} from 'ai';
 import {createVercelAdapter,vercelCapabilities,vercelBridgeOptions} from '../src/index.js';
-import type {AgentContext} from '../../sdk/src/index.js';
-const usage={inputTokens:{total:2,noCache:2,cacheRead:0,cacheWrite:0},outputTokens:{total:1,text:1,reasoning:0}};
-const result=(content:any[],reason='stop')=>({content,finishReason:{unified:reason,raw:reason},usage,warnings:[]});
-const text=()=>result([{type:'text',text:'done'}]);
-const toolCall=()=>result([{type:'tool-call',toolCallId:'call1',toolName:'lookup',input:'{"query":"x"}'}],'tool-calls');
-function harness(mock?:unknown){const messages:any[]=[];const abort=new AbortController();let i=0;const context:AgentContext={signal:abort.signal,diagnostic(){},requestApproval:async()=>{throw Error('unsupported');},rejectTool(){throw Error('unsupported');},message:p=>messages.push({type:'message.created',payload:p}),modelStarted:p=>{const id=String(++i);messages.push({type:'model.started',id,payload:p});return id;},modelCompleted:(id,p)=>messages.push({type:'model.completed',id,payload:p}),modelFailed:(id,e)=>messages.push({type:'model.failed',id,payload:e}),reportUsage:p=>messages.push({type:'usage',payload:p}),async callTool(name,input,execute){messages.push({type:'tool.requested',input});if(mock!==undefined){messages.push({type:'tool.completed',execution:'mock'});return mock as any;}messages.push({type:'tool.started'});try{const output=await execute();messages.push({type:'tool.completed',execution:'real',output});return output;}catch(e){messages.push({type:'tool.failed',execution:'real'});throw e;}}};return {context,messages,abort};}
-function definitions(real:any){return {lookup:{description:'Lookup',inputSchema:jsonSchema({type:'object',properties:{query:{type:'string'}},required:['query'],additionalProperties:false}),execute:real}};}
+import {harness,definitions,text,toolCall} from './fixtures.js';
 async function scenario(real:any,mock?:unknown){const h=harness(mock);const model=new MockLanguageModelV4({doGenerate:[toolCall(),text()] as any});const tools=definitions(real);const output=await createVercelAdapter({model,tools})({prompt:'hello'},h.context);return {...h,output,model,tools};}
 describe('Vercel adapter',()=>{
 it('prevents real tool execution for a mock',async()=>{const real=vi.fn();const s=await scenario(real,{answer:'mock'});expect(real).not.toHaveBeenCalled();expect(s.output).toEqual({text:'done'});expect(s.model.doGenerateCalls).toHaveLength(2);});
@@ -27,11 +21,11 @@ import {PassThrough} from 'node:stream';
 import {serveAgent,agentTest} from '../../sdk/src/index.js';
 import {prepareScenario,negotiateScenario} from '../../core/src/compile.js';
 import {validateMessage} from '@causign/protocol';
-async function bridgeScenario(action:'mock'|'real'|'cancel') {
+async function bridgeScenario(action:'mock'|'real'|'cancel'|'reject') {
  const input=new PassThrough(),output=new PassThrough(),messages:any[]=[];let buffer='',sequence=0;
  output.on('data',chunk=>{buffer+=String(chunk);while(buffer.includes('\n')){const end=buffer.indexOf('\n');messages.push(JSON.parse(buffer.slice(0,end)));buffer=buffer.slice(end+1);}});
  const send=(type:string,payload:any,extra:any={})=>input.write(JSON.stringify({protocol:'causign/1',id:`r${++sequence}`,timestamp:new Date().toISOString(),type,payload,...extra})+'\n');
- const until=async(type:string)=>{for(let i=0;i<150;i++){const found=messages.find(m=>m.type===type);if(found)return found;await new Promise(r=>setTimeout(r,2));}throw Error(`missing ${type}: ${JSON.stringify(messages)}`);};
+ const until=(type:string)=>{const found=messages.find(m=>m.type===type);if(found)return Promise.resolve(found);return new Promise<any>((resolve,reject)=>{const check=()=>{const message=messages.find(m=>m.type===type);if(message){clearTimeout(timer);output.off('data',check);resolve(message);}};const timer=setTimeout(()=>{output.off('data',check);reject(new Error(`missing ${type}`));},1000);output.on('data',check);});};
  const real=vi.fn(async()=>{throw Error('real execution failed');});
  const model=new MockLanguageModelV4({doGenerate:[toolCall(),text()] as any});
  const done=serveAgent(createVercelAdapter({model,tools:definitions(real)}),{...vercelBridgeOptions,input,output,diagnostics:new PassThrough()});
@@ -43,16 +37,19 @@ async function bridgeScenario(action:'mock'|'real'|'cancel') {
  send('run.start',{input:{prompt:'hello'},interceptions:action==='real'?[]:[{type:'tool',name:'lookup',response:{kind:'result',value:{answer:'mock'}}}],approvalDecisions:[],limits:{scenarioTimeoutMs:1000,interceptionTimeoutMs:500}},{runId:'run'});
  const request=await until('tool.requested');
  if(action==='mock')send('tool.mock',{response:{kind:'result',value:{answer:'mock'}}},{runId:'run',operationId:request.operationId,correlationId:request.id});
+ if(action==='reject')send('tool.reject',{source:'policy',reason:'Policy denied'}, {runId:'run',operationId:request.operationId,correlationId:request.id});
  if(action==='cancel'){send('run.cancel',{reason:'stop'},{runId:'run'});await until('run.cancelled');send('tool.proceed',{}, {runId:'run',operationId:request.operationId,correlationId:request.id});}
  else await until('run.completed');
  return {messages,real};
  }finally{input.end();await done;}
 }
-it.each(['mock','real','cancel'] as const)('uses actual serveAgent protocol for %s and rejects unsupported capability requirements',async action=>{
+it.each(['mock','real','cancel','reject'] as const)('uses actual serveAgent protocol for %s and rejects unsupported capability requirements',async action=>{
  const s=await bridgeScenario(action);
  if(action==='real'){expect(s.real).toHaveBeenCalledOnce();expect(s.messages.find(m=>m.type==='tool.failed').payload).toMatchObject({execution:'real',error:{message:'real execution failed'}});}
  else expect(s.real).not.toHaveBeenCalled();
  if(action==='mock')expect(s.messages.find(m=>m.type==='tool.completed').payload.execution).toBe('mock');
+ if(action==='mock'||action==='reject')expect(s.messages.some(m=>m.type==='tool.started')).toBe(false);
+ if(action==='reject'){expect(s.messages.find(m=>m.type==='tool.rejected').payload).toMatchObject({name:'lookup',reason:'Policy denied'});expect(s.messages.some(m=>m.type==='tool.completed'||m.type==='tool.failed')).toBe(false);}
  expect(s.messages.filter(m=>['run.completed','run.failed','run.cancelled','run.errored'].includes(m.type))).toHaveLength(1);
 });
 it('does not fabricate unknown token counts or cost',async()=>{const h=harness();const model=new MockLanguageModelV4({doGenerate:{...text(),usage:{inputTokens:{total:undefined,noCache:undefined,cacheRead:undefined,cacheWrite:undefined},outputTokens:{total:undefined,text:undefined,reasoning:undefined}}} as any});await createVercelAdapter({model})({prompt:'hello'},h.context);expect(h.messages.find(m=>m.type==='usage').payload).toEqual({});});
