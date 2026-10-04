@@ -9,6 +9,7 @@
 **Execution:** Direct execution in this chat; written plan awaiting user review.
 
 ## Global constraints
+
 - Preserve protocol schema version 1, capabilities, fail-closed behavior, public plugin interfaces and the acyclic package graph.
 - No package version changes, publishing, paid-provider calls, credentials, Paperclip, or unrelated source changes.
 - Fresh branch from integrated main for each PR. Finish predecessor integration before the next PR; do not pile formatting onto behavioral diffs.
@@ -17,6 +18,7 @@
 - Tests-only characterization may pass immediately; do not fabricate a production defect to get RED. Actual fixes require a failing regression first.
 
 ## Review focus
+
 1. Generated protocol files stay unchanged (Task 1).
 2. Lockfiles/runtime artifacts are excluded (Task 1).
 3. Formatter rewrites do not reorder execution or imports (Task 1).
@@ -24,8 +26,10 @@
 5. Markdown examples and YAML expressions remain valid (Task 1).
 
 ### Task 1: Formatter and mechanical pass
+
 **Files:** package.json, pnpm-lock.yaml, `.prettierignore`, `.github/workflows/ci.yml`, `.github/workflows/publish.yml`, maintained source/config/docs, docs/development.md.
 **Interfaces:** Produces `pnpm format` and `pnpm format:check`; no runtime interface changes.
+
 - [ ] After PR 1 is integrated, create fresh branch. Verify current stable Prettier in the registry and install exact devDependency.
 - [ ] Add scripts `format: prettier --write .` and `format:check: prettier --check .`. Use defaults plus `.prettierrc.json` containing `{"endOfLine":"lf"}` for cross-platform consistency.
 - [ ] Ignore node_modules, dist, coverage, .superpowers, .causign, .agentest, pnpm-lock.yaml and packages/protocol/src/generated.ts. Ensure formatter respects hidden scratch exclusions.
@@ -33,4 +37,3 @@
 - [ ] Add format:check after install in both acceptance/publication workflows and document commands.
 - [ ] Inspect `git diff --ignore-all-space`; explain syntactic formatter-only changes and check generated source/lockfile exclusions. Lockfile may change only for the pinned formatter dependency.
 - [ ] Run complete verification. Commit `style: format maintained source and enforce consistency`; create PR 2 with whitespace-insensitive review guidance.
-
