@@ -6,7 +6,7 @@
 **Architecture:** Keep correctness and add verified installed-oxlint rules based on real findings, avoiding blanket categories.
 **Tech Stack:** TypeScript, Vitest/V8, pnpm 11.25.0, Node 24.21.0, oxlint, GitHub Actions.
 **Spec:** docs/designs/2026-10-02-quality-hardening.md
-**Execution:** Direct execution in this chat; written plan awaiting user review.
+**Execution:** Direct execution in this chat; approved and implemented; see 2026-10-04-quality-lint-validation.md.
 
 ## Global constraints
 
@@ -30,9 +30,9 @@
 **Files:** .oxlintrc.json, docs/development.md, minimal affected src/test files; regression tests in owning package.
 **Interfaces:** No runtime API changes; `pnpm lint` remains oxlint --deny-warnings.
 
-- [ ] After PR 2 is integrated, inspect `pnpm exec oxlint --help` and the installed rule inventory/schema. Evaluate supported suspicious-category rules, eqeqeq, no-var, prefer-const and applicable promise rules; do not assume identifiers/plugins exist.
-- [ ] Run candidate rules without changing permanent config. Record findings, supported rule identifiers and false positives in development docs; choose only rules with useful enforceable behavior.
-- [ ] Add selected rules as errors, retaining correctness and current generated/build exclusions. Run lint to capture violations before fixes.
-- [ ] Fix each violation narrowly. Add failing behavioral regressions before semantic fixes; purely syntactic changes require suite verification, not mirror tests.
-- [ ] For intentional exceptions use line-local documented suppressions; no package-wide disable and no weakening correctness.
-- [ ] Run format:check and complete verification. Commit `chore: enforce targeted lint rules`; create PR 3 listing exact rules and rationale.
+- [x] After PR 2 is integrated, inspect `pnpm exec oxlint --help` and the installed rule inventory/schema. Evaluate supported suspicious-category rules, eqeqeq, no-var, prefer-const and applicable promise rules; do not assume identifiers/plugins exist.
+- [x] Run candidate rules without changing permanent config. Record findings, supported rule identifiers and false positives in development docs; choose only rules with useful enforceable behavior.
+- [x] Add selected rules as errors, retaining correctness and current generated/build exclusions. Run lint to capture violations before fixes.
+- [x] Fix each violation narrowly. Add failing behavioral regressions before semantic fixes; purely syntactic changes require suite verification, not mirror tests.
+- [x] For intentional exceptions use line-local documented suppressions; no package-wide disable and no weakening correctness.
+- [x] Run format:check and complete verification. Commit `chore: enforce targeted lint rules`; create PR 3 listing exact rules and rationale.

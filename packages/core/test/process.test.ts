@@ -82,7 +82,10 @@ it("backpressures a fast emitter for a slow consumer", async () => {
     expect(f.message).toBeDefined();
     expect(c.bufferedBytes).toBeLessThanOrEqual(262656);
     count++;
-    if (count % 100 === 0) await new Promise((r) => setTimeout(r, 2));
+    if (count % 100 === 0)
+      await new Promise((r) => {
+        setTimeout(r, 2);
+      });
   }
   expect(count).toBe(2000);
   await c.close();
@@ -179,7 +182,9 @@ it("bounds ingress together with a nearly full unicode decoder", async () => {
     expect(f.message).toBeDefined();
     expect(c.bufferedBytes).toBeLessThanOrEqual(327680);
     count++;
-    await new Promise((r) => setTimeout(r, 2));
+    await new Promise((r) => {
+      setTimeout(r, 2);
+    });
   }
   expect(count).toBe(100);
 });

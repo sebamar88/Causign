@@ -90,13 +90,17 @@ it.skipIf(process.platform === "win32")(
           pid = Number(await readFile(marker, "utf8"));
           break;
         } catch {
-          await new Promise((resolve) => setTimeout(resolve, 20));
+          await new Promise((resolve) => {
+            setTimeout(resolve, 20);
+          });
         }
       }
       expect(pid).toBeTypeOf("number");
       controller.abort();
       await result;
-      await new Promise((resolve) => setTimeout(resolve, 350));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 350);
+      });
       let alive = true;
       try {
         process.kill(pid!, 0);

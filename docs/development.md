@@ -39,6 +39,42 @@ pnpm exec vitest run packages/protocol/test/generated-check.test.ts
 Do not pass an extra literal `--` before Vitest file filters. Oxlint uses native
 default rules with warnings denied, not the separate StandardJS preset.
 
+### Targeted lint rules
+
+Oxlint remains pinned to 1.86.0. Correctness errors and `--deny-warnings` remain
+enabled; both acceptance and publication CI invoke the same `pnpm lint` command.
+The installed configuration schema and candidate runs establish support for:
+
+| Rules                                            | Purpose                                                                          |
+| ------------------------------------------------ | -------------------------------------------------------------------------------- |
+| `eqeqeq`                                         | Avoid accidental coercion in comparisons.                                        |
+| `no-var`, `prefer-const`                         | Make scope and reassignment intent explicit.                                     |
+| `no-async-promise-executor`                      | Prevent async executor rejections from escaping the constructed promise.         |
+| `no-promise-executor-return`                     | Avoid implying that the Promise constructor consumes an executor's return value. |
+| `prefer-promise-reject-errors`                   | Preserve useful error context in rejection values.                               |
+| `promise/no-new-statics`, `promise/valid-params` | Reject invalid Promise API construction and arguments.                           |
+| `promise/no-return-wrap`                         | Avoid redundant promise wrapping inside continuation callbacks.                  |
+| `promise/no-return-in-finally`                   | Prevent cleanup return values from implying replacement of a settled result.     |
+| `promise/no-multiple-resolved`                   | Detect visible repeated settlement of a promise.                                 |
+
+Candidate runs found 14 implicit executor returns, replaced with block bodies
+that evaluate the same expression and discard its value. Other selected rules
+had no findings. No semantic runtime fixes or suppressions were necessary.
+
+The broader suspicious-category audit found 61 findings: 19 shadowed names,
+14 resolver naming conventions, 12 array sorts, 10 local helper scope findings,
+three continuation-return conventions, two reverses and one asynchronous polling
+loop condition. A blanket category would enforce style on deliberate fixtures,
+fresh owned arrays and void lifecycle continuations; those rules were not added.
+`typescript/no-explicit-any` produced 112 findings, mostly deliberate malformed
+protocol fixtures and erased AI SDK tool generics. It is not enabled or globally
+suppressed. Generated protocol source stays under generator checks.
+
+This configuration uses syntax-based rules. It does not establish type-aware
+floating-promise or misused-promise coverage; those require separately configured
+type-aware tooling. Cancellation and lifecycle evidence remain protected by the
+existing behavioral suite.
+
 ## Contracts and coverage
 
 Use `pnpm format` to format maintained source, configuration and documentation
