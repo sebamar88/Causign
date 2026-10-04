@@ -20,6 +20,61 @@ const discover = (files: SourceFile[]) =>
       },
     },
   );
+it("preserves legacy warning and selector reservation after invalid metadata", async () => {
+  const base = file(
+    "/profiles/config.toml",
+    '[profiles.legacy]\nmodel = "old"',
+  );
+  const invalid = file("/a/review.config.toml", "model = 42");
+  const duplicate = file("/b/review.config.toml", 'model = "valid"');
+  const valid = file(
+    "/profiles/last.config.toml",
+    'model = "m"\nmodel_provider = "p"',
+  );
+  const expected = {
+    candidates: [
+      {
+        id: candidateId("causign/codex-config", valid.path, "last"),
+        discovererId: "causign/codex-config",
+        name: "last",
+        nativeSelector: "last",
+        kind: "agent",
+        source: { kind: "file", path: valid.path },
+        revision: valid.revision,
+        runtimeId: "codex",
+        metadata: {
+          definitionFormat: "codex-profile-v2",
+          model: "m",
+          provider: "p",
+        },
+      },
+    ],
+    diagnostics: [
+      {
+        code: "codex.legacy-profile",
+        message:
+          "Embedded profiles are not the reference 0.159.0 native profile format; use explicitly selected <name>.config.toml files",
+        source: base.path,
+        severity: "warning",
+      },
+      {
+        code: "codex.definition",
+        message: "Invalid model metadata",
+        source: invalid.path,
+        severity: "error",
+      },
+      {
+        code: "codex.definition",
+        message: "Duplicate native profile selector",
+        source: duplicate.path,
+        severity: "error",
+      },
+    ],
+    complete: false,
+  };
+  expect(await discover([base, invalid, duplicate, valid])).toEqual(expected);
+  expect(await discover([base, invalid, duplicate, valid])).toEqual(expected);
+});
 it.each([
   ["broken.config.toml", "model = [", "Invalid TOML"],
   ["config.toml", "model = [", "Invalid TOML configuration"],

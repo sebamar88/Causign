@@ -152,6 +152,22 @@ tests do not certify native tool-security behavior.
 
 ## Limits and native behavior
 
+### File result collection for plugin authors
+
+`@causign/runtime` additively exports `collectFileDiscovery(files, inspect)`.
+It synchronously visits readonly `SourceFile` entries in input order. Each
+callback returns `{candidates: AgentCandidate[], diagnostics: Diagnostic[]}`;
+ignored files return empty arrays. The collector appends both arrays in order
+and sets `complete` to false only when an error diagnostic exists. Warning-only
+results remain complete; partial candidates remain available alongside errors.
+
+Callbacks own provider matching, parsing, selector state, candidate IDs/revisions
+and error-to-diagnostic conversion. Unexpected callback exceptions propagate;
+they never become a successful report. Claude and Codex retain their distinct
+duplicate diagnostics and metadata rules. Existing `Discoverer` and
+`RuntimePlugin` interfaces remain unchanged, and runtime gains no parser
+dependencies. This helper does not change the trusted in-process plugin boundary.
+
 Default scan bounds: 10,000 files, 1 MiB/file, 32 MiB total and 10 seconds.
 Dependency/build/VCS/result directories and symlinks are excluded. The
 programmatic API can supply positive integer limits. Exceeding a bound returns

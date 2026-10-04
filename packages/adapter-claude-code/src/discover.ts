@@ -1,6 +1,7 @@
 import { parseDocument } from "yaml";
 import {
   candidateId,
+  collectFileDiscovery,
   type AgentCandidate,
   type Diagnostic,
   type Discoverer,
@@ -69,15 +70,15 @@ export const claudeDiscoverer: Discoverer = {
   id: "causign/claude-agents",
   sourceKinds: ["file"],
   async discover(_source, context) {
-    const candidates: AgentCandidate[] = [],
-      diagnostics: Diagnostic[] = [],
-      selectors = new Set<string>();
-    for (const file of context.files) {
+    const selectors = new Set<string>();
+    return collectFileDiscovery(context.files, (file) => {
+      const candidates: AgentCandidate[] = [],
+        diagnostics: Diagnostic[] = [];
       if (
         !file.path.toLowerCase().endsWith(".md") ||
         !file.text.startsWith("---")
       )
-        continue;
+        return { candidates, diagnostics };
       try {
         const { definition, unknown } = parseClaudeDefinition(file.text);
         if (selectors.has(definition.name)) {
@@ -87,7 +88,7 @@ export const claudeDiscoverer: Discoverer = {
             source: file.path,
             severity: "error",
           });
-          continue;
+          return { candidates, diagnostics };
         }
         selectors.add(definition.name);
         candidates.push({
@@ -117,11 +118,7 @@ export const claudeDiscoverer: Discoverer = {
           severity: "error",
         });
       }
-    }
-    return {
-      candidates,
-      diagnostics,
-      complete: !diagnostics.some((item) => item.severity === "error"),
-    };
+      return { candidates, diagnostics };
+    });
   },
 };
