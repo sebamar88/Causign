@@ -245,11 +245,11 @@ export function openProcess(
         throw new Error("Outbound maxBufferedBytes exceeded");
       pendingWriteBytes += bytes.length;
       try {
-        await new Promise<void>((resolve, reject) =>
+        await new Promise<void>((resolve, reject) => {
           child.stdin.write(bytes, (error) =>
             error ? reject(error) : resolve(),
-          ),
-        );
+          );
+        });
       } finally {
         pendingWriteBytes -= bytes.length;
       }

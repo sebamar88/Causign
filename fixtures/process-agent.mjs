@@ -18,7 +18,9 @@ const line = JSON.stringify(message("á🙂")) + "\n";
 if (mode === "unicode") {
   for (const byte of Buffer.from(line)) {
     process.stdout.write(Buffer.from([byte]));
-    await new Promise((r) => setTimeout(r, 1));
+    await new Promise((r) => {
+      setTimeout(r, 1);
+    });
   }
 } else if (mode === "args") console.log(JSON.stringify(message(args)));
 else if (mode === "invalid") process.stdout.write("bad\n{}\n{partial");

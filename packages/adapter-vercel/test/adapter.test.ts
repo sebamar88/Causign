@@ -434,7 +434,9 @@ it("disabled bridge approvals fail before emitting observation", async () => {
       i < 100 && !messages.some((m) => m.type === "run.failed");
       i++
     )
-      await new Promise((r) => setTimeout(r, 2));
+      await new Promise((r) => {
+        setTimeout(r, 2);
+      });
     expect(
       messages.find((m) => m.type === "run.failed").payload.error.message,
     ).toMatch(/disabled/);

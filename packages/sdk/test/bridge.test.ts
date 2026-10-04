@@ -42,7 +42,9 @@ async function fixture(
     for (let n = 0; n < 100; n++) {
       const m = messages.find((m) => m.type === type);
       if (m) return m;
-      await new Promise((r) => setTimeout(r, 2));
+      await new Promise((r) => {
+        setTimeout(r, 2);
+      });
     }
     throw Error(`Missing ${type}`);
   };
@@ -121,7 +123,9 @@ describe("agent bridge", () => {
     void done.then(() => {
       settled = true;
     });
-    await new Promise((r) => setTimeout(r, 120));
+    await new Promise((r) => {
+      setTimeout(r, 120);
+    });
     try {
       expect(settled).toBe(true);
       expect(context.signal.aborted).toBe(true);
@@ -277,7 +281,9 @@ describe("agent bridge", () => {
     );
     await f.until("tool.requested");
     while (f.messages.filter((m) => m.type === "tool.requested").length < 2)
-      await new Promise((r) => setTimeout(r, 1));
+      await new Promise((r) => {
+        setTimeout(r, 1);
+      });
     const requests = f.messages.filter((m) => m.type === "tool.requested");
     expect(new Set(requests.map((m) => m.operationId)).size).toBe(2);
     for (const r of [...requests].reverse())
@@ -316,7 +322,9 @@ describe("agent bridge", () => {
     });
     await f.until("tool.requested");
     f.output.destroy(new Error("fake EPIPE"));
-    await new Promise((r) => setTimeout(r, 1));
+    await new Promise((r) => {
+      setTimeout(r, 1);
+    });
     await f.close();
     expect(real).not.toHaveBeenCalled();
     expect(signal!.aborted).toBe(true);
@@ -426,7 +434,9 @@ describe("agent bridge", () => {
     f.send(frame("run.cancel", { reason: "stop" }, { runId: "run" }));
     await f.until("run.cancelled");
     resolve(4);
-    await new Promise((r) => setTimeout(r, 2));
+    await new Promise((r) => {
+      setTimeout(r, 2);
+    });
     await f.close();
     expect(
       f.messages.some(

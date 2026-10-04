@@ -290,13 +290,17 @@ it.each(["cancel", "timeout"])(
           pid = Number(await readFile(marker, "utf8"));
           break;
         } catch {
-          await new Promise((resolve) => setTimeout(resolve, 20));
+          await new Promise((resolve) => {
+            setTimeout(resolve, 20);
+          });
         }
       }
       expect(pid).toBeTypeOf("number");
       if (mode === "cancel") controller.abort();
       expect((await pending).status).toBe("ERROR");
-      await new Promise((resolve) => setTimeout(resolve, 400));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 400);
+      });
       let alive = true;
       try {
         process.kill(pid!, 0);
