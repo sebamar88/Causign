@@ -6,7 +6,7 @@
 **Architecture:** A standalone mechanical PR adds a pinned formatter and CI enforcement, preserving generated outputs.
 **Tech Stack:** TypeScript, Vitest/V8, pnpm 11.25.0, Node 24.21.0, oxlint, GitHub Actions.
 **Spec:** docs/designs/2026-10-02-quality-hardening.md
-**Execution:** Direct execution in this chat; written plan awaiting user review.
+**Execution:** Direct execution in this chat; approved and implemented; see 2026-10-03-quality-format-validation.md.
 
 ## Global constraints
 
@@ -30,10 +30,10 @@
 **Files:** package.json, pnpm-lock.yaml, `.prettierignore`, `.github/workflows/ci.yml`, `.github/workflows/publish.yml`, maintained source/config/docs, docs/development.md.
 **Interfaces:** Produces `pnpm format` and `pnpm format:check`; no runtime interface changes.
 
-- [ ] After PR 1 is integrated, create fresh branch. Verify current stable Prettier in the registry and install exact devDependency.
-- [ ] Add scripts `format: prettier --write .` and `format:check: prettier --check .`. Use defaults plus `.prettierrc.json` containing `{"endOfLine":"lf"}` for cross-platform consistency.
-- [ ] Ignore node_modules, dist, coverage, .superpowers, .causign, .agentest, pnpm-lock.yaml and packages/protocol/src/generated.ts. Ensure formatter respects hidden scratch exclusions.
-- [ ] Run check before writing and record its unformatted-file result; run format; rerun check successfully. Do not alter expressions or introduce cleanup fixes.
-- [ ] Add format:check after install in both acceptance/publication workflows and document commands.
-- [ ] Inspect `git diff --ignore-all-space`; explain syntactic formatter-only changes and check generated source/lockfile exclusions. Lockfile may change only for the pinned formatter dependency.
-- [ ] Run complete verification. Commit `style: format maintained source and enforce consistency`; create PR 2 with whitespace-insensitive review guidance.
+- [x] After PR 1 is integrated, create fresh branch. Verify current stable Prettier in the registry and install exact devDependency.
+- [x] Add scripts `format: prettier --write .` and `format:check: prettier --check .`. Use defaults plus `.prettierrc.json` containing `{"endOfLine":"lf"}` for cross-platform consistency.
+- [x] Ignore node_modules, dist, coverage, .superpowers, .causign, .agentest, pnpm-lock.yaml and packages/protocol/src/generated.ts. Ensure formatter respects hidden scratch exclusions.
+- [x] Run check before writing and record its unformatted-file result; run format; rerun check successfully. Do not alter expressions or introduce cleanup fixes.
+- [x] Add format:check after install in both acceptance/publication workflows and document commands.
+- [x] Inspect `git diff --ignore-all-space`; explain syntactic formatter-only changes and check generated source/lockfile exclusions. Lockfile may change only for the pinned formatter dependency.
+- [x] Run complete verification. Commit `style: format maintained source and enforce consistency`; create PR 2 with whitespace-insensitive review guidance.
